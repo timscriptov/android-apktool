@@ -1,0 +1,23 @@
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+rootProject.name = "Android-ApkTool"
+include ':app'
+
+include ':androlib:brut.j.common',
+        ':androlib:brut.j.util',
+        ':androlib:brut.j.dir',
+        ':androlib:brut.apktool:apktool-lib'
+
+include ':core'

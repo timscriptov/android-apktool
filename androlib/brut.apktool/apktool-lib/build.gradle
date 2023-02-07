@@ -1,0 +1,43 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    compileSdk project.compileSDK.toInteger()
+
+    defaultConfig {
+        minSdk project.minSDK.toInteger()
+        targetSdk project.targetSDK.toInteger()
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+    namespace 'com.mcal.androlib.lib'
+}
+
+dependencies {
+    api project(':androlib:brut.j.dir')
+    api project(':androlib:brut.j.util')
+    api project(':androlib:brut.j.common')
+
+    implementation project(flat.core)
+    implementation 'org.smali:dexlib2:2.5.2'
+    implementation 'org.smali:smali:2.5.2'
+    implementation 'org.smali:baksmali:2.5.2'
+
+    implementation 'xpp3:xpp3:1.1.3.4.O'
+
+    implementation misc.guava
+    implementation misc.commons_lang
+    implementation misc.commons_io
+    implementation misc.commons_text
+    implementation misc.antlr
+
+    implementation misc.annotations
+    implementation misc.coroutines_core
+}
