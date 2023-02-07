@@ -14,7 +14,7 @@ public class YamlStringEscapeUtils {
     }
 
     /**
-     * @param str String to escape values in, may be null
+     * @param str                String to escape values in, may be null
      * @param escapeSingleQuotes escapes single quotes if <code>true</code>
      * @param escapeForwardSlash TODO
      * @return the escaped string
@@ -34,9 +34,9 @@ public class YamlStringEscapeUtils {
     }
 
     /**
-     * @param out write to receieve the escaped string
-     * @param str String to escape values in, may be null
-     * @param escapeSingleQuote escapes single quotes if <code>true</code>
+     * @param out                write to receieve the escaped string
+     * @param str                String to escape values in, may be null
+     * @param escapeSingleQuote  escapes single quotes if <code>true</code>
      * @param escapeForwardSlash TODO
      * @throws IOException if an IOException occurs
      */
@@ -62,19 +62,19 @@ public class YamlStringEscapeUtils {
                 out.write("\\u00" + CharSequenceTranslator.hex(ch));
             } else if (ch < 32) {
                 switch (ch) {
-                    case '\t' :
+                    case '\t':
                         out.write('\\');
                         out.write('t');
                         break;
-                    case '\n' :
+                    case '\n':
                         out.write('\\');
                         out.write('n');
                         break;
-                    case '\r' :
+                    case '\r':
                         out.write('\\');
                         out.write('r');
                         break;
-                    default :
+                    default:
                         if (ch > 0xf) {
                             out.write("\\u00" + CharSequenceTranslator.hex(ch));
                         } else {
@@ -84,27 +84,27 @@ public class YamlStringEscapeUtils {
                 }
             } else {
                 switch (ch) {
-                    case '\'' :
+                    case '\'':
                         if (escapeSingleQuote) {
                             out.write('\\');
                         }
                         out.write('\'');
                         break;
-                    case '"' :
+                    case '"':
                         out.write('\\');
                         out.write('"');
                         break;
-                    case '\\' :
+                    case '\\':
                         out.write('\\');
                         out.write('\\');
                         break;
-                    case '/' :
+                    case '/':
                         if (escapeForwardSlash) {
                             out.write('\\');
                         }
                         out.write('/');
                         break;
-                    default :
+                    default:
                         out.write(ch);
                         break;
                 }
@@ -118,7 +118,7 @@ public class YamlStringEscapeUtils {
      * <code>'n'</code> into a newline character, unless the <code>'\'</code>
      * is preceded by another <code>'\'</code>.</p>
      *
-     * @param str  the <code>String</code> to unescape, may be null
+     * @param str the <code>String</code> to unescape, may be null
      * @return a new unescaped <code>String</code>, <code>null</code> if null string input
      */
     public static String unescapeString(String str) {

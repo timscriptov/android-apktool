@@ -1,11 +1,12 @@
-package com.mcal.common.tasks
+package com.mcal.androlib.utils
 
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 object LogHelper {
     private val DIAGNOSTIC_PATTERN: Pattern = Pattern.compile("(.*?):(\\d+): (.*?): (.+)")
-    private val DIAGNOSTIC_PATTERN_NO_LINE: Pattern = Pattern.compile("(.*?): (.*?)" + ":" + " (.+)")
+    private val DIAGNOSTIC_PATTERN_NO_LINE: Pattern =
+        Pattern.compile("(.*?): (.*?)" + ":" + " (.+)")
 
     fun formatLog(error: String): String {
         val lines = error.split("\n").toTypedArray()

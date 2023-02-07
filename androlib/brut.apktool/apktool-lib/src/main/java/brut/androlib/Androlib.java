@@ -20,7 +20,6 @@ import com.mcal.androlib.meta.MetaInfo;
 import com.mcal.androlib.meta.UsesFramework;
 import com.mcal.androlib.options.BuildOptions;
 import com.mcal.androlib.utils.Logger;
-import com.mcal.androlib.utils.ReactivePreferences;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;

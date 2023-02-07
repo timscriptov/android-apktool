@@ -11,13 +11,6 @@ object FileHelper {
         inputStream.readBytes().toString(StandardCharsets.UTF_8)
 
     @JvmStatic
-    fun readFile(file: File) = file.inputStream().readBytes().toString(StandardCharsets.UTF_8)
-
-    @JvmStatic
-    fun readFile(path: String) =
-        File(path).inputStream().readBytes().toString(StandardCharsets.UTF_8)
-
-    @JvmStatic
     @Throws(IOException::class)
     fun createNewFile(parent: File, name: String): File {
         val createdFile = File(parent, name)

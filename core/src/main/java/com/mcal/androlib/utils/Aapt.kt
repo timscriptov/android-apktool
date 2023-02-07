@@ -2,7 +2,6 @@ package com.mcal.androlib.utils
 
 import com.mcal.androlib.options.BuildOptions
 import com.mcal.androlib.utils.FileHelper.readInputStream
-import com.mcal.common.tasks.LogHelper
 import java.io.File
 
 object Aapt {

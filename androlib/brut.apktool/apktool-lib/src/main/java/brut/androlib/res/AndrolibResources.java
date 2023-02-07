@@ -20,7 +20,6 @@ import com.mcal.androlib.meta.MetaInfo;
 import com.mcal.androlib.meta.PackageInfo;
 import com.mcal.androlib.meta.VersionInfo;
 import com.mcal.androlib.options.BuildOptions;
-import com.mcal.androlib.utils.ReactivePreferences;
 import com.mcal.androlib.utils.Aapt;
 import com.mcal.androlib.utils.Aapt2;
 

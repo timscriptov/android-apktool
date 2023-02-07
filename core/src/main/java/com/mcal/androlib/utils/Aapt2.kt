@@ -3,9 +3,8 @@ package com.mcal.androlib.utils
 import com.mcal.androlib.options.BuildOptions
 import com.mcal.androlib.utils.FileHelper.createNewFile
 import com.mcal.androlib.utils.FileHelper.readInputStream
-import com.mcal.common.tasks.LogHelper.formatLog
+import com.mcal.androlib.utils.LogHelper.formatLog
 import java.io.File
-
 
 object Aapt2 {
     @JvmStatic
