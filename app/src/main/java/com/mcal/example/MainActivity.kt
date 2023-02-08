@@ -18,6 +18,7 @@ import android.widget.TextView
 import android.widget.Toast
 import com.mcal.androlib.utils.Logger
 import com.mcal.apktool.R
+import com.mcal.example.utils.ApkToolHelper.buildProject
 import com.mcal.example.utils.ApkToolHelper.decode
 import com.mcal.example.utils.FileHelper.copyAssetsFile
 import com.mcal.example.utils.FileHelper.getDecodeDir
@@ -38,25 +39,61 @@ class MainActivity : Activity(), Logger {
         logView = findViewById(R.id.log)
         initPermission()
         installTools()
-        val btnDecode = findViewById<Button>(R.id.decode)
-        btnDecode.setOnClickListener {
-            val apkPath = findViewById<EditText>(R.id.apk_path).text.toString().trim()
+
+        val apkPathView = findViewById<EditText>(R.id.apk_path)
+        val decodePathView = findViewById<EditText>(R.id.decode_path)
+        val buildView = findViewById<Button>(R.id.build)
+        val decodeView = findViewById<Button>(R.id.decode)
+
+        decodeView.setOnClickListener {
+            val apkPath = apkPathView.text.toString().trim()
             if (apkPath.isNotEmpty()) {
+                val context = this@MainActivity
                 val apkFile = File(apkPath)
                 if (apkFile.exists()) {
                     logView.text = ""
-                    val dialog = ProgressDialog(this).apply {
+                    val dialog = ProgressDialog(context).apply {
                         setMessage("Decoding...")
                         show()
                     }
-                    btnDecode.isEnabled = false
+                    decodeView.isEnabled = false
+                    buildView.isEnabled = false
                     CoroutineScope(Dispatchers.IO).launch {
-                        val context = this@MainActivity
                         val decodeDir = getDecodeDir(context)
                         decodeDir.deleteRecursively()
                         decode(apkFile, decodeDir, getToolsDir(context).path, context)
                         withContext(Dispatchers.Main) {
-                            btnDecode.isEnabled = true
+                            decodeView.isEnabled = true
+                            buildView.isEnabled = true
+                            dialog.dismiss()
+                            decodePathView.setText(decodeDir.path)
+                            Toast.makeText(context, "Finished", Toast.LENGTH_LONG).show()
+                        }
+                    }
+                }
+            }
+        }
+
+        buildView.setOnClickListener {
+            val decodePath = decodePathView.text.toString().trim()
+            if (decodePath.isNotEmpty()) {
+                val context = this@MainActivity
+                val decodeFolder = File(decodePath)
+                if (decodeFolder.exists()) {
+                    logView.text = ""
+                    val dialog = ProgressDialog(context).apply {
+                        setMessage("Building...")
+                        show()
+                    }
+                    buildView.isEnabled = false
+                    decodeView.isEnabled = false
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val decodeDir = getDecodeDir(context)
+                        val apkFile = File(context.filesDir, "app.apk")
+                        buildProject(apkFile, decodeDir, getToolsDir(context).path, context)
+                        withContext(Dispatchers.Main) {
+                            buildView.isEnabled = true
+                            decodeView.isEnabled = true
                             dialog.dismiss()
                             Toast.makeText(context, "Finished", Toast.LENGTH_LONG).show()
                         }
@@ -76,10 +113,10 @@ class MainActivity : Activity(), Logger {
     @Throws(Exception::class)
     fun installTools() {
         val path = getToolsDir(this)
-        copyAssetsFile(this, "android-framework.jar", File(path, "android-framework.jar"))
-        copyAssetsFile(this, "android-framework.jar", File(path, "1.apk"))
-        copyAssetsFile(this, "aapt", File(path, "aapt"))
-        copyAssetsFile(this, "aapt2", File(path, "aapt2"))
+        copyAssetsFile(this, "android-framework.jar", File(path, "android-framework.jar"), false)
+        copyAssetsFile(this, "android-framework.jar", File(path, "1.apk"), false)
+        copyAssetsFile(this, "aapt", File(path, "aapt"), true)
+        copyAssetsFile(this, "aapt2", File(path, "aapt2"), true)
     }
 
     private fun initPermission() {

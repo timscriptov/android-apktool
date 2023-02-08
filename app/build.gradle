@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace 'com.mcal.apktool'
-    compileSdk 33
+    compileSdk project.compileSDK.toInteger()
 
     defaultConfig {
         applicationId "com.mcal.apktool"
-        minSdk 26
-        targetSdk 33
+        minSdk project.minSDK.toInteger()
+        targetSdk project.targetSDK.toInteger()
         versionCode 1
         versionName "1.0"
 

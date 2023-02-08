@@ -36,4 +36,15 @@ object ApkToolHelper {
             e.printStackTrace()
         }
     }
+
+    fun buildProject(apkPath: File, decodeRootPath: File, toolsDir: String, logger: Logger) {
+        Androlib(BuildOptions().apply {
+            isAaptRules = true
+            isJsonConfig = true
+            useAapt2 = true
+            aaptPath = toolsDir + File.separator + "aapt"
+            aapt2Path = toolsDir + File.separator + "aapt2"
+            frameworkFolderLocation = toolsDir
+        }, logger).build(decodeRootPath, apkPath)
+    }
 }

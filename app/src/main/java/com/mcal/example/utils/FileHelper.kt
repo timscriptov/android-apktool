@@ -21,8 +21,9 @@ object FileHelper {
     }
 
     @Throws(IOException::class)
-    fun copyAssetsFile(context: Context, filename: String, output: File) {
+    fun copyAssetsFile(context: Context, filename: String, output: File, execute: Boolean) {
         copyFile(context.assets.open(filename), FileOutputStream(output))
+        output.setExecutable(execute)
     }
 
     @Throws(IOException::class)

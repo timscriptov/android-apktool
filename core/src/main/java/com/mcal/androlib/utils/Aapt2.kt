@@ -98,7 +98,7 @@ object Aapt2 {
         args.add("--min-sdk-version")
         args.add(minSdk ?: "21")
         args.add("--target-sdk-version")
-        args.add(targetSdk ?: "32")
+        args.add(targetSdk ?: "33")
         buildDir.listFiles()?.let { resources ->
             for (resource in resources) {
                 if (resource.isDirectory) {

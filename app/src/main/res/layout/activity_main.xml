@@ -25,6 +25,18 @@
                 android:layout_height="wrap_content"
                 android:text="Decode" />
 
+            <EditText
+                android:id="@+id/decode_path"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter decode path" />
+
+            <Button
+                android:id="@+id/build"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Build" />
+
             <TextView
                 android:id="@+id/log"
                 android:layout_width="match_parent"
