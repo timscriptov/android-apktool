@@ -3,6 +3,7 @@ package com.mcal.example.utils
 import brut.androlib.Androlib
 import brut.androlib.ApkDecoder
 import com.mcal.androlib.options.BuildOptions
+import com.mcal.androlib.utils.Logger
 import java.io.File
 
 object ApkToolHelper {
@@ -13,7 +14,7 @@ object ApkToolHelper {
      *      ../toolsDir/aapt
      *      ../toolsDir/aapt2
      */
-    fun decode(apkPath: File, decodeRootPath: File, toolsDir: String) {
+    fun decode(apkPath: File, decodeRootPath: File, toolsDir: String, logger: Logger) {
         try {
             ApkDecoder(apkPath, Androlib(BuildOptions().apply {
                 frameworkFolderLocation = toolsDir
@@ -21,7 +22,7 @@ object ApkToolHelper {
                 aapt2Path = toolsDir + File.separator + "aapt2"
                 isAaptRules = true
                 isJsonConfig = true
-            }, null)).apply {
+            }, logger)).apply {
                 setApkFile(apkPath)
                 setBaksmaliDebugMode(false)
                 setFrameworkDir(toolsDir)
@@ -30,7 +31,6 @@ object ApkToolHelper {
                 setOutDir(decodeRootPath)
                 setApiLevel(14)
                 setForceDelete(true)
-                decode()
             }.decode()
         } catch (e: Exception) {
             e.printStackTrace()

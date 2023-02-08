@@ -3,6 +3,7 @@ package com.mcal.example
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -13,10 +14,9 @@ import android.os.Environment
 import android.provider.Settings
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
-import brut.androlib.Androlib
-import brut.androlib.ApkDecoder
-import com.mcal.androlib.options.BuildOptions
+import com.mcal.androlib.utils.Logger
 import com.mcal.apktool.R
 import com.mcal.example.utils.ApkToolHelper.decode
 import com.mcal.example.utils.FileHelper.copyAssetsFile
@@ -27,20 +27,24 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.*
+import java.util.logging.Level
 
 
-class MainActivity : Activity() {
+class MainActivity : Activity(), Logger {
+    private lateinit var logView: TextView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        logView = findViewById(R.id.log)
         initPermission()
         installTools()
         val btnDecode = findViewById<Button>(R.id.decode)
         btnDecode.setOnClickListener {
-            val apkPath =  findViewById<EditText>(R.id.apk_path).text.toString().trim()
+            val apkPath = findViewById<EditText>(R.id.apk_path).text.toString().trim()
             if (apkPath.isNotEmpty()) {
                 val apkFile = File(apkPath)
                 if (apkFile.exists()) {
+                    logView.text = ""
                     val dialog = ProgressDialog(this).apply {
                         setMessage("Decoding...")
                         show()
@@ -48,7 +52,9 @@ class MainActivity : Activity() {
                     btnDecode.isEnabled = false
                     CoroutineScope(Dispatchers.IO).launch {
                         val context = this@MainActivity
-                        decode(apkFile, getDecodeDir(context), getToolsDir(context).path)
+                        val decodeDir = getDecodeDir(context)
+                        decodeDir.deleteRecursively()
+                        decode(apkFile, decodeDir, getToolsDir(context).path, context)
                         withContext(Dispatchers.Main) {
                             btnDecode.isEnabled = true
                             dialog.dismiss()
@@ -57,6 +63,13 @@ class MainActivity : Activity() {
                     }
                 }
             }
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun setText(message: String) {
+        CoroutineScope(Dispatchers.Main).launch {
+            logView.text = logView.text.toString() + "\n$message"
         }
     }
 
@@ -92,5 +105,50 @@ class MainActivity : Activity() {
             )
             startActivity(intent)
         }
+    }
+
+    private fun alertDialog(title: String, message: String) {
+        AlertDialog.Builder(this).apply {
+            setTitle(title)
+            setMessage(message)
+        }.show()
+    }
+
+    override fun error(args: String?) {
+        if (args != null) {
+            alertDialog("Error", String.format("E: %s", args))
+        }
+    }
+
+    override fun log(level: Level, format: String?, ex: Throwable?) {
+        val ch = level.name[0]
+        val fmt = "%c: %s"
+        format?.let {
+            setText(String.format(fmt, ch, format))
+        }
+        log(fmt, ch, ex)
+    }
+
+    private fun log(fmt: String, ch: Char, ex: Throwable?) {
+        if (ex == null) {
+            return
+        }
+        setText(String.format(fmt, ch, ex.message))
+        for (ste in ex.stackTrace) {
+            setText(String.format(fmt, ch, ste))
+        }
+        log(fmt, ch, ex.cause)
+    }
+
+    override fun fine(args: String?) {
+        setText(String.format("F: %s", args))
+    }
+
+    override fun warning(args: String?) {
+        setText(String.format("W: %s", args))
+    }
+
+    override fun info(args: String?) {
+        setText(String.format("I: %s", args))
     }
 }
