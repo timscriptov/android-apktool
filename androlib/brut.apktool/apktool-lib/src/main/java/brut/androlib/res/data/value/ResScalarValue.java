@@ -122,7 +122,6 @@ public abstract class ResScalarValue extends ResIntBasedValue implements
 
     protected abstract String encodeAsResXml() throws AndrolibException;
 
-    // TODO: For ApkEditor
     public String getRawValue() {
         return mRawValue;
     }

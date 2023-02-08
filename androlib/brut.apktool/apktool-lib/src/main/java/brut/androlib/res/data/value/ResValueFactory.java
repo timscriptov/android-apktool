@@ -30,7 +30,6 @@ public class ResValueFactory {
         this.mPackage = package_;
     }
 
-    // TODO: For ApkEditor
     public ResScalarValue factory(int type, int value, String rawValue) throws AndrolibException {
         switch (type) {
             case TypedValue.TYPE_NULL:

@@ -73,9 +73,11 @@ public class ApkDecoder {
     public ApkDecoder() {
         this(new Androlib());
     }
+
     public ApkDecoder(Androlib androlib) {
         mAndrolib = androlib;
     }
+
     public ApkDecoder(File apkFile) {
         this(apkFile, new Androlib());
     }
@@ -205,6 +207,10 @@ public class ApkDecoder {
     public void setDecodeSources(short mode) throws AndrolibException {
         if (mode != DECODE_SOURCES_NONE && mode != DECODE_SOURCES_SMALI && mode != DECODE_SOURCES_SMALI_ONLY_MAIN_CLASSES) {
             throw new AndrolibException("Invalid decode sources mode: " + mode);
+        }
+        if (mDecodeSources == DECODE_SOURCES_NONE && mode == DECODE_SOURCES_SMALI_ONLY_MAIN_CLASSES) {
+            LOGGER.info("--only-main-classes cannot be paired with -s/--no-src. Ignoring.");
+            return;
         }
         mDecodeSources = mode;
     }

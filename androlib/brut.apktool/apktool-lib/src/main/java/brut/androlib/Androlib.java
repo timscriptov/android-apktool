@@ -70,7 +70,7 @@ public class Androlib {
     private final static String APK_DIRNAME = "build/apk";
     private final static String UNK_DIRNAME = "unknown";
     private final static String[] APK_RESOURCES_FILENAMES = new String[]{
-            "resources.arsc", "AndroidManifest.xml", "res"};
+            "resources.arsc", "AndroidManifest.xml", "res", "r", "R"};
     private final static String[] APK_RESOURCES_WITHOUT_RES_FILENAMES = new String[]{
             "resources.arsc", "AndroidManifest.xml"};
     private final static String[] APP_RESOURCES_FILENAMES = new String[]{
@@ -83,7 +83,7 @@ public class Androlib {
     private final static Pattern NO_COMPRESS_PATTERN = Pattern.compile("(" +
             "jpg|jpeg|png|gif|wav|mp2|mp3|ogg|aac|mpg|mpeg|mid|midi|smf|jet|rtttl|imy|xmf|mp4|" +
             "m4a|m4v|3gp|3gpp|3g2|3gpp2|amr|awb|wma|wmv|webm|webp|mkv)$");
-    private /*final*/ static Logger LOGGER;
+    private static Logger LOGGER;
     public final BuildOptions buildOptions;
     protected final ResUnknownFiles mResUnknownFiles = new ResUnknownFiles();
     private final AndrolibResources mAndRes = new AndrolibResources();
@@ -221,16 +221,19 @@ public class Androlib {
 
             for (String file : files) {
                 if (isAPKFileNames(file) && unk.getCompressionLevel(file) == 0) {
-                    String ext = "";
+                    String extOrFile = "";
                     if (unk.getSize(file) != 0) {
-                        ext = FilenameUtils.getExtension(file);
+                        extOrFile = FilenameUtils.getExtension(file);
                     }
 
-                    if (ext.isEmpty() || !NO_COMPRESS_PATTERN.matcher(ext).find()) {
-                        ext = file;
+                    if (extOrFile.isEmpty() || !NO_COMPRESS_PATTERN.matcher(extOrFile).find()) {
+                        extOrFile = file;
+                        if (mAndRes.mResFileMapping.containsKey(extOrFile)) {
+                            extOrFile = mAndRes.mResFileMapping.get(extOrFile);
+                        }
                     }
-                    if (!uncompressedFilesOrExts.contains(ext)) {
-                        uncompressedFilesOrExts.add(ext);
+                    if (!uncompressedFilesOrExts.contains(extOrFile)) {
+                        uncompressedFilesOrExts.add(extOrFile);
                     }
                 }
             }
@@ -304,7 +307,6 @@ public class Androlib {
         }
     }
 
-    // TODO: For ApkEditor
     public void writeMetaFile(File mOutDir, MetaInfo meta) throws AndrolibException {
         if (buildOptions.isJsonConfig) {
             try {
@@ -321,7 +323,6 @@ public class Androlib {
         }
     }
 
-    // TODO: For ApkEditor
     public MetaInfo readMetaFile(ExtFile appDir) throws AndrolibException {
         if (buildOptions.isJsonConfig) {
             try {
@@ -600,7 +601,8 @@ public class Androlib {
                 apkFile.delete();
             }
             return true;
-        } catch (IOException | BrutException | ParserConfigurationException | TransformerException | SAXException ex) {
+        } catch (IOException | BrutException | ParserConfigurationException | TransformerException |
+                 SAXException ex) {
             throw new AndrolibException(ex);
         }
     }
@@ -768,7 +770,8 @@ public class Androlib {
 
             try {
                 inputFile = new File(unknownFileDir, BrutIO.sanitizeUnknownFile(unknownFileDir, unknownFileInfo.getKey()));
-            } catch (RootUnknownFileException | InvalidUnknownFileException | TraversalUnknownFileException exception) {
+            } catch (RootUnknownFileException | InvalidUnknownFileException |
+                     TraversalUnknownFileException exception) {
                 LOGGER.warning(String.format("Skipping file %s (%s)", unknownFileInfo.getKey(), exception.getMessage()));
                 continue;
             }
@@ -792,10 +795,6 @@ public class Androlib {
                 newEntry.setMethod(ZipEntry.DEFLATED);
             }
             outputFile.putNextEntry(newEntry);
-
-            /*
-              Проверять наличие файлов во время сборки?
-             */
             if (buildOptions.isCheckExistsFilesEnabledAsync) {
                 BrutIO.copy(inputFile, outputFile);
             } else if (inputFile.exists()) {

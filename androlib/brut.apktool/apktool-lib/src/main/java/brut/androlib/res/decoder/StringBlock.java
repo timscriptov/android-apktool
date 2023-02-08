@@ -47,8 +47,10 @@ public class StringBlock {
     private int[] m_styleOffsets;
     private int[] m_styles;
     private boolean m_isUTF8;
+
     private StringBlock() {
     }
+
     @VisibleForTesting
     StringBlock(byte[] strings, boolean isUTF8) {
         m_strings = strings;

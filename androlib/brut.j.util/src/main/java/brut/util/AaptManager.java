@@ -34,10 +34,10 @@ public class AaptManager {
         return getAapt(1);
     }
 
-    // TODO: For ApkEditor
     private static File getAapt(Integer version) {
         BuildOptions options = new BuildOptions();
-        File aaptBinary = new File(options.aaptPath);
+        File aaptBinary = new File(version == 1 ? options.aaptPath : options.aapt2Path);
+        //noinspection ResultOfMethodCallIgnored
         aaptBinary.setExecutable(true);
         return aaptBinary;
     }
@@ -46,6 +46,7 @@ public class AaptManager {
         if (!aaptPath.isEmpty()) {
             File aaptFile = new File(aaptPath);
             if (aaptFile.canRead() && aaptFile.exists()) {
+                //noinspection ResultOfMethodCallIgnored
                 aaptFile.setExecutable(true);
                 return aaptFile.getPath();
             } else {
@@ -80,6 +81,7 @@ public class AaptManager {
         if (!aapt.isFile()) {
             throw new BrutException("Could not identify aapt binary as executable.");
         }
+        //noinspection ResultOfMethodCallIgnored
         aapt.setExecutable(true);
 
         List<String> cmd = new ArrayList<>();

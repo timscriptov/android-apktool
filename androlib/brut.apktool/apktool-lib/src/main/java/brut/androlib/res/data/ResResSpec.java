@@ -37,11 +37,13 @@ public class ResResSpec {
         this.mId = id;
         String cleanName;
 
+        name = (("(name removed)".equals(name)) ? null : name);
+
         ResResSpec resResSpec = type.getResSpecUnsafe(name);
         if (resResSpec != null) {
-            cleanName = String.format("%s_%s_%s", (name == null || name.isEmpty()) ? "AE" : name, type, id.toString());
+            cleanName = String.format("APKTOOL_DUPLICATE_%s_%s", type, id.toString());
         } else {
-            cleanName = ((name == null || name.isEmpty()) ? ("AE_DUMMYVAL_" + id.toString()) : name);
+            cleanName = ((name == null || name.isEmpty()) ? ("APKTOOL_DUMMYVAL_" + id.toString()) : name);
         }
 
         this.mName = cleanName;
@@ -99,7 +101,7 @@ public class ResResSpec {
     }
 
     public boolean isDummyResSpec() {
-        return getName().startsWith("AE_DUMMY_");
+        return getName().startsWith("APKTOOL_DUMMY_");
     }
 
     public void addResource(ResResource res) throws AndrolibException {
@@ -113,13 +115,12 @@ public class ResResSpec {
         }
     }
 
+    public Map<ResConfigFlags, ResResource> getAllResources() {
+        return mResources;
+    }
+
     @Override
     public String toString() {
         return mId.toString() + " " + mType.toString() + "/" + mName;
-    }
-
-    // TODO: For ApkEditor
-    public Map<ResConfigFlags, ResResource> getAllResources() {
-        return mResources;
     }
 }

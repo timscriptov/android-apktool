@@ -417,15 +417,11 @@ public class AXmlResourceParser implements XmlResourceParser {
         return m_resourceIDs[name];
     }
 
-    // TODO: For ApkEditor
-    // @Override
     public int getAttributeValueType(int index) {
         int offset = getAttributeOffset(index);
         return m_attributes[offset + ATTRIBUTE_IX_VALUE_TYPE];
     }
 
-    // TODO: For ApkEditor
-    // @Override
     public int getAttributeValueData(int index) {
         int offset = getAttributeOffset(index);
         return m_attributes[offset + ATTRIBUTE_IX_VALUE_DATA];

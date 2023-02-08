@@ -17,8 +17,8 @@
 package brut.directory;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.logging.Logger;
 
 import brut.common.BrutException;
@@ -87,16 +87,16 @@ public class DirUtil {
             if (in.containsDir(fileName)) {
                 OS.rmdir(new File(out, fileName));
                 in.getDir(fileName).copyToDir(new File(out, fileName));
+            } else if (!in.containsDir(fileName) && !in.containsFile(fileName)) {
+                // Skip copies of directories/files not found.
             } else {
-                if (fileName.equals("res") && !in.containsFile(fileName)) {
-                    return;
-                }
                 String cleanedFilename = BrutIO.sanitizeUnknownFile(out, fileName);
                 File outFile = new File(out, cleanedFilename);
                 outFile.getParentFile().mkdirs();
-                BrutIO.copyAndClose(in.getFileInput(fileName), new FileOutputStream(outFile));
+                BrutIO.copyAndClose(in.getFileInput(fileName), Files.newOutputStream(outFile.toPath()));
             }
-        } catch (RootUnknownFileException | InvalidUnknownFileException | TraversalUnknownFileException exception) {
+        } catch (RootUnknownFileException | InvalidUnknownFileException |
+                 TraversalUnknownFileException exception) {
             LOGGER.warning(String.format("Skipping file %s (%s)", fileName, exception.getMessage()));
         } catch (IOException | BrutException ex) {
             throw new DirectoryException("Error copying file: " + fileName, ex);

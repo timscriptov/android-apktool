@@ -36,13 +36,12 @@ public class ResFileValue extends ResIntBasedValue {
         throw new AndrolibException("File path does not start with \"res/\" or \"r/\": " + mPath);
     }
 
-    @Override
-    public String toString() {
+    public String getPath() {
         return mPath;
     }
 
-    // TODO: For ApkEditor
-    public String getPath() {
+    @Override
+    public String toString() {
         return mPath;
     }
 }
