@@ -43,9 +43,9 @@ class MainActivity : Activity() {
                 if (apkFile.exists()) {
                     val dialog = ProgressDialog(this).apply {
                         setMessage("Decoding...")
+                        show()
                     }
                     btnDecode.isEnabled = false
-                    dialog.show()
                     CoroutineScope(Dispatchers.IO).launch {
                         val context = this@MainActivity
                         decode(apkFile, getDecodeDir(context), getToolsDir(context).path)
