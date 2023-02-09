@@ -20,4 +20,4 @@ include ':androlib:brut.j.common',
         ':androlib:brut.j.dir',
         ':androlib:brut.apktool:apktool-lib'
 
-include ':core'
+include ':androlib:brut.j.core'

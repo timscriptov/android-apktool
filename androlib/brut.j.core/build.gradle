@@ -1,7 +1,11 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'maven-publish'
 }
+
+group = 'com.mcal'
+version = '2.7.0'
 
 android {
     compileSdk project.compileSDK.toInteger()
@@ -30,4 +34,18 @@ dependencies {
     implementation 'org.jetbrains:annotations:23.1.0'
     implementation 'org.apache.commons:commons-text:1.10.0'
     implementation 'org.yaml:snakeyaml:1.33'
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            // Creates a Maven publication called "release".
+            release(MavenPublication) {
+                from components.release
+                groupId = 'com.mcal'
+                artifactId = 'brut.j.core'
+                version = '2.7.0'
+            }
+        }
+    }
 }

@@ -2,12 +2,8 @@ ext {
     def latestFastAdapterRelease = "5.7.0"
 
     flat = [
-            core: ":core",
+            core: ":androlib:brut.j.core",
             androlib: ":androlib:brut.apktool:apktool-lib",
-            jars: ":libraries",
-            smali: ":smali",
-            xpp: ":xpp3",
-            sun: ":sun"
     ]
 
     jetpack = [
