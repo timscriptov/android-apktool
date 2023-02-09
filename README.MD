@@ -1,5 +1,6 @@
 ### ApkTool [2.7.0][1] for Android
 
+[![](https://jitpack.io/v/TimScriptov/Android-ApkTool-Library.svg)](https://jitpack.io/#TimScriptov/Android-ApkTool-Library)
 
 # Screenshot
 | ![Decode](/ART/screenshot_decode.png) | ![Build](/ART/screenshot_build.png) |
