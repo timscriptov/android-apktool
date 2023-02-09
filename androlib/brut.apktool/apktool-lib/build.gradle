@@ -1,7 +1,11 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'maven-publish'
 }
+
+group = 'com.mcal'
+version = '2.7.0'
 
 android {
     compileSdk project.compileSDK.toInteger()
@@ -9,6 +13,10 @@ android {
     defaultConfig {
         minSdk project.minSDK.toInteger()
         targetSdk project.targetSDK.toInteger()
+
+        aarMetadata {
+            minCompileSdk = project.minSDK.toInteger()
+        }
     }
 
     buildTypes {
@@ -44,4 +52,18 @@ dependencies {
 
     implementation misc.annotations
     implementation misc.coroutines_core
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            // Creates a Maven publication called "release".
+            release(MavenPublication) {
+                from components.release
+                groupId = 'com.mcal'
+                artifactId = 'apktool-lib'
+                version = '2.7.0'
+            }
+        }
+    }
 }
