@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.mcal'
-version = '2.7.0'
+version = project.artifactVersion
 
 android {
     compileSdk project.compileSDK.toInteger()
@@ -44,7 +44,7 @@ afterEvaluate {
                 from components.release
                 groupId = 'com.mcal'
                 artifactId = 'brut.j.core'
-                version = '2.7.0'
+                version = project.artifactVersion
             }
         }
     }
