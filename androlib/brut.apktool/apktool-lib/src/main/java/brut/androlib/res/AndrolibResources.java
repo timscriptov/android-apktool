@@ -94,7 +94,7 @@ final public class AndrolibResources {
     // TODO: dirty static hack. I have to refactor decoding mechanisms.
     public static boolean sKeepBroken = false;
     public BuildOptions buildOptions;
-    public Map<String, String> mResFileMapping = new HashMap();
+    public Map<String, String> mResFileMapping = new HashMap<>();
     private File mFrameworkDirectory = null;
     private ExtFile mFramework = null;
     private String mMinSdkVersion = null;
@@ -123,9 +123,13 @@ final public class AndrolibResources {
     public void loadMainPkg(ResTable resTable, ExtFile apkFile)
             throws AndrolibException {
         LOGGER.info("Loading resource table...");
-        ResPackage[] pkgs = getResPackagesFromApk(apkFile, resTable, sKeepBroken);
-        for (ResPackage _pkg : pkgs) {
-            resTable.addPackage(_pkg, true);
+        final ResPackage[] pkgs = getResPackagesFromApk(apkFile, resTable, sKeepBroken);
+        if (!buildOptions.ignoreMultiRes) {
+            for (ResPackage _pkg : pkgs) {
+                resTable.addPackage(_pkg, true);
+            }
+        } else {
+            resTable.addPackage(pkgs[0], true);
         }
     }
 
@@ -228,7 +232,7 @@ final public class AndrolibResources {
 
         attrDecoder.setCurrentPackage(resTable.listMainPackages().iterator().next());
 
-        Directory inApk, in = null, out;
+        Directory inApk, out;
         try {
             inApk = apkFile.getDirectory();
             out = new FileDirectory(outDir);

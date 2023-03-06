@@ -61,13 +61,17 @@ class MainActivity : Activity(), Logger {
                     CoroutineScope(Dispatchers.IO).launch {
                         val decodeDir = getDecodeDir(context)
                         decodeDir.deleteRecursively()
-                        decode(apkFile, decodeDir, getToolsDir(context).path, context)
-                        withContext(Dispatchers.Main) {
-                            decodeView.isEnabled = true
-                            buildView.isEnabled = true
-                            dialog.dismiss()
-                            decodePathView.setText(decodeDir.path)
-                            Toast.makeText(context, "Finished", Toast.LENGTH_LONG).show()
+                        try {
+                            decode(apkFile, decodeDir, getToolsDir(context).path, context)
+                            withContext(Dispatchers.Main) {
+                                decodeView.isEnabled = true
+                                buildView.isEnabled = true
+                                dialog.dismiss()
+                                decodePathView.setText(decodeDir.path)
+                                Toast.makeText(context, "Finished", Toast.LENGTH_LONG).show()
+                            }
+                        } catch (e: Exception) {
+                            e.message?.let { it1 -> alertDialog("Error", it1) }
                         }
                     }
                 }
@@ -90,12 +94,16 @@ class MainActivity : Activity(), Logger {
                     CoroutineScope(Dispatchers.IO).launch {
                         val decodeDir = getDecodeDir(context)
                         val apkFile = File(context.filesDir, "app.apk")
-                        buildProject(apkFile, decodeDir, getToolsDir(context).path, context)
-                        withContext(Dispatchers.Main) {
-                            buildView.isEnabled = true
-                            decodeView.isEnabled = true
-                            dialog.dismiss()
-                            Toast.makeText(context, "Finished", Toast.LENGTH_LONG).show()
+                        try {
+                            buildProject(apkFile, decodeDir, getToolsDir(context).path, context)
+                            withContext(Dispatchers.Main) {
+                                buildView.isEnabled = true
+                                decodeView.isEnabled = true
+                                dialog.dismiss()
+                                Toast.makeText(context, "Finished", Toast.LENGTH_LONG).show()
+                            }
+                        } catch (e: Exception) {
+                            e.message?.let { it1 -> alertDialog("Error", it1) }
                         }
                     }
                 }
@@ -105,7 +113,7 @@ class MainActivity : Activity(), Logger {
 
     @SuppressLint("SetTextI18n")
     private fun setText(message: String) {
-        CoroutineScope(Dispatchers.Main).launch {
+        runOnUiThread {
             logView.text = logView.text.toString() + "\n$message"
         }
     }
@@ -145,10 +153,12 @@ class MainActivity : Activity(), Logger {
     }
 
     private fun alertDialog(title: String, message: String) {
-        AlertDialog.Builder(this).apply {
-            setTitle(title)
-            setMessage(message)
-        }.show()
+        runOnUiThread {
+            AlertDialog.Builder(this).apply {
+                setTitle(title)
+                setMessage(message)
+            }.show()
+        }
     }
 
     override fun error(args: String?) {

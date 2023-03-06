@@ -22,6 +22,7 @@ object ApkToolHelper {
                 aapt2Path = toolsDir + File.separator + "aapt2"
                 isAaptRules = true
                 isJsonConfig = true
+                ignoreMultiRes = false
             }, logger)).apply {
                 setApkFile(apkPath)
                 setBaksmaliDebugMode(false)
@@ -45,6 +46,7 @@ object ApkToolHelper {
             aaptPath = toolsDir + File.separator + "aapt"
             aapt2Path = toolsDir + File.separator + "aapt2"
             frameworkFolderLocation = toolsDir
+            ignoreMultiRes = true
         }, logger).build(decodeRootPath, apkPath)
     }
 }

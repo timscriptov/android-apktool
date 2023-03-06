@@ -33,7 +33,17 @@ object Aapt {
         args.add(targetSdk ?: "32")
 
         args.add("-S")
-        args.add(resDir.absolutePath)
+        args.add(resDir.path)
+        if (!options.ignoreMultiRes) {
+            resDir.parent?.let { path ->
+                File(path).walk().forEach { file ->
+                    if (file.name.startsWith("res_") && file.exists() && file.isDirectory) {
+                        args.add("-S")
+                        args.add(file.path)
+                    }
+                }
+            }
+        }
         args.add("-M")
         args.add(manifest.path)
         args.add("-F")

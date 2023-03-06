@@ -41,8 +41,10 @@ object Aapt2 {
             throw Exception(formatLog(error))
         }
 
-        resDir.parent?.let { path ->
-            compileLibraries(File(path), buildDir, options)
+        if (!options.ignoreMultiRes) {
+            resDir.parent?.let { path ->
+                compileLibraries(File(path), buildDir, options)
+            }
         }
     }
 
@@ -51,25 +53,20 @@ object Aapt2 {
         buildDir: File,
         options: BuildOptions
     ) {
-        path.listFiles()?.let { resources ->
-            for (resDir in resources) {
-                if (resDir.name.startsWith("res_")) {
-                    if (!resDir.exists() || !resDir.isDirectory) {
-                        continue
-                    }
-                    val args: MutableList<String> = ArrayList()
-                    args.add(options.aapt2Path)
-                    args.add("compile")
-                    args.add("--dir")
-                    args.add(resDir.absolutePath)
-                    args.add("-o")
-                    args.add(createNewFile(buildDir, resDir.name + ".zip").absolutePath)
+        path.walk().forEach { file ->
+            if (file.name.startsWith("res_") && file.exists() && file.isDirectory) {
+                val args: MutableList<String> = ArrayList()
+                args.add(options.aapt2Path)
+                args.add("compile")
+                args.add("--dir")
+                args.add(file.absolutePath)
+                args.add("-o")
+                args.add(createNewFile(buildDir, file.name + ".zip").absolutePath)
 
-                    val aaptProcess = Runtime.getRuntime().exec(args.toTypedArray())
-                    val error = readInputStream(aaptProcess.errorStream)
-                    if (error.isNotEmpty()) {
-                        throw Exception(formatLog(error))
-                    }
+                val aaptProcess = Runtime.getRuntime().exec(args.toTypedArray())
+                val error = readInputStream(aaptProcess.errorStream)
+                if (error.isNotEmpty()) {
+                    throw Exception(formatLog(error))
                 }
             }
         }

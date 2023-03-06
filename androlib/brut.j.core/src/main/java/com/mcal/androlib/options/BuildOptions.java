@@ -25,6 +25,7 @@ public class BuildOptions {
      * Use json configuration
      */
     public boolean isJsonConfig = false;
+    public boolean ignoreMultiRes = false;
     /**
      * Use new rules
      */
