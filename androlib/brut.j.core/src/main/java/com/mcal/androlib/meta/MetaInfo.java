@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.introspector.PropertyUtils;
 
@@ -108,14 +109,17 @@ public class MetaInfo {
     }
 
     private static Yaml getYaml() {
-        DumperOptions options = new DumperOptions();
-        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+        DumperOptions dumpOptions = new DumperOptions();
+        dumpOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
 
         EscapedStringRepresenter representer = new EscapedStringRepresenter();
         PropertyUtils propertyUtils = representer.getPropertyUtils();
         propertyUtils.setSkipMissingProperties(true);
 
-        return new Yaml(new ClassSafeConstructor(), representer, options);
+        LoaderOptions loaderOptions = new LoaderOptions();
+        loaderOptions.setCodePointLimit(10 * 1024 * 1024); // 10mb
+
+        return new Yaml(new ClassSafeConstructor(), representer, dumpOptions, loaderOptions);
     }
 
     public void save(Writer output) throws JSONException, IOException {
