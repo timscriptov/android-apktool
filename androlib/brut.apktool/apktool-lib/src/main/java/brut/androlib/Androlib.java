@@ -308,7 +308,7 @@ public class Androlib {
     }
 
     public void writeMetaFile(File mOutDir, MetaInfo meta) throws AndrolibException {
-        if (buildOptions.isJsonConfig) {
+        if (buildOptions.useJsonConfig) {
             try {
                 meta.save(new File(mOutDir, "apktool.json"));
             } catch (IOException | JSONException ex) {
@@ -324,7 +324,7 @@ public class Androlib {
     }
 
     public MetaInfo readMetaFile(ExtFile appDir) throws AndrolibException {
-        if (buildOptions.isJsonConfig) {
+        if (buildOptions.useJsonConfig) {
             try {
                 InputStream in = appDir.getDirectory().getFileInput("apktool.json");
                 MetaInfo meta = MetaInfo.load(in);
@@ -795,7 +795,7 @@ public class Androlib {
                 newEntry.setMethod(ZipEntry.DEFLATED);
             }
             outputFile.putNextEntry(newEntry);
-            if (buildOptions.isCheckExistsFilesEnabledAsync) {
+            if (buildOptions.checkExistsFiles) {
                 BrutIO.copy(inputFile, outputFile);
             } else if (inputFile.exists()) {
                 BrutIO.copy(inputFile, outputFile);

@@ -6,4 +6,12 @@
 | ![Decode](/ART/screenshot_decode.png) | ![Build](/ART/screenshot_build.png) |
 |--|--|
 
+# New features
+    BuildOptions.java:
+        1. boolean useJsonConfig = true
+        2. boolean ignoreMultiRes = true
+        3. boolean useNewBuildRules = true
+        4. boolean checkExistsFiles = false
+        5. String aapt2Path = ""
+
 [1]: https://github.com/iBotPeaches/Apktool/tree/0a3c7595eb9bfe4ff96ed1c8b806d33d38aa5e3d

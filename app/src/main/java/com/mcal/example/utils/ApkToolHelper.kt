@@ -20,8 +20,8 @@ object ApkToolHelper {
                 frameworkFolderLocation = toolsDir
                 aaptPath = toolsDir + File.separator + "aapt"
                 aapt2Path = toolsDir + File.separator + "aapt2"
-                isAaptRules = true
-                isJsonConfig = true
+                useNewBuildRules = true
+                useJsonConfig = true
                 ignoreMultiRes = false
             }, logger)).apply {
                 setApkFile(apkPath)
@@ -40,8 +40,8 @@ object ApkToolHelper {
 
     fun buildProject(apkPath: File, decodeRootPath: File, toolsDir: String, logger: Logger) {
         Androlib(BuildOptions().apply {
-            isAaptRules = true
-            isJsonConfig = true
+            useNewBuildRules = true
+            useJsonConfig = true
             useAapt2 = true
             aaptPath = toolsDir + File.separator + "aapt"
             aapt2Path = toolsDir + File.separator + "aapt2"

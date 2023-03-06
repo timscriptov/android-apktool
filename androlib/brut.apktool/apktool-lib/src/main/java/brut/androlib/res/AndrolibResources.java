@@ -662,14 +662,14 @@ final public class AndrolibResources {
         }
 
         if (buildOptions.isAapt2()) {
-            if (buildOptions.isAaptRules) {
+            if (buildOptions.useNewBuildRules) {
                 Aapt2.build(apkFile, include, manifest, resDir, mMinSdkVersion, mTargetSdkVersion, buildOptions);
             } else {
                 aapt2Package(apkFile, manifest, resDir, rawDir, assetDir, include, cmd, customAapt);
             }
             return;
         }
-        if (buildOptions.isAaptRules) {
+        if (buildOptions.useNewBuildRules) {
             Aapt.build(apkFile, include, manifest, resDir, mMinSdkVersion, mTargetSdkVersion, buildOptions);
         } else {
             aapt1Package(apkFile, manifest, resDir, rawDir, assetDir, include, cmd, customAapt);

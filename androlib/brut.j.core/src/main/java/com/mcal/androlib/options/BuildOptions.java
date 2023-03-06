@@ -24,22 +24,22 @@ public class BuildOptions {
     /**
      * Use json configuration
      */
-    public boolean isJsonConfig = false;
+    public boolean useJsonConfig = true;
 
     /**
      * Support:
      * 1. Decode mode
      * 2. Build mode (isJsonConfig == true)
      */
-    public boolean ignoreMultiRes = false;
+    public boolean ignoreMultiRes = true;
     /**
      * Use new rules
      */
-    public boolean isAaptRules = true;
+    public boolean useNewBuildRules = true;
     /**
      * Check for the presence of all files on build
      */
-    public boolean isCheckExistsFilesEnabledAsync = false;
+    public boolean checkExistsFiles = false;
 
     public boolean isAapt2() {
         return this.useAapt2 || this.aaptVersion == 2;
