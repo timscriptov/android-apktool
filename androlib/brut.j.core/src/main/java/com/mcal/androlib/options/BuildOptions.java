@@ -25,6 +25,12 @@ public class BuildOptions {
      * Use json configuration
      */
     public boolean isJsonConfig = false;
+
+    /**
+     * Support:
+     * 1. Decode mode
+     * 2. Build mode (isJsonConfig == true)
+     */
     public boolean ignoreMultiRes = false;
     /**
      * Use new rules
