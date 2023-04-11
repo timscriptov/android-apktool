@@ -176,6 +176,9 @@ public class ARSCDecoder {
                 case Header.XML_TYPE_OVERLAY:
                     readOverlaySpec();
                     break;
+                case Header.XML_TYPE_OVERLAY_POLICY:
+                    readOverlayPolicySpec();
+                    break;
                 case Header.XML_TYPE_STAGED_ALIAS:
                     readStagedAliasSpec();
                     break;
@@ -218,13 +221,11 @@ public class ARSCDecoder {
 
     private void readOverlaySpec() throws AndrolibException, IOException {
         checkChunkType(Header.XML_TYPE_OVERLAY);
-        String name = mIn.readNullEndedString(128, true);
-        String actor = mIn.readNullEndedString(128, true);
+        String name = mIn.readNullEndedString(256, true);
+        String actor = mIn.readNullEndedString(256, true);
         LOGGER.fine(String.format("Overlay name: \"%s\", actor: \"%s\")", name, actor));
 
-        while (nextChunk().type == Header.XML_TYPE_OVERLAY_POLICY) {
-            readOverlayPolicySpec();
-        }
+        nextChunk();
     }
 
     private void readOverlayPolicySpec() throws AndrolibException, IOException {
