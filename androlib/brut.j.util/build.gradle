@@ -31,7 +31,7 @@ android {
 dependencies {
     implementation project(':androlib:brut.j.core')
     implementation project(':androlib:brut.j.common')
-    implementation misc.commons_io
+    implementation misc.commons.io
 }
 
 afterEvaluate {

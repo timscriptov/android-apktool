@@ -16,10 +16,11 @@
  */
 package brut.androlib.src;
 
+import com.android.tools.smali.dexlib2.Opcodes;
+import com.android.tools.smali.dexlib2.writer.builder.DexBuilder;
+import com.android.tools.smali.dexlib2.writer.io.FileDataStore;
+
 import org.antlr.runtime.RecognitionException;
-import org.jf.dexlib2.Opcodes;
-import org.jf.dexlib2.writer.builder.DexBuilder;
-import org.jf.dexlib2.writer.io.FileDataStore;
 
 import java.io.File;
 import java.io.FileInputStream;

@@ -30,10 +30,10 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.annotation:annotation:1.5.0'
-    implementation 'org.jetbrains:annotations:23.1.0'
-    implementation 'org.apache.commons:commons-text:1.10.0'
-    implementation 'org.yaml:snakeyaml:1.33'
+    implementation misc.annotations.android
+    implementation misc.annotations
+    implementation misc.commons.text
+    implementation misc.yaml
 }
 
 afterEvaluate {

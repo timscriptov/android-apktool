@@ -16,6 +16,9 @@
  */
 package brut.androlib;
 
+import androidx.annotation.NonNull;
+
+import com.android.tools.smali.dexlib2.iface.DexFile;
 import com.mcal.androlib.meta.MetaInfo;
 import com.mcal.androlib.meta.UsesFramework;
 import com.mcal.androlib.options.BuildOptions;
@@ -23,7 +26,6 @@ import com.mcal.androlib.utils.Logger;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.jf.dexlib2.iface.DexFile;
 import org.json.JSONException;
 import org.xml.sax.SAXException;
 
@@ -122,7 +124,7 @@ public class Androlib {
         return mMinSdkVersion;
     }
 
-    public void decodeSourcesRaw(ExtFile apkFile, File outDir, String filename)
+    public void decodeSourcesRaw(@NonNull ExtFile apkFile, File outDir, String filename)
             throws AndrolibException {
         try {
             LOGGER.info("Copying raw " + filename + " file...");
@@ -132,7 +134,7 @@ public class Androlib {
         }
     }
 
-    public void decodeSourcesSmali(File apkFile, File outDir, String filename, boolean bakDeb, int apiLevel)
+    public void decodeSourcesSmali(File apkFile, File outDir, @NonNull String filename, boolean bakDeb, int apiLevel)
             throws AndrolibException {
         try {
             File smaliDir;
@@ -154,7 +156,7 @@ public class Androlib {
         }
     }
 
-    public void decodeManifestRaw(ExtFile apkFile, File outDir)
+    public void decodeManifestRaw(@NonNull ExtFile apkFile, File outDir)
             throws AndrolibException {
         try {
             LOGGER.info("Copying raw manifest...");
@@ -169,7 +171,7 @@ public class Androlib {
         mAndRes.decodeManifest(resTable, apkFile, outDir);
     }
 
-    public void decodeResourcesRaw(ExtFile apkFile, File outDir)
+    public void decodeResourcesRaw(@NonNull ExtFile apkFile, File outDir)
             throws AndrolibException {
         try {
             LOGGER.info("Copying raw resources...");
@@ -189,7 +191,7 @@ public class Androlib {
         mAndRes.decodeManifestWithResources(resTable, apkFile, outDir);
     }
 
-    public void decodeRawFiles(ExtFile apkFile, File outDir, short decodeAssetMode)
+    public void decodeRawFiles(@NonNull ExtFile apkFile, File outDir, short decodeAssetMode)
             throws AndrolibException {
         LOGGER.info("Copying assets and libs...");
         try {
@@ -214,7 +216,7 @@ public class Androlib {
         }
     }
 
-    public void recordUncompressedFiles(ExtFile apkFile, Collection<String> uncompressedFilesOrExts) throws AndrolibException {
+    public void recordUncompressedFiles(@NonNull ExtFile apkFile, Collection<String> uncompressedFilesOrExts) throws AndrolibException {
         try {
             Directory unk = apkFile.getDirectory();
             Set<String> files = unk.getFiles(true);
@@ -251,7 +253,7 @@ public class Androlib {
         return false;
     }
 
-    public void decodeUnknownFiles(ExtFile apkFile, File outDir)
+    public void decodeUnknownFiles(@NonNull ExtFile apkFile, File outDir)
             throws AndrolibException {
         LOGGER.info("Copying unknown files...");
         File unknownOut = new File(outDir, UNK_DIRNAME);
@@ -429,7 +431,7 @@ public class Androlib {
         }
     }
 
-    public void buildNonDefaultSources(ExtFile appDir)
+    public void buildNonDefaultSources(@NonNull ExtFile appDir)
             throws AndrolibException {
         try {
             // loop through any smali_ directories for multi-dex apks
@@ -714,7 +716,7 @@ public class Androlib {
         }
     }
 
-    public void buildUnknownFiles(File appDir, File outFile, MetaInfo meta)
+    public void buildUnknownFiles(File appDir, File outFile, @NonNull MetaInfo meta)
             throws AndrolibException {
         if (meta.unknownFiles != null) {
             LOGGER.info("Copying unknown files/dir...");
@@ -741,7 +743,7 @@ public class Androlib {
         }
     }
 
-    private void copyExistingFiles(ZipFile inputFile, ZipOutputStream outputFile) throws IOException {
+    private void copyExistingFiles(@NonNull ZipFile inputFile, ZipOutputStream outputFile) throws IOException {
         // First, copy the contents from the existing outFile:
         Enumeration<? extends ZipEntry> entries = inputFile.entries();
         while (entries.hasMoreElements()) {
@@ -760,7 +762,7 @@ public class Androlib {
         }
     }
 
-    private void copyUnknownFiles(File appDir, ZipOutputStream outputFile, Map<String, String> files)
+    private void copyUnknownFiles(File appDir, ZipOutputStream outputFile, @NonNull Map<String, String> files)
             throws BrutException, IOException {
         File unknownFileDir = new File(appDir, UNK_DIRNAME);
 
@@ -804,7 +806,7 @@ public class Androlib {
         }
     }
 
-    public void buildApk(File appDir, File outApk) throws AndrolibException {
+    public void buildApk(File appDir, @NonNull File outApk) throws AndrolibException {
         LOGGER.info("Building apk file...");
         if (outApk.exists()) {
             outApk.delete();
@@ -838,7 +840,7 @@ public class Androlib {
         mAndRes.emptyFrameworkDirectory();
     }
 
-    public boolean isFrameworkApk(ResTable resTable) {
+    public boolean isFrameworkApk(@NonNull ResTable resTable) {
         for (ResPackage pkg : resTable.listMainPackages()) {
             if (pkg.getId() < 64) {
                 return true;
@@ -867,15 +869,15 @@ public class Androlib {
         return files;
     }
 
-    private boolean isModified(File working, File stored) {
+    private boolean isModified(File working, @NonNull File stored) {
         return !stored.exists() || BrutIO.recursiveModifiedTime(working) > BrutIO.recursiveModifiedTime(stored);
     }
 
-    private boolean isFile(File working) {
+    private boolean isFile(@NonNull File working) {
         return working.exists();
     }
 
-    private boolean isModified(File[] working, File[] stored) {
+    private boolean isModified(File[] working, @NonNull File[] stored) {
         for (File file : stored) {
             if (!file.exists()) {
                 return true;
@@ -884,7 +886,8 @@ public class Androlib {
         return BrutIO.recursiveModifiedTime(working) > BrutIO.recursiveModifiedTime(stored);
     }
 
-    private File[] newFiles(String[] names, File dir) {
+    @NonNull
+    private File[] newFiles(@NonNull String[] names, File dir) {
         File[] files = new File[names.length];
         for (int i = 0; i < names.length; i++) {
             files[i] = new File(dir, names[i]);

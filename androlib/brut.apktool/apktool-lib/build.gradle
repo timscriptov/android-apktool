@@ -37,21 +37,21 @@ dependencies {
     api project(':androlib:brut.j.util')
     api project(':androlib:brut.j.common')
 
-    implementation project(flat.core)
-    implementation 'org.smali:dexlib2:2.5.2'
-    implementation 'org.smali:smali:2.5.2'
-    implementation 'org.smali:baksmali:2.5.2'
+    implementation project(':androlib:brut.j.core')
 
-    implementation 'xpp3:xpp3:1.1.3.4.O'
+    implementation tools.dexlib2
+    implementation tools.smali
+    implementation tools.baksmali
 
+    implementation misc.xpp3
     implementation misc.guava
-    implementation misc.commons_lang
-    implementation misc.commons_io
-    implementation misc.commons_text
+    implementation misc.commons.lang
+    implementation misc.commons.io
+    implementation misc.commons.text
     implementation misc.antlr
-
     implementation misc.annotations
-    implementation misc.coroutines_core
+    implementation misc.coroutines.core
+    implementation misc.annotations.android
 }
 
 afterEvaluate {

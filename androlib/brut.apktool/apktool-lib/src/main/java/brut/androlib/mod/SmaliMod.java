@@ -16,15 +16,16 @@
  */
 package brut.androlib.mod;
 
+import com.android.tools.smali.dexlib2.writer.builder.DexBuilder;
+import com.android.tools.smali.smali.smaliFlexLexer;
+import com.android.tools.smali.smali.smaliParser;
+import com.android.tools.smali.smali.smaliTreeWalker;
+
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
-import org.jf.dexlib2.writer.builder.DexBuilder;
-import org.jf.smali.smaliFlexLexer;
-import org.jf.smali.smaliParser;
-import org.jf.smali.smaliTreeWalker;
 
 import java.io.File;
 import java.io.FileInputStream;
