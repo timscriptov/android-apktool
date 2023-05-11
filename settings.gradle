@@ -96,8 +96,7 @@ include ':app'
 include ':androlib:brut.j.common',
         ':androlib:brut.j.util',
         ':androlib:brut.j.dir',
-        ':androlib:brut.apktool:apktool-lib'
-
-include ':androlib:brut.j.core'
+        ':androlib:brut.apktool:apktool-lib',
+        ':androlib:brut.j.core'
 
 include ':xpp3'
