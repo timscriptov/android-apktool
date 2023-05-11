@@ -309,38 +309,22 @@ public class Androlib {
         }
     }
 
-    public void writeMetaFile(File mOutDir, MetaInfo meta) throws AndrolibException {
-        if (buildOptions.useJsonConfig) {
-            try {
-                meta.save(new File(mOutDir, "apktool.json"));
-            } catch (IOException | JSONException ex) {
-                throw new AndrolibException(ex);
-            }
-        } else {
-            try {
-                meta.saveYaml(new File(mOutDir, "apktool.yml"));
-            } catch (IOException ex) {
-                throw new AndrolibException(ex);
-            }
+    public void writeMetaFile(File mOutDir, @NonNull MetaInfo meta) throws AndrolibException {
+        try {
+            meta.save(new File(mOutDir, "apktool.json"));
+        } catch (IOException | JSONException ex) {
+            throw new AndrolibException(ex);
         }
     }
 
-    public MetaInfo readMetaFile(ExtFile appDir) throws AndrolibException {
-        if (buildOptions.useJsonConfig) {
-            try {
-                InputStream in = appDir.getDirectory().getFileInput("apktool.json");
-                MetaInfo meta = MetaInfo.load(in);
-                in.close();
-                return meta;
-            } catch (DirectoryException | IOException | JSONException ex) {
-                throw new AndrolibException(ex);
-            }
-        } else {
-            try (InputStream in = appDir.getDirectory().getFileInput("apktool.yml")) {
-                return MetaInfo.loadYaml(in);
-            } catch (DirectoryException | IOException ex) {
-                throw new AndrolibException(ex);
-            }
+    public MetaInfo readMetaFile(@NonNull ExtFile appDir) throws AndrolibException {
+        try {
+            InputStream in = appDir.getDirectory().getFileInput("apktool.json");
+            MetaInfo meta = MetaInfo.load(in);
+            in.close();
+            return meta;
+        } catch (DirectoryException | IOException | JSONException ex) {
+            throw new AndrolibException(ex);
         }
     }
 

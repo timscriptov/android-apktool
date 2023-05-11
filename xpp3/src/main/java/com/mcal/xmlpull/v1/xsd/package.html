@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Typed Pull API for XML Schema Types Processing</title>
+</head>
+<body bgcolor="white">
+<h1>Typed Pull API for XML Schema Types Processing</h1>
+
+<h2>What is it?</h2>
+
+<p>
+
+    Simple to use API (and its implementation) to work with stream of XML events to convert between XSD
+    types to Java types.</p>
+
+
+<h2>Features
+</h2>
+
+<ul>
+    <li>supports streaming: conversion is done directly from the stream</li>
+    <li>support subset of XSD types that maps 1-1 to Java types</li>
+    <li>easy to combine to provide complexType (including SOAP arrays and structs)</li>
+</ul>
+
+<h2>Mapped Types
+</h2>
+
+
+<p>
+    We have used as guideline to allow invertible mapping between XML Schema
+    data types and Java types. We have computed intersection between Java and XSD
+    types as we believe such <b>invertible</b> mapping
+    is natural to use
+</p>
+
+<p>
+    This is table of invertible mappings: list of types that have XML Schema that
+    has natural mapping in Java</p>
+
+
+<table border="1" id="table1" width="100%">
+    <tr>
+        <td>
+            <p align="left"><b>Simple_Type</b></td>
+        <td>
+            <p align="left"><b>Java_Type</b></td>
+    </tr>
+    <tr>
+        <td>
+            <p align="left">xsd:anyURI</td>
+        <td>
+            <p align="left">java.net.URI</td>
+    </tr>
+    <tr>
+        <td>
+            <p align="left">xsd:base64Binary</td>
+        <td>
+            <p align="left">byte[]</td>
+    </tr>
+    <tr>
+        <td>
+            <p align="left">xsd:boolean</td>
+        <td>
+            <p align="left">boolean</td>
+    </tr>
+    <tr>
+        <td>
+            <p align="left">xsd:byte</td>
+        <td>
+            <p align="left">byte</td>
+    </tr>
+    <tr>
+        <td>
+            <p align="left">xsd:decimal</td>
+        <td>
+            <p align="left">java.math.BigDecimal</td>
+    </tr>
+    <tr>
+        <td>
+            <p align="left">xsd:double</td>
+        <td>
+            <p align="left">double</td>
+    </tr>
+    <tr>
+        <td>
+            <p align="left">xsd:float</td>
+        <td>
+            <p align="left">float</td>
+    </tr>
+    <tr>
+        <td>
+            <p align="left">xsd:int</td>
+        <td>
+            <p align="left">int</td>
+    </tr>
+    <tr>
+        <td>
+            <p align="left">xsd:integer</td>
+        <td>
+            <p align="left">java.math.BigInteger</td>
+    </tr>
+    <tr>
+        <td>
+            <p align="left">xsd:long</td>
+        <td>
+            <p align="left">long</td>
+    </tr>
+    <tr>
+        <td>
+            <p align="left">xsd:QName</td>
+        <td>
+            <p align="left">javax.xml.namespace.QName</td>
+    </tr>
+    <tr>
+        <td>
+            <p align="left">xsd:short</td>
+        <td>
+            <p align="left">short</td>
+    </tr>
+    <tr>
+        <td>
+            <p align="left">xsd:string</td>
+        <td>
+            <p align="left">java.lang.String</td>
+    </tr>
+</table>
+
+<p>
+
+    NOTE: We require J2SE 1.4 so java.net.URI is available and is natural
+    mapping for anyUri.
+</p>
+
+
+<p>
+    We have decided to have no support sopenc:int and similar types defined in SOAP 1.1
+    Section 5 as theyare not in
+    XSD. As for SOAP implementations we recommend to map soapenc:base64&nbsp; to
+    byte[] for reading but otherwise use base64Binary</p>
+
+<p>
+    Requiring reversible mappings we make sure that no information is lost during
+    processing of XML messages. For example consider issue of nillable XML schema:
+    in case when type such as xsd:int is used as parameter in RPC method wheat is
+    value&nbsp; if the parameters&nbsp; is not present (minOccurs=0) should be
+    represented as Integer and null passed? What if type is extended to be nillable
+    and sent with&nbsp; xsi:nil='1' in this case it would be also Java
+    null value ...</p>
+
+<h2>
+    Dealing With Additional XML Schema Types
+</h2>
+
+
+<p>
+    The way we recommend to support additional types is to expose XML infoset to the
+    XML processing code to allow applicaitin specific mapping.
+</p>
+
+
+<h2>Reading And Writing API</h2>
+<p> This is translation of previous section requirements into set of methods. We
+    support reading and writing of element content and attribute values.</p>
+
+<h3> Type Pulled Parsing</h3>
+
+<p> Provide XML parsing functionality by extending XmlPullParser interface and
+    add methods to do read and convert XML events into Java types</p>
+
+<p>Here is the list of methods for xsd:double.</p>
+
+<pre>public interface XsdTypePullParser extends XmlPullParserWrapper {
+    public static final String XSI_NS = "http://www.w3.org/2001/XMLSchema-instance";
+    public static final String XSD_NS = "<a href="http://www.w3.org/2001/XMLSchema">http://www.w3.org/2001/XMLSchema</a>";
+
+    public double nextXsdDoubleElement(String namesapxe, String name)
+        throws XmlPullParserException, IOException, XsdException;
+    public double readXsdDoubleElement() // reads text between START_TAG, END_TAG
+        throws XmlPullParserException, IOException;
+    public double readXsdDoubleAttribute(String name)
+        throws XmlPullParserException, IOException;
+    public double readXsdDoubleAttribute(String namespace, String name)
+        throws XmlPullParserException, IOException;
+</pre>
+
+<p>We have given to functions name of corresponding XSD type such as for
+    xsd:double it is&nbsp; readXsdDouble() (instead of readDouble) to emphasize that it follow XSD rules and not Java types!</p>
+
+<p>When processing XML it may be necessary to check xsi:type. However accessing
+    xsi:type has performance overhead. Therefore above functions do not check for
+    xsi:type. One way to deal with it would be to define set of additonal functions
+    that check xsi:type:</p>
+
+<p>&nbsp;&nbsp;&nbsp; public double readDoubleCheckXsiType()<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throws XmlPullParserException, IOException;<br>
+    &nbsp;</p>
+
+<p>However we think this is not necessary and be better done by utility function working directly on XML
+    infoset such as</p>
+
+<p>&nbsp;&nbsp;&nbsp; public boolean checkXsiType(String namesapce, String name)<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throws XmlPullParserException, IOException;<br>
+    &nbsp;&nbsp;&nbsp; public boolean checkXsiTypeXsd(String nameOfXsdType)<br>
+    &nbsp;</p>
+
+<p>We have no used QName for case when there is pair for (namespace, name) as-the prefix is irrelevant
+    when checking (if necessary additional methods can
+    be added in future to take QName)</p>
+
+<p>CONSIDER: dealing with mixed content but use directly converting methods -
+    obtain text content as String and convert it...
+<p>CONSIDER: adding xsd:sequence processing for primitive types like int[]
+<p>&nbsp;
+<p> Example:</p>
+
+<p></p>
+
+<pre>    double value = pp.readXsdDouble();
+    double value = pp.readXsdDoubleAttribute("fooattrib");
+</pre>
+
+
+<p></p>
+
+<h3> XSD Typed Push Output</h3>
+
+<p>Thos method are used ot write element contnet and attributes that are
+    consistent with XML Schema data types:</p>
+
+<pre>public interface XsdTypeSerializer extends XmlSerializerWrapper {
+    public void writeXsdDouble(double d)
+        throws XmlPullParserException, IOException, IllegalArgumentException;
+    public void writeXsdDoubleElement(String namespace, String name, double d)
+        throws XmlPullParserException, IOException, IllegalArgumentException;
+    public void writeXsdDoubleElement(String namespace, String name, double d, boolean addXsiType)
+        throws XmlPullParserException, IOException, IllegalArgumentException;
+    public void writeXsdDoubleAttribute(String name, double d)
+        throws XmlPullParserException, IOException, IllegalArgumentException;
+    public void writeXsdDoubleAttribute(String namespace, String name, double d)
+        throws XmlPullParserException, IOException, IllegalArgumentException;
+</pre>
+
+<p>Parameter addXsitType is used to indicate that xsi:type attribute should be
+    written </p>
+
+<p>NOTE: instead of boolean addXsitType we could have setUseXsiType(boolean) but
+    then user code could easily mess up as code to write XML is typically
+    recursively structured and one method could change setXsiType(boolean) affecting
+    all other parts of code. By using addXsitType parameter we avoid need to check
+    isXsiType() in each method and/or restore it to previous value.</p>
+
+<p>NOTE: all namespace - prefix mapping etc. is taken care by XmlSerializer </p>
+
+<p> Example:</p>
+
+<p></p>
+
+<pre>    xs.writeDoubleElement("", "price", 100.0);
+    xs.startTag("", "price&quot;);
+    xs.writeDoubleElementAttribute("price", 100.0);
+
+</pre>
+
+<hr/>
+<p>
+    <font size="2">&nbsp;<a href="http://www.extreme.indiana.edu/~aslom/">Aleksander Slominski </a>&nbsp;<a href="http://validator.w3.org/check/referer"><img
+            align="right" alt="Valid XHTML 1.0!" border="0" height="17" src="../images/validxhtml.gif" width="82"/></a>
+
+</p>
+
+</body>
+</html>

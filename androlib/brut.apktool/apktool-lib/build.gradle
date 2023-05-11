@@ -18,32 +18,33 @@ android {
             minCompileSdk = project.minSDK.toInteger()
         }
     }
-
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
+    kotlinOptions {
+        jvmTarget = project.jvmTarget
+    }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility project.sourceCompatibility.toInteger()
+        targetCompatibility project.targetCompatibility.toInteger()
     }
     namespace 'com.mcal.androlib.lib'
 }
 
 dependencies {
-    api project(':androlib:brut.j.dir')
-    api project(':androlib:brut.j.util')
-    api project(':androlib:brut.j.common')
-
+    implementation project(':androlib:brut.j.dir')
+    implementation project(':androlib:brut.j.util')
+    implementation project(':androlib:brut.j.common')
     implementation project(':androlib:brut.j.core')
+    implementation project(':xpp3')
 
     implementation tools.dexlib2
     implementation tools.smali
     implementation tools.baksmali
 
-    implementation misc.xpp3
     implementation misc.guava
     implementation misc.commons.lang
     implementation misc.commons.io

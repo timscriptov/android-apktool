@@ -104,24 +104,6 @@ public class MetaInfo {
         }
     }
 
-    public static MetaInfo loadYaml(InputStream in) {
-        return getYaml().loadAs(in, MetaInfo.class);
-    }
-
-    private static Yaml getYaml() {
-        DumperOptions dumpOptions = new DumperOptions();
-        dumpOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
-
-        EscapedStringRepresenter representer = new EscapedStringRepresenter();
-        PropertyUtils propertyUtils = representer.getPropertyUtils();
-        propertyUtils.setSkipMissingProperties(true);
-
-        LoaderOptions loaderOptions = new LoaderOptions();
-        loaderOptions.setCodePointLimit(10 * 1024 * 1024); // 10mb
-
-        return new Yaml(new ClassSafeConstructor(), representer, dumpOptions, loaderOptions);
-    }
-
     public void save(Writer output) throws JSONException, IOException {
         JSONObject json = new JSONObject();
         putString(json, "version", version);
@@ -178,17 +160,5 @@ public class MetaInfo {
         writer.close();
         outputStreamWriter.close();
         fos.close();
-    }
-
-    public void saveYaml(File file) throws IOException {
-        try (
-                FileOutputStream fos = new FileOutputStream(file);
-                OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
-                Writer writer = new BufferedWriter(outputStreamWriter)
-        ) {
-            DumperOptions options = new DumperOptions();
-            options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
-            getYaml().dump(this, writer);
-        }
     }
 }

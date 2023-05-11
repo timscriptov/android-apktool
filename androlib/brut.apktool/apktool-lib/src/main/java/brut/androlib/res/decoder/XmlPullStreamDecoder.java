@@ -18,10 +18,10 @@ package brut.androlib.res.decoder;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.wrapper.XmlPullParserWrapper;
-import org.xmlpull.v1.wrapper.XmlPullWrapperFactory;
-import org.xmlpull.v1.wrapper.XmlSerializerWrapper;
-import org.xmlpull.v1.wrapper.classic.StaticXmlSerializerWrapper;
+import com.mcal.xmlpull.v1.wrapper.XmlPullParserWrapper;
+import com.mcal.xmlpull.v1.wrapper.XmlPullWrapperFactory;
+import com.mcal.xmlpull.v1.wrapper.XmlSerializerWrapper;
+import com.mcal.xmlpull.v1.wrapper.classic.StaticXmlSerializerWrapper;
 
 import java.io.IOException;
 import java.io.InputStream;

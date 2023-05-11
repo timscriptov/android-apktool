@@ -14,20 +14,24 @@ android {
         minSdk project.minSDK.toInteger()
         targetSdk project.targetSDK.toInteger()
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
-    kotlinOptions {
-        jvmTarget = project.jvmTarget
-    }
     compileOptions {
-        sourceCompatibility project.sourceCompatibility.toInteger()
-        targetCompatibility project.targetCompatibility.toInteger()
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
-    namespace 'com.mcal.androlib.common'
+    namespace 'com.mcal.xpp3'
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation misc.annotations
+    implementation misc.annotations.android
 }
 
 afterEvaluate {
@@ -37,7 +41,7 @@ afterEvaluate {
             release(MavenPublication) {
                 from components.release
                 groupId = 'com.mcal'
-                artifactId = 'brut.j.common'
+                artifactId = 'xpp3'
                 version = project.artifactVersion
             }
         }

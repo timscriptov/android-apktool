@@ -14,16 +14,18 @@ android {
         minSdk project.minSDK.toInteger()
         targetSdk project.targetSDK.toInteger()
     }
-
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
+    kotlinOptions {
+        jvmTarget = project.jvmTarget
+    }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility project.sourceCompatibility.toInteger()
+        targetCompatibility project.targetCompatibility.toInteger()
     }
     namespace 'com.mcal.androlib.dir'
 }

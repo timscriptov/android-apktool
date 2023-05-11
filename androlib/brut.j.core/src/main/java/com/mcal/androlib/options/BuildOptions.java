@@ -21,10 +21,6 @@ public class BuildOptions {
     public int aaptVersion = 1; // default to v1
     public String aaptPath = "";
     public String aapt2Path = "";
-    /**
-     * Use json configuration
-     */
-    public boolean useJsonConfig = true;
 
     /**
      * Support:
