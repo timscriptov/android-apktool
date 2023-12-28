@@ -17,7 +17,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ca88d2d9-d344-4f04-914d-6bf6d7a51375" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/androlib/brut.j.common/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/androlib/brut.j.common/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/androlib/brut.j.core/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/androlib/brut.j.core/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/androlib/brut.j.dir/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/androlib/brut.j.dir/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/androlib/brut.j.util/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/androlib/brut.j.util/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradle.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/jitpack.yml" beforeDir="false" afterPath="$PROJECT_DIR$/jitpack.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/xpp3/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/xpp3/build.gradle" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
