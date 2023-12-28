@@ -50,28 +50,21 @@ public interface Directory {
 
     void copyToDir(Directory out) throws DirectoryException;
 
-    void copyToDir(Directory out, String[] fileNames)
-            throws DirectoryException;
+    void copyToDir(Directory out, String[] fileNames) throws DirectoryException;
 
-    void copyToDir(Directory out, String fileName)
-            throws DirectoryException;
+    void copyToDir(Directory out, String fileName) throws DirectoryException;
 
     void copyToDir(File out) throws DirectoryException;
 
-    void copyToDir(File out, String[] fileNames)
-            throws DirectoryException;
+    void copyToDir(File out, String[] fileNames) throws DirectoryException;
 
-    void copyToDir(File out, String fileName)
-            throws DirectoryException;
+    void copyToDir(File out, String fileName) throws DirectoryException;
 
-    long getSize(String fileName)
-            throws DirectoryException;
+    long getSize(String fileName) throws DirectoryException;
 
-    long getCompressedSize(String fileName)
-            throws DirectoryException;
+    long getCompressedSize(String fileName) throws DirectoryException;
 
-    int getCompressionLevel(String fileName)
-            throws DirectoryException;
+    int getCompressionLevel(String fileName) throws DirectoryException;
 
     void close() throws IOException;
 }

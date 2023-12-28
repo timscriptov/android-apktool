@@ -41,6 +41,8 @@ dependencies {
     implementation project(':androlib:brut.j.common')
 
     implementation misc.commons.io
+
+    implementation("com.google.guava:guava:33.0.0-android")
 }
 
 afterEvaluate {

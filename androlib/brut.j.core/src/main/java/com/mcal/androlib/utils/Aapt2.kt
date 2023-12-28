@@ -1,10 +1,9 @@
 package com.mcal.androlib.utils
 
-import com.mcal.androlib.options.BuildOptions
 import com.mcal.androlib.utils.FileHelper.createNewFile
-import com.mcal.androlib.utils.FileHelper.readInputStream
 import com.mcal.androlib.utils.LogHelper.formatLog
 import java.io.File
+import java.nio.charset.StandardCharsets
 
 object Aapt2 {
     @JvmStatic
@@ -15,35 +14,37 @@ object Aapt2 {
         resDir: File,
         minSdk: String?,
         targetSdk: String?,
-        options: BuildOptions
+        aapt2Path: String,
+        ignoreMultiRes: Boolean
     ) {
         val buildDir = File(resDir.parent, "build")
-        compile(resDir, buildDir, options)
-        link(apkFile, buildDir, include, manifest, minSdk, targetSdk, options)
+        compile(resDir, buildDir, aapt2Path, ignoreMultiRes)
+        link(apkFile, buildDir, include, manifest, minSdk, targetSdk, aapt2Path)
     }
 
     private fun compile(
         resDir: File,
         buildDir: File,
-        options: BuildOptions
+        aapt2Path: String,
+        ignoreMultiRes: Boolean
     ) {
         val args: MutableList<String> = ArrayList()
-        args.add(options.aapt2Path)
+        args.add(aapt2Path)
         args.add("compile")
         args.add("--dir")
-        args.add(resDir.absolutePath)
+        args.add(resDir.path)
         args.add("-o")
-        args.add(createNewFile(buildDir, resDir.name + ".zip").absolutePath)
+        args.add(createNewFile(buildDir, resDir.name + ".zip").path)
 
         val aaptProcess = Runtime.getRuntime().exec(args.toTypedArray())
-        val error = readInputStream(aaptProcess.errorStream)
+        val error = aaptProcess.errorStream.readBytes().toString(StandardCharsets.UTF_8)
         if (error.isNotEmpty()) {
             throw Exception(formatLog(error))
         }
 
-        if (!options.ignoreMultiRes) {
+        if (!ignoreMultiRes) {
             resDir.parent?.let { path ->
-                compileLibraries(File(path), buildDir, options)
+                compileLibraries(File(path), buildDir, aapt2Path)
             }
         }
     }
@@ -51,20 +52,20 @@ object Aapt2 {
     private fun compileLibraries(
         path: File,
         buildDir: File,
-        options: BuildOptions
+        aapt2Path: String,
     ) {
         path.walk().forEach { file ->
             if (file.name.startsWith("res_") && file.exists() && file.isDirectory) {
                 val args: MutableList<String> = ArrayList()
-                args.add(options.aapt2Path)
+                args.add(aapt2Path)
                 args.add("compile")
                 args.add("--dir")
-                args.add(file.absolutePath)
+                args.add(file.path)
                 args.add("-o")
-                args.add(createNewFile(buildDir, file.name + ".zip").absolutePath)
+                args.add(createNewFile(buildDir, file.name + ".zip").path)
 
                 val aaptProcess = Runtime.getRuntime().exec(args.toTypedArray())
-                val error = readInputStream(aaptProcess.errorStream)
+                val error = aaptProcess.errorStream.readBytes().toString(StandardCharsets.UTF_8)
                 if (error.isNotEmpty()) {
                     throw Exception(formatLog(error))
                 }
@@ -79,10 +80,10 @@ object Aapt2 {
         manifest: File,
         minSdk: String?,
         targetSdk: String?,
-        options: BuildOptions
+        aapt2Path: String,
     ) {
         val args: MutableList<String> = ArrayList()
-        args.add(options.aapt2Path)
+        args.add(aapt2Path)
         args.add("link")
         include?.forEach { framework ->
             args.add("-I")
@@ -105,12 +106,12 @@ object Aapt2 {
                     continue
                 }
                 args.add("-R")
-                args.add(resource.absolutePath)
+                args.add(resource.path)
             }
         }
 
         args.add("--manifest")
-        args.add(manifest.absolutePath)
+        args.add(manifest.path)
 
         args.add("-o")
         if (!apkFile.exists()) {
@@ -119,7 +120,7 @@ object Aapt2 {
         args.add(apkFile.path)
 
         val aaptProcess = Runtime.getRuntime().exec(args.toTypedArray())
-        val error = readInputStream(aaptProcess.errorStream)
+        val error = aaptProcess.errorStream.readBytes().toString(StandardCharsets.UTF_8)
         if (error.isNotEmpty()) {
             throw Exception(formatLog(error))
         }

@@ -14,12 +14,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package brut.androlib.err;
+package brut.androlib.res.data.arsc;
 
-import brut.androlib.AndrolibException;
+import brut.androlib.res.data.value.ResValue;
 
-public class CantFind9PatchChunkException extends AndrolibException {
-    public CantFind9PatchChunkException(String message, Throwable cause) {
-        super(message, cause);
-    }
+public class EntryData {
+    public short mFlags;
+    public int mSpecNamesId;
+    public ResValue mValue;
 }

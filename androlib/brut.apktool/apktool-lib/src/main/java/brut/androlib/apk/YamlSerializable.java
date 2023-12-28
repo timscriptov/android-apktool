@@ -14,11 +14,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package brut.androlib.err;
+package brut.androlib.apk;
 
-import brut.androlib.AndrolibException;
+import brut.androlib.exceptions.AndrolibException;
 
-public class OutDirExistsException extends AndrolibException {
-    public OutDirExistsException() {
-    }
+public interface YamlSerializable {
+    void readItem(YamlReader reader) throws AndrolibException;
+
+    void write(YamlWriter writer);
 }

@@ -20,6 +20,8 @@ import android.util.TypedValue;
 
 import java.util.regex.Pattern;
 
+import brut.androlib.res.data.ResTable;
+
 /**
  * AXmlResourceParser specifically for parsing encoded AndroidManifest.xml.
  */
@@ -33,6 +35,10 @@ public class AndroidManifestResourceParser extends AXmlResourceParser {
      * With aapt1, the escaped space is dropped when encoded. For aapt2, the escaped space is preserved.
      */
     private static final Pattern PATTERN_NUMERIC_STRING = Pattern.compile("\\s?\\d+");
+
+    public AndroidManifestResourceParser(ResTable resTable) {
+        super(resTable);
+    }
 
     @Override
     public String getAttributeValue(int index) {

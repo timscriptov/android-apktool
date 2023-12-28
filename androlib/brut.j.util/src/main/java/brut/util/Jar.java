@@ -20,10 +20,10 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -57,7 +57,7 @@ public abstract class Jar {
             File fileOut = File.createTempFile(tmpPrefix, suffix + ".tmp");
             fileOut.deleteOnExit();
 
-            OutputStream out = new FileOutputStream(fileOut);
+            OutputStream out = Files.newOutputStream(fileOut.toPath());
             IOUtils.copy(in, out);
             in.close();
             out.close();

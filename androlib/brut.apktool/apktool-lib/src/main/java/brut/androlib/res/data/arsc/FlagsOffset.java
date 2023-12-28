@@ -14,12 +14,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package brut.androlib.err;
+package brut.androlib.res.data.arsc;
 
-import brut.androlib.AndrolibException;
+public class FlagsOffset {
+    public final int offset;
+    public final int count;
 
-public class AXmlDecodingException extends AndrolibException {
-    public AXmlDecodingException(String message, Throwable cause) {
-        super(message, cause);
+    public FlagsOffset(int offset, int count) {
+        this.offset = offset;
+        this.count = count;
     }
 }

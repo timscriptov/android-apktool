@@ -22,8 +22,8 @@ import org.apache.commons.io.IOUtils;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Collection;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
@@ -40,18 +40,16 @@ public class ZipUtils {
         // Private constructor for utility class
     }
 
-    public static void zipFolders(final File folder, final File zip, final File assets, final Collection<String> doNotCompress)
+    public static void zipFoldersPreserveStream(final File folder, final ZipOutputStream zipOutputStream, final File assets, final Collection<String> doNotCompress)
             throws BrutException, IOException {
 
         mDoNotCompress = doNotCompress;
-        ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(zip));
         zipFolders(folder, zipOutputStream);
 
         // We manually set the assets because we need to retain the folder structure
         if (assets != null) {
             processFolder(assets, zipOutputStream, assets.getPath().length() - 6);
         }
-        zipOutputStream.close();
     }
 
     private static void zipFolders(final File folder, final ZipOutputStream outputStream)
@@ -72,7 +70,7 @@ public class ZipUtils {
                 if (mDoNotCompress != null && (mDoNotCompress.contains(extension) || mDoNotCompress.contains(zipEntry.getName()))) {
                     zipEntry.setMethod(ZipEntry.STORED);
                     zipEntry.setSize(file.length());
-                    BufferedInputStream unknownFile = new BufferedInputStream(new FileInputStream(file));
+                    BufferedInputStream unknownFile = new BufferedInputStream(Files.newInputStream(file.toPath()));
                     CRC32 crc = BrutIO.calculateCrc(unknownFile);
                     zipEntry.setCrc(crc.getValue());
                     unknownFile.close();

@@ -23,74 +23,89 @@ import com.google.common.io.LittleEndianDataInputStream;
 
 import org.xmlpull.v1.XmlPullParserException;
 
-import java.io.DataInput;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import brut.androlib.AndrolibException;
+import brut.androlib.exceptions.AndrolibException;
+import brut.androlib.exceptions.CantFindFrameworkResException;
+import brut.androlib.exceptions.UndefinedResObjectException;
 import brut.androlib.res.data.ResID;
+import brut.androlib.res.data.ResResSpec;
+import brut.androlib.res.data.ResTable;
+import brut.androlib.res.data.arsc.ARSCHeader;
+import brut.androlib.res.data.axml.NamespaceStack;
+import brut.androlib.res.data.value.ResAttr;
+import brut.androlib.res.data.value.ResScalarValue;
 import brut.androlib.res.xml.ResXmlEncoders;
-import brut.util.ExtDataInput;
+import brut.util.ExtCountingDataInput;
 
 /**
  * Binary xml files parser.
- * <p>
- * Parser has only two states: (1) Operational state, which parser
+ *
+ * <p>Parser has only two states: (1) Operational state, which parser
  * obtains after first successful call to next() and retains until
  * open(), close(), or failed call to next(). (2) Closed state, which
  * parser obtains after open(), close(), or failed call to next(). In
  * this state methods return invalid values or throw exceptions.
- * <p>
- * TODO: * check all methods in closed state
  */
 public class AXmlResourceParser implements XmlResourceParser {
 
     private final static Logger LOGGER = Logger.getLogger(AXmlResourceParser.class.getName());
     private static final String E_NOT_SUPPORTED = "Method is not supported.";
-    private static final int ATTRIBUTE_IX_NAMESPACE_URI = 0,
-            ATTRIBUTE_IX_NAME = 1, ATTRIBUTE_IX_VALUE_STRING = 2,
-            ATTRIBUTE_IX_VALUE_TYPE = 3, ATTRIBUTE_IX_VALUE_DATA = 4,
-            ATTRIBUTE_LENGTH = 5;
-    private static final int CHUNK_AXML_FILE = 0x00080003, CHUNK_AXML_FILE_BROKEN = 0x00080001,
-            CHUNK_RESOURCEIDS = 0x00080180, CHUNK_XML_FIRST = 0x00100100,
-            CHUNK_XML_START_NAMESPACE = 0x00100100,
-            CHUNK_XML_END_NAMESPACE = 0x00100101,
-            CHUNK_XML_START_TAG = 0x00100102, CHUNK_XML_END_TAG = 0x00100103,
-            CHUNK_XML_TEXT = 0x00100104, CHUNK_XML_LAST = 0x00100104;
+    // ResXMLTree_attribute
+    private static final int ATTRIBUTE_IX_NAMESPACE_URI = 0; // ns
+    private static final int ATTRIBUTE_IX_NAME = 1; // name
+    private static final int ATTRIBUTE_IX_VALUE_STRING = 2; // rawValue
+    private static final int ATTRIBUTE_IX_VALUE_TYPE = 3; // (size/res0/dataType)
+    private static final int ATTRIBUTE_IX_VALUE_DATA = 4; // data
+    private static final int ATTRIBUTE_LENGTH = 5;
     private static final int PRIVATE_PKG_ID = 0x7F;
-    private final NamespaceStack m_namespaces = new NamespaceStack();
-    private final String android_ns = "http://schemas.android.com/apk/res/android";
-    // ///////////////////////////////// data
-    /*
-     * All values are essentially indices, e.g. m_name is an index of name in
-     * m_strings.
-     */
-    private ExtDataInput m_reader;
-    private ResAttrDecoder mAttrDecoder;
+    private static final String ANDROID_RES_NS_AUTO = "http://schemas.android.com/apk/res-auto";
+    private static final String ANDROID_RES_NS = "http://schemas.android.com/apk/res/android";
+    private final ResTable mResTable;
+    private final NamespaceStack mNamespaces = new NamespaceStack();
+    private ExtCountingDataInput mIn;
     private AndrolibException mFirstError;
-    private boolean m_operational = false;
-    private StringBlock m_strings;
-    private int[] m_resourceIDs;
+    private boolean isOperational = false;
+    private StringBlock mStringBlock;
+    private int[] mResourceIds;
     private boolean m_decreaseDepth;
-    private int m_event;
-    private int m_lineNumber;
-    private int m_name;
-    private int m_namespaceUri;
-    private int[] m_attributes;
-    private int m_idAttribute;
-    private int m_classAttribute;
-    private int m_styleAttribute;
+    // All values are essentially indices, e.g. mNameIndex is an index of name in mStringBlock.
+    private int mEvent;
+    private int mLineNumber;
+    private int mNameIndex;
+    private int mNamespaceIndex;
+    private int[] mAttributes;
+    private int mIdIndex;
+    private int mClassIndex;
+    private int mStyleIndex;
 
-    public AXmlResourceParser() {
+    public AXmlResourceParser(ResTable resTable) {
+        mResTable = resTable;
         resetEventInfo();
     }
 
-    public AXmlResourceParser(InputStream stream) {
-        this();
-        open(stream);
+    private static String getPreferredString(String stringBlockValue, String resourceMapValue) {
+        String value = stringBlockValue;
+
+        if (stringBlockValue != null && resourceMapValue != null) {
+            int slashPos = stringBlockValue.lastIndexOf("/");
+            int colonPos = stringBlockValue.lastIndexOf(":");
+
+            // Handle a value with a format of "@yyy/xxx", but avoid "@yyy/zzz:xxx"
+            if (slashPos != -1) {
+                if (colonPos == -1) {
+                    String type = stringBlockValue.substring(0, slashPos);
+                    value = type + "/" + resourceMapValue;
+                }
+            } else if (!stringBlockValue.equals(resourceMapValue)) {
+                value = resourceMapValue;
+            }
+        }
+        return value;
     }
 
     public AndrolibException getFirstError() {
@@ -103,46 +118,38 @@ public class AXmlResourceParser implements XmlResourceParser {
         }
     }
 
-    public ResAttrDecoder getAttrDecoder() {
-        return mAttrDecoder;
-    }
-
-    public void setAttrDecoder(ResAttrDecoder attrDecoder) {
-        mAttrDecoder = attrDecoder;
+    public ResTable getResTable() {
+        return mResTable;
     }
 
     public void open(InputStream stream) {
         close();
         if (stream != null) {
-            // We need to explicitly cast to DataInput as otherwise the constructor is ambiguous.
-            // We choose DataInput instead of InputStream as ExtDataInput wraps an InputStream in
-            // a DataInputStream which is big-endian and ignores the little-endian behavior.
-            m_reader = new ExtDataInput((DataInput) new LittleEndianDataInputStream(stream));
+            mIn = new ExtCountingDataInput(new LittleEndianDataInputStream(stream));
         }
     }
 
     @Override
     public void close() {
-        if (!m_operational) {
+        if (!isOperational) {
             return;
         }
-        m_operational = false;
-        m_reader = null;
-        m_strings = null;
-        m_resourceIDs = null;
-        m_namespaces.reset();
+        isOperational = false;
+        mIn = null;
+        mStringBlock = null;
+        mResourceIds = null;
+        mNamespaces.reset();
         resetEventInfo();
     }
 
-    // ///////////////////////////////// iteration
     @Override
     public int next() throws XmlPullParserException, IOException {
-        if (m_reader == null) {
+        if (mIn == null) {
             throw new XmlPullParserException("Parser is not opened.", this, null);
         }
         try {
             doNext();
-            return m_event;
+            return mEvent;
         } catch (IOException e) {
             close();
             throw e;
@@ -187,8 +194,7 @@ public class AXmlResourceParser implements XmlResourceParser {
     }
 
     @Override
-    public void require(int type, String namespace, String name)
-            throws XmlPullParserException, IOException {
+    public void require(int type, String namespace, String name) throws XmlPullParserException {
         if (type != getEventType() || (namespace != null && !namespace.equals(getNamespace()))
                 || (name != null && !name.equals(getName()))) {
             throw new XmlPullParserException(TYPES[type] + " is expected.", this, null);
@@ -197,33 +203,33 @@ public class AXmlResourceParser implements XmlResourceParser {
 
     @Override
     public int getDepth() {
-        return m_namespaces.getDepth() - 1;
+        return mNamespaces.getDepth() - 1;
     }
 
     @Override
-    public int getEventType() throws XmlPullParserException {
-        return m_event;
+    public int getEventType() {
+        return mEvent;
     }
 
     @Override
     public int getLineNumber() {
-        return m_lineNumber;
+        return mLineNumber;
     }
 
     @Override
     public String getName() {
-        if (m_name == -1 || (m_event != START_TAG && m_event != END_TAG)) {
+        if (mNameIndex == -1 || (mEvent != START_TAG && mEvent != END_TAG)) {
             return null;
         }
-        return m_strings.getString(m_name);
+        return mStringBlock.getString(mNameIndex);
     }
 
     @Override
     public String getText() {
-        if (m_name == -1 || m_event != TEXT) {
+        if (mNameIndex == -1 || mEvent != TEXT) {
             return null;
         }
-        return m_strings.getString(m_name);
+        return mStringBlock.getString(mNameIndex);
     }
 
     @Override
@@ -241,13 +247,13 @@ public class AXmlResourceParser implements XmlResourceParser {
 
     @Override
     public String getNamespace() {
-        return m_strings.getString(m_namespaceUri);
+        return mStringBlock.getString(mNamespaceIndex);
     }
 
     @Override
     public String getPrefix() {
-        int prefix = m_namespaces.findPrefix(m_namespaceUri);
-        return m_strings.getString(prefix);
+        int prefix = mNamespaces.findPrefix(mNamespaceIndex);
+        return mStringBlock.getString(prefix);
     }
 
     @Override
@@ -257,100 +263,121 @@ public class AXmlResourceParser implements XmlResourceParser {
 
     @Override
     public int getNamespaceCount(int depth) {
-        return m_namespaces.getAccumulatedCount(depth);
+        return mNamespaces.getAccumulatedCount(depth);
     }
 
     @Override
     public String getNamespacePrefix(int pos) {
-        int prefix = m_namespaces.getPrefix(pos);
-        return m_strings.getString(prefix);
+        int prefix = mNamespaces.getPrefix(pos);
+        return mStringBlock.getString(prefix);
     }
 
     @Override
     public String getNamespaceUri(int pos) {
-        int uri = m_namespaces.getUri(pos);
-        return m_strings.getString(uri);
+        int uri = mNamespaces.getUri(pos);
+        return mStringBlock.getString(uri);
     }
 
-    // ///////////////////////////////// attributes
     @Override
     public String getClassAttribute() {
-        if (m_classAttribute == -1) {
+        if (mClassIndex == -1) {
             return null;
         }
-        int offset = getAttributeOffset(m_classAttribute);
-        int value = m_attributes[offset + ATTRIBUTE_IX_VALUE_STRING];
-        return m_strings.getString(value);
+        int offset = getAttributeOffset(mClassIndex);
+        int value = mAttributes[offset + ATTRIBUTE_IX_VALUE_STRING];
+        return mStringBlock.getString(value);
     }
 
     @Override
     public String getIdAttribute() {
-        if (m_idAttribute == -1) {
+        if (mIdIndex == -1) {
             return null;
         }
-        int offset = getAttributeOffset(m_idAttribute);
-        int value = m_attributes[offset + ATTRIBUTE_IX_VALUE_STRING];
-        return m_strings.getString(value);
+        int offset = getAttributeOffset(mIdIndex);
+        int value = mAttributes[offset + ATTRIBUTE_IX_VALUE_STRING];
+        return mStringBlock.getString(value);
     }
 
     @Override
     public int getIdAttributeResourceValue(int defaultValue) {
-        if (m_idAttribute == -1) {
+        if (mIdIndex == -1) {
             return defaultValue;
         }
-        int offset = getAttributeOffset(m_idAttribute);
-        int valueType = m_attributes[offset + ATTRIBUTE_IX_VALUE_TYPE];
+        int offset = getAttributeOffset(mIdIndex);
+        int valueType = mAttributes[offset + ATTRIBUTE_IX_VALUE_TYPE];
         if (valueType != TypedValue.TYPE_REFERENCE) {
             return defaultValue;
         }
-        return m_attributes[offset + ATTRIBUTE_IX_VALUE_DATA];
+        return mAttributes[offset + ATTRIBUTE_IX_VALUE_DATA];
     }
 
     @Override
     public int getStyleAttribute() {
-        if (m_styleAttribute == -1) {
+        if (mStyleIndex == -1) {
             return 0;
         }
-        int offset = getAttributeOffset(m_styleAttribute);
-        return m_attributes[offset + ATTRIBUTE_IX_VALUE_DATA];
+        int offset = getAttributeOffset(mStyleIndex);
+        return mAttributes[offset + ATTRIBUTE_IX_VALUE_DATA];
     }
 
     @Override
     public int getAttributeCount() {
-        if (m_event != START_TAG) {
+        if (mEvent != START_TAG) {
             return -1;
         }
-        return m_attributes.length / ATTRIBUTE_LENGTH;
+        return mAttributes.length / ATTRIBUTE_LENGTH;
     }
 
     @Override
     public String getAttributeNamespace(int index) {
         int offset = getAttributeOffset(index);
-        int namespace = m_attributes[offset + ATTRIBUTE_IX_NAMESPACE_URI];
+        int namespace = mAttributes[offset + ATTRIBUTE_IX_NAMESPACE_URI];
+
+        // #2972 - If the namespace index is -1, the attribute is not present, but if the attribute is from system
+        // we can resolve it to the default namespace. This may prove to be too aggressive as we scope the entire
+        // system namespace, but it is better than not resolving it at all.
+        ResID resId = new ResID(getAttributeNameResource(index));
+        if (namespace == -1 && resId.pkgId == 1) {
+            return ANDROID_RES_NS;
+        }
+
         if (namespace == -1) {
             return "";
         }
 
         // Minifiers like removing the namespace, so we will default to default namespace
         // unless the pkgId of the resource is private. We will grab the non-standard one.
-        String value = m_strings.getString(namespace);
+        String value = mStringBlock.getString(namespace);
 
-        if (value.length() == 0) {
-            ResID resourceId = new ResID(getAttributeNameResource(index));
-            if (resourceId.package_ == PRIVATE_PKG_ID) {
-                value = getNonDefaultNamespaceUri(offset);
+        if (value == null || value.isEmpty()) {
+            if (resId.pkgId == PRIVATE_PKG_ID) {
+                return getNonDefaultNamespaceUri(offset);
             } else {
-                value = android_ns;
+                return ANDROID_RES_NS;
             }
         }
 
         return value;
     }
 
+    public String decodeFromResourceId(int attrResId) throws AndrolibException {
+        if (attrResId != 0) {
+            try {
+                ResResSpec resResSpec = mResTable.getResSpec(attrResId);
+                if (resResSpec != null) {
+                    return resResSpec.getName();
+                }
+            } catch (UndefinedResObjectException | CantFindFrameworkResException ignored) {
+            }
+        }
+
+        return null;
+    }
+
     private String getNonDefaultNamespaceUri(int offset) {
-        String prefix = m_strings.getString(m_namespaces.getPrefix(offset));
+        String prefix = mStringBlock.getString(mNamespaces.getPrefix(offset));
         if (prefix != null) {
-            return m_strings.getString(m_namespaces.getUri(offset));
+            return mStringBlock.getString(mNamespaces.getUri(offset));
         }
 
         // If we are here. There is some clever obfuscation going on. Our reference points to the namespace are gone.
@@ -359,112 +386,119 @@ public class AXmlResourceParser implements XmlResourceParser {
         // We have the namespaces that can't be touched in the opening tag.
         // Though no known way to correlate them at this time.
         // So return the res-auto namespace.
-        return "http://schemas.android.com/apk/res-auto";
+        return ANDROID_RES_NS_AUTO;
     }
 
     @Override
     public String getAttributePrefix(int index) {
         int offset = getAttributeOffset(index);
-        int uri = m_attributes[offset + ATTRIBUTE_IX_NAMESPACE_URI];
-        int prefix = m_namespaces.findPrefix(uri);
+        int uri = mAttributes[offset + ATTRIBUTE_IX_NAMESPACE_URI];
+        int prefix = mNamespaces.findPrefix(uri);
         if (prefix == -1) {
             return "";
         }
-        return m_strings.getString(prefix);
+        return mStringBlock.getString(prefix);
     }
 
     @Override
     public String getAttributeName(int index) {
         int offset = getAttributeOffset(index);
-        int name = m_attributes[offset + ATTRIBUTE_IX_NAME];
+        int name = mAttributes[offset + ATTRIBUTE_IX_NAME];
         if (name == -1) {
             return "";
         }
 
-        String value = m_strings.getString(name);
-        String namespace = getAttributeNamespace(index);
+        String resourceMapValue;
+        String stringBlockValue = mStringBlock.getString(name);
+        int resourceId = getAttributeNameResource(index);
 
-        // If attribute name is lacking or a private namespace emerges,
-        // retrieve the exact attribute name by its id.
-        if (value == null || value.length() == 0) {
-            try {
-                value = mAttrDecoder.decodeManifestAttr(getAttributeNameResource(index));
-                if (value == null) {
-                    value = "";
-                }
-            } catch (AndrolibException e) {
-                value = "";
-            }
-        } else if (!namespace.equals(android_ns)) {
-            try {
-                String obfuscatedName = mAttrDecoder.decodeManifestAttr(getAttributeNameResource(index));
-                if (!(obfuscatedName == null || obfuscatedName.equals(value))) {
-                    value = obfuscatedName;
-                }
-            } catch (AndrolibException ignored) {
-            }
+        try {
+            resourceMapValue = decodeFromResourceId(resourceId);
+        } catch (AndrolibException ignored) {
+            resourceMapValue = null;
         }
-        return value;
+
+        // Android prefers the resource map value over what the String block has.
+        // This can be seen quite often in obfuscated apps where values such as:
+        // <item android:state_enabled="true" app:state_collapsed="false" app:state_collapsible="true">
+        // Are improperly decoded when trusting the String block.
+        // Leveraging the resource map allows us to get the proper value.
+        // <item android:state_enabled="true" app:d2="false" app:d3="true">
+        if (resourceMapValue != null) {
+            return resourceMapValue;
+        }
+
+        if (stringBlockValue != null) {
+            return stringBlockValue;
+        }
+
+        // In this case we have a bogus resource. If it was not found in either.
+        return "APKTOOL_MISSING_" + Integer.toHexString(resourceId);
     }
 
     @Override
     public int getAttributeNameResource(int index) {
         int offset = getAttributeOffset(index);
-        int name = m_attributes[offset + ATTRIBUTE_IX_NAME];
-        if (m_resourceIDs == null || name < 0 || name >= m_resourceIDs.length) {
+        int name = mAttributes[offset + ATTRIBUTE_IX_NAME];
+        if (mResourceIds == null || name < 0 || name >= mResourceIds.length) {
             return 0;
         }
-        return m_resourceIDs[name];
+        return mResourceIds[name];
     }
 
     public int getAttributeValueType(int index) {
         int offset = getAttributeOffset(index);
-        return m_attributes[offset + ATTRIBUTE_IX_VALUE_TYPE];
+        return mAttributes[offset + ATTRIBUTE_IX_VALUE_TYPE];
     }
 
     public int getAttributeValueData(int index) {
         int offset = getAttributeOffset(index);
-        return m_attributes[offset + ATTRIBUTE_IX_VALUE_DATA];
+        return mAttributes[offset + ATTRIBUTE_IX_VALUE_DATA];
     }
 
     @Override
     public String getAttributeValue(int index) {
         int offset = getAttributeOffset(index);
-        int valueType = m_attributes[offset + ATTRIBUTE_IX_VALUE_TYPE];
-        int valueData = m_attributes[offset + ATTRIBUTE_IX_VALUE_DATA];
-        int valueRaw = m_attributes[offset + ATTRIBUTE_IX_VALUE_STRING];
+        int valueType = mAttributes[offset + ATTRIBUTE_IX_VALUE_TYPE];
+        int valueData = mAttributes[offset + ATTRIBUTE_IX_VALUE_DATA];
+        int valueRaw = mAttributes[offset + ATTRIBUTE_IX_VALUE_STRING];
 
-        if (mAttrDecoder != null) {
-            try {
-                String value = valueRaw == -1 ? null : ResXmlEncoders.escapeXmlChars(m_strings.getString(valueRaw));
-                String obfuscatedValue = mAttrDecoder.decodeManifestAttr(valueData);
+        try {
+            String stringBlockValue = valueRaw == -1 ? null : ResXmlEncoders.escapeXmlChars(mStringBlock.getString(valueRaw));
+            String resourceMapValue = null;
 
-                if (!(value == null || obfuscatedValue == null)) {
-                    int slashPos = value.lastIndexOf("/");
-
-                    if (slashPos != -1) {
-                        // Handle a value with a format of "@yyy/xxx"
-                        String dir = value.substring(0, slashPos);
-                        value = dir + "/" + obfuscatedValue;
-                    } else if (!value.equals(obfuscatedValue)) {
-                        value = obfuscatedValue;
-                    }
-                }
-
-                return mAttrDecoder.decode(
-                        valueType,
-                        valueData,
-                        value,
-                        getAttributeNameResource(index)
-                );
-            } catch (AndrolibException ex) {
-                setFirstError(ex);
-                LOGGER.log(Level.WARNING, String.format("Could not decode attr value, using undecoded value "
-                                + "instead: ns=%s, name=%s, value=0x%08x",
-                        getAttributePrefix(index),
-                        getAttributeName(index),
-                        valueData), ex);
+            // Ensure we only track down obfuscated values for reference/attribute type values. Otherwise, we might
+            // spam lookups against resource table for invalid ids.
+            if (valueType == TypedValue.TYPE_REFERENCE || valueType == 0x07 || //TypedValue.TYPE_DYNAMIC_REFERENCE
+                    valueType == TypedValue.TYPE_ATTRIBUTE || valueType == 0x08) { //TypedValue.TYPE_DYNAMIC_ATTRIBUTE
+                resourceMapValue = decodeFromResourceId(valueData);
             }
+            String value = getPreferredString(stringBlockValue, resourceMapValue);
+
+            // try to decode from resource table
+            int attrResId = getAttributeNameResource(index);
+            ResScalarValue resValue = mResTable.getCurrentResPackage()
+                    .getValueFactory().factory(valueType, valueData, value);
+
+            String decoded = null;
+            if (attrResId > 0) {
+                try {
+                    ResAttr attr = (ResAttr) mResTable.getResSpec(attrResId).getDefaultResource().getValue();
+
+                    decoded = attr.convertToResXmlFormat(resValue);
+                } catch (UndefinedResObjectException | ClassCastException ignored) {
+                }
+            }
+
+            return decoded != null ? decoded : resValue.encodeAsResXmlAttr();
+
+        } catch (AndrolibException ex) {
+            setFirstError(ex);
+            LOGGER.log(Level.WARNING, String.format("Could not decode attr value, using undecoded value "
+                            + "instead: ns=%s, name=%s, value=0x%08x",
+                    getAttributePrefix(index),
+                    getAttributeName(index),
+                    valueData), ex);
         }
         return TypedValue.coerceToString(valueType, valueData);
     }
@@ -477,9 +511,9 @@ public class AXmlResourceParser implements XmlResourceParser {
     @Override
     public float getAttributeFloatValue(int index, float defaultValue) {
         int offset = getAttributeOffset(index);
-        int valueType = m_attributes[offset + ATTRIBUTE_IX_VALUE_TYPE];
+        int valueType = mAttributes[offset + ATTRIBUTE_IX_VALUE_TYPE];
         if (valueType == TypedValue.TYPE_FLOAT) {
-            int valueData = m_attributes[offset + ATTRIBUTE_IX_VALUE_DATA];
+            int valueData = mAttributes[offset + ATTRIBUTE_IX_VALUE_DATA];
             return Float.intBitsToFloat(valueData);
         }
         return defaultValue;
@@ -488,9 +522,9 @@ public class AXmlResourceParser implements XmlResourceParser {
     @Override
     public int getAttributeIntValue(int index, int defaultValue) {
         int offset = getAttributeOffset(index);
-        int valueType = m_attributes[offset + ATTRIBUTE_IX_VALUE_TYPE];
+        int valueType = mAttributes[offset + ATTRIBUTE_IX_VALUE_TYPE];
         if (valueType >= TypedValue.TYPE_FIRST_INT && valueType <= TypedValue.TYPE_LAST_INT) {
-            return m_attributes[offset + ATTRIBUTE_IX_VALUE_DATA];
+            return mAttributes[offset + ATTRIBUTE_IX_VALUE_DATA];
         }
         return defaultValue;
     }
@@ -500,14 +534,12 @@ public class AXmlResourceParser implements XmlResourceParser {
         return getAttributeIntValue(index, defaultValue);
     }
 
-    // /////////////////////////////////////////// implementation
-
     @Override
     public int getAttributeResourceValue(int index, int defaultValue) {
         int offset = getAttributeOffset(index);
-        int valueType = m_attributes[offset + ATTRIBUTE_IX_VALUE_TYPE];
+        int valueType = mAttributes[offset + ATTRIBUTE_IX_VALUE_TYPE];
         if (valueType == TypedValue.TYPE_REFERENCE) {
-            return m_attributes[offset + ATTRIBUTE_IX_VALUE_DATA];
+            return mAttributes[offset + ATTRIBUTE_IX_VALUE_DATA];
         }
         return defaultValue;
     }
@@ -568,13 +600,11 @@ public class AXmlResourceParser implements XmlResourceParser {
 
     @Override
     public int getAttributeListValue(int index, String[] options, int defaultValue) {
-        // TODO implement
         return 0;
     }
 
     @Override
     public int getAttributeListValue(String namespace, String attribute, String[] options, int defaultValue) {
-        // TODO implement
         return 0;
     }
 
@@ -588,7 +618,6 @@ public class AXmlResourceParser implements XmlResourceParser {
         return false;
     }
 
-    // ///////////////////////////////// dummies
     @Override
     public void setInput(InputStream stream, String inputEncoding) {
         open(stream);
@@ -636,8 +665,7 @@ public class AXmlResourceParser implements XmlResourceParser {
     }
 
     @Override
-    public void setProperty(String name, Object value)
-            throws XmlPullParserException {
+    public void setProperty(String name, Object value) throws XmlPullParserException {
         throw new XmlPullParserException(E_NOT_SUPPORTED);
     }
 
@@ -647,34 +675,33 @@ public class AXmlResourceParser implements XmlResourceParser {
     }
 
     @Override
-    public void setFeature(String name, boolean value)
-            throws XmlPullParserException {
+    public void setFeature(String name, boolean value) throws XmlPullParserException {
         throw new XmlPullParserException(E_NOT_SUPPORTED);
     }
 
     private int getAttributeOffset(int index) {
-        if (m_event != START_TAG) {
+        if (mEvent != START_TAG) {
             throw new IndexOutOfBoundsException("Current event is not START_TAG.");
         }
         int offset = index * ATTRIBUTE_LENGTH;
-        if (offset >= m_attributes.length) {
+        if (offset >= mAttributes.length) {
             throw new IndexOutOfBoundsException("Invalid attribute index (" + index + ").");
         }
         return offset;
     }
 
     private int findAttribute(String namespace, String attribute) {
-        if (m_strings == null || attribute == null) {
+        if (mStringBlock == null || attribute == null) {
             return -1;
         }
-        int name = m_strings.find(attribute);
+        int name = mStringBlock.find(attribute);
         if (name == -1) {
             return -1;
         }
-        int uri = (namespace != null) ? m_strings.find(namespace) : -1;
-        for (int o = 0; o != m_attributes.length; o += ATTRIBUTE_LENGTH) {
-            if (name == m_attributes[o + ATTRIBUTE_IX_NAME]
-                    && (uri == -1 || uri == m_attributes[o + ATTRIBUTE_IX_NAMESPACE_URI])) {
+        int uri = (namespace != null) ? mStringBlock.find(namespace) : -1;
+        for (int o = 0; o != mAttributes.length; o += ATTRIBUTE_LENGTH) {
+            if (name == mAttributes[o + ATTRIBUTE_IX_NAME]
+                    && (uri == -1 || uri == mAttributes[o + ATTRIBUTE_IX_NAMESPACE_URI])) {
                 return o / ATTRIBUTE_LENGTH;
             }
         }
@@ -682,319 +709,156 @@ public class AXmlResourceParser implements XmlResourceParser {
     }
 
     private void resetEventInfo() {
-        m_event = -1;
-        m_lineNumber = -1;
-        m_name = -1;
-        m_namespaceUri = -1;
-        m_attributes = null;
-        m_idAttribute = -1;
-        m_classAttribute = -1;
-        m_styleAttribute = -1;
+        mEvent = -1;
+        mLineNumber = -1;
+        mNameIndex = -1;
+        mNamespaceIndex = -1;
+        mAttributes = null;
+        mIdIndex = -1;
+        mClassIndex = -1;
+        mStyleIndex = -1;
     }
 
     private void doNext() throws IOException {
-        // Delayed initialization.
-        if (m_strings == null) {
-            m_reader.skipCheckInt(CHUNK_AXML_FILE, CHUNK_AXML_FILE_BROKEN);
+        if (mStringBlock == null) {
+            mIn.skipInt(); // XML Chunk AXML Type
+            mIn.skipInt(); // Chunk Size
 
-            /*
-             * chunkSize
-             */
-            m_reader.skipInt();
-            m_strings = StringBlock.read(m_reader);
-            m_namespaces.increaseDepth();
-            m_operational = true;
+            mStringBlock = StringBlock.readWithChunk(mIn);
+            mNamespaces.increaseDepth();
+            isOperational = true;
         }
 
-        if (m_event == END_DOCUMENT) {
+        if (mEvent == END_DOCUMENT) {
             return;
         }
 
-        int event = m_event;
+        int event = mEvent;
         resetEventInfo();
 
         while (true) {
             if (m_decreaseDepth) {
                 m_decreaseDepth = false;
-                m_namespaces.decreaseDepth();
+                mNamespaces.decreaseDepth();
             }
 
             // Fake END_DOCUMENT event.
-            if (event == END_TAG && m_namespaces.getDepth() == 1 && m_namespaces.getCurrentCount() == 0) {
-                m_event = END_DOCUMENT;
+            if (event == END_TAG && mNamespaces.getDepth() == 1 && mNamespaces.getCurrentCount() == 0) {
+                mEvent = END_DOCUMENT;
+                break;
+            }
+
+            // #2070 - Some applications have 2 start namespaces, but only 1 end namespace.
+            if (mIn.remaining() == 0) {
+                LOGGER.warning(String.format("AXML hit unexpected end of file at byte: 0x%X", mIn.position()));
+                mEvent = END_DOCUMENT;
                 break;
             }
 
             int chunkType;
+            int headerSize = 0;
             if (event == START_DOCUMENT) {
                 // Fake event, see CHUNK_XML_START_TAG handler.
-                chunkType = CHUNK_XML_START_TAG;
+                chunkType = ARSCHeader.RES_XML_START_ELEMENT_TYPE;
             } else {
-                chunkType = m_reader.readInt();
+                chunkType = mIn.readShort();
+                headerSize = mIn.readShort();
             }
 
-            if (chunkType == CHUNK_RESOURCEIDS) {
-                int chunkSize = m_reader.readInt();
+            if (chunkType == ARSCHeader.RES_XML_RESOURCE_MAP_TYPE) {
+                int chunkSize = mIn.readInt();
                 if (chunkSize < 8 || (chunkSize % 4) != 0) {
                     throw new IOException("Invalid resource ids size (" + chunkSize + ").");
                 }
-                m_resourceIDs = m_reader.readIntArray(chunkSize / 4 - 2);
+                mResourceIds = mIn.readIntArray(chunkSize / 4 - 2);
                 continue;
             }
 
-            if (chunkType < CHUNK_XML_FIRST || chunkType > CHUNK_XML_LAST) {
-                throw new IOException("Invalid chunk type (" + chunkType + ").");
+            if (chunkType < ARSCHeader.RES_XML_FIRST_CHUNK_TYPE || chunkType > ARSCHeader.RES_XML_LAST_CHUNK_TYPE) {
+                int chunkSize = mIn.readInt();
+                mIn.skipBytes(chunkSize - 8);
+                LOGGER.warning(String.format("Unknown chunk type at: (0x%08x) skipping...", mIn.position()));
+                break;
             }
 
             // Fake START_DOCUMENT event.
-            if (chunkType == CHUNK_XML_START_TAG && event == -1) {
-                m_event = START_DOCUMENT;
+            if (chunkType == ARSCHeader.RES_XML_START_ELEMENT_TYPE && event == -1) {
+                mEvent = START_DOCUMENT;
                 break;
             }
 
-            // Common header.
-            /* chunkSize */
-            m_reader.skipInt();
-            int lineNumber = m_reader.readInt();
-            /* 0xFFFFFFFF */
-            m_reader.skipInt();
+            // Read remainder of ResXMLTree_node
+            mIn.skipInt(); // chunkSize
+            mLineNumber = mIn.readInt();
+            mIn.skipInt(); // Optional XML Comment
 
-            if (chunkType == CHUNK_XML_START_NAMESPACE || chunkType == CHUNK_XML_END_NAMESPACE) {
-                if (chunkType == CHUNK_XML_START_NAMESPACE) {
-                    int prefix = m_reader.readInt();
-                    int uri = m_reader.readInt();
-                    m_namespaces.push(prefix, uri);
+            if (chunkType == ARSCHeader.RES_XML_START_NAMESPACE_TYPE || chunkType == ARSCHeader.RES_XML_END_NAMESPACE_TYPE) {
+                if (chunkType == ARSCHeader.RES_XML_START_NAMESPACE_TYPE) {
+                    int prefix = mIn.readInt();
+                    int uri = mIn.readInt();
+                    mNamespaces.push(prefix, uri);
                 } else {
-                    /* prefix */
-                    m_reader.skipInt();
-                    /* uri */
-                    m_reader.skipInt();
-                    m_namespaces.pop();
+                    mIn.skipInt(); // prefix
+                    mIn.skipInt(); // uri
+                    mNamespaces.pop();
+                }
+
+                // Check for larger header than we read. We know the current header is 0x10 bytes, but some apps
+                // are packed with a larger header of unknown data.
+                if (headerSize > 0x10) {
+                    int bytesToSkip = headerSize - 0x10;
+                    LOGGER.warning(String.format("AXML header larger than 0x10 bytes, skipping %d bytes.", bytesToSkip));
+                    mIn.skipBytes(bytesToSkip);
                 }
                 continue;
             }
 
-            m_lineNumber = lineNumber;
 
-            if (chunkType == CHUNK_XML_START_TAG) {
-                m_namespaceUri = m_reader.readInt();
-                m_name = m_reader.readInt();
-                /* flags? */
-                m_reader.skipInt();
-                int attributeCount = m_reader.readInt();
-                m_idAttribute = (attributeCount >>> 16) - 1;
-                attributeCount &= 0xFFFF;
-                m_classAttribute = m_reader.readInt();
-                m_styleAttribute = (m_classAttribute >>> 16) - 1;
-                m_classAttribute = (m_classAttribute & 0xFFFF) - 1;
-                m_attributes = m_reader.readIntArray(attributeCount * ATTRIBUTE_LENGTH);
-                for (int i = ATTRIBUTE_IX_VALUE_TYPE; i < m_attributes.length; ) {
-                    m_attributes[i] = (m_attributes[i] >>> 24);
+            if (chunkType == ARSCHeader.RES_XML_START_ELEMENT_TYPE) {
+                mNamespaceIndex = mIn.readInt();
+                mNameIndex = mIn.readInt();
+                mIn.skipShort(); // attributeStart
+                int attributeSize = mIn.readShort();
+                int attributeCount = mIn.readShort();
+                mIdIndex = mIn.readShort();
+                mClassIndex = mIn.readShort();
+                mStyleIndex = mIn.readShort();
+                mAttributes = mIn.readIntArray(attributeCount * ATTRIBUTE_LENGTH);
+                for (int i = ATTRIBUTE_IX_VALUE_TYPE; i < mAttributes.length; ) {
+                    mAttributes[i] = (mAttributes[i] >>> 24);
                     i += ATTRIBUTE_LENGTH;
                 }
-                m_namespaces.increaseDepth();
-                m_event = START_TAG;
+
+                int byteAttrSizeRead = (attributeCount * ATTRIBUTE_LENGTH) * 4;
+                int byteAttrSizeReported = (attributeSize * attributeCount);
+
+                // Check for misleading chunk sizes
+                if (byteAttrSizeRead < byteAttrSizeReported) {
+                    int bytesToSkip = byteAttrSizeReported - byteAttrSizeRead;
+                    mIn.skipBytes(bytesToSkip);
+                    LOGGER.fine("Skipping " + bytesToSkip + " unknown bytes in attributes area.");
+                }
+
+                mNamespaces.increaseDepth();
+                mEvent = START_TAG;
                 break;
             }
 
-            if (chunkType == CHUNK_XML_END_TAG) {
-                m_namespaceUri = m_reader.readInt();
-                m_name = m_reader.readInt();
-                m_event = END_TAG;
+            if (chunkType == ARSCHeader.RES_XML_END_ELEMENT_TYPE) {
+                mNamespaceIndex = mIn.readInt();
+                mNameIndex = mIn.readInt();
+                mEvent = END_TAG;
                 m_decreaseDepth = true;
                 break;
             }
 
-            if (chunkType == CHUNK_XML_TEXT) {
-                m_name = m_reader.readInt();
-                /* ? */
-                m_reader.skipInt();
-                /* ? */
-                m_reader.skipInt();
-                m_event = TEXT;
+            if (chunkType == ARSCHeader.RES_XML_CDATA_TYPE) {
+                mNameIndex = mIn.readInt();
+                mIn.skipInt();
+                mIn.skipInt();
+                mEvent = TEXT;
                 break;
             }
-        }
-    }
-
-    /**
-     * Namespace stack, holds prefix+uri pairs, as well as depth information.
-     * All information is stored in one int[] array. Array consists of depth
-     * frames: Data=DepthFrame*; DepthFrame=Count+[Prefix+Uri]*+Count;
-     * Count='count of Prefix+Uri pairs'; Yes, count is stored twice, to enable
-     * bottom-up traversal. increaseDepth adds depth frame, decreaseDepth
-     * removes it. push/pop operations operate only in current depth frame.
-     * decreaseDepth removes any remaining (not pop'ed) namespace pairs. findXXX
-     * methods search all depth frames starting from the last namespace pair of
-     * current depth frame. All functions that operate with int, use -1 as
-     * 'invalid value'.
-     * <p>
-     * !! functions expect 'prefix'+'uri' pairs, not 'uri'+'prefix' !!
-     */
-    private static final class NamespaceStack {
-
-        private int[] m_data;
-        private int m_dataLength;
-        private int m_depth;
-
-        public NamespaceStack() {
-            m_data = new int[32];
-        }
-
-        public void reset() {
-            m_dataLength = 0;
-            m_depth = 0;
-        }
-
-        public int getCurrentCount() {
-            if (m_dataLength == 0) {
-                return 0;
-            }
-            int offset = m_dataLength - 1;
-            return m_data[offset];
-        }
-
-        public int getAccumulatedCount(int depth) {
-            if (m_dataLength == 0 || depth < 0) {
-                return 0;
-            }
-            if (depth > m_depth) {
-                depth = m_depth;
-            }
-            int accumulatedCount = 0;
-            int offset = 0;
-            for (; depth != 0; --depth) {
-                int count = m_data[offset];
-                accumulatedCount += count;
-                offset += (2 + count * 2);
-            }
-            return accumulatedCount;
-        }
-
-        public void push(int prefix, int uri) {
-            if (m_depth == 0) {
-                increaseDepth();
-            }
-            ensureDataCapacity(2);
-            int offset = m_dataLength - 1;
-            int count = m_data[offset];
-            m_data[offset - 1 - count * 2] = count + 1;
-            m_data[offset] = prefix;
-            m_data[offset + 1] = uri;
-            m_data[offset + 2] = count + 1;
-            m_dataLength += 2;
-        }
-
-        public boolean pop() {
-            if (m_dataLength == 0) {
-                return false;
-            }
-            int offset = m_dataLength - 1;
-            int count = m_data[offset];
-            if (count == 0) {
-                return false;
-            }
-            count -= 1;
-            offset -= 2;
-            m_data[offset] = count;
-            offset -= (1 + count * 2);
-            m_data[offset] = count;
-            m_dataLength -= 2;
-            return true;
-        }
-
-        public int getPrefix(int index) {
-            return get(index, true);
-        }
-
-        public int getUri(int index) {
-            return get(index, false);
-        }
-
-        public int findPrefix(int uri) {
-            return find(uri, false);
-        }
-
-        public int getDepth() {
-            return m_depth;
-        }
-
-        public void increaseDepth() {
-            ensureDataCapacity(2);
-            int offset = m_dataLength;
-            m_data[offset] = 0;
-            m_data[offset + 1] = 0;
-            m_dataLength += 2;
-            m_depth += 1;
-        }
-
-        public void decreaseDepth() {
-            if (m_dataLength == 0) {
-                return;
-            }
-            int offset = m_dataLength - 1;
-            int count = m_data[offset];
-            if ((offset - 1 - count * 2) == 0) {
-                return;
-            }
-            m_dataLength -= 2 + count * 2;
-            m_depth -= 1;
-        }
-
-        private void ensureDataCapacity(int capacity) {
-            int available = (m_data.length - m_dataLength);
-            if (available > capacity) {
-                return;
-            }
-            int newLength = (m_data.length + available) * 2;
-            int[] newData = new int[newLength];
-            System.arraycopy(m_data, 0, newData, 0, m_dataLength);
-            m_data = newData;
-        }
-
-        private int find(int prefixOrUri, boolean prefix) {
-            if (m_dataLength == 0) {
-                return -1;
-            }
-            int offset = m_dataLength - 1;
-            for (int i = m_depth; i != 0; --i) {
-                int count = m_data[offset];
-                offset -= 2;
-                for (; count != 0; --count) {
-                    if (prefix) {
-                        if (m_data[offset] == prefixOrUri) {
-                            return m_data[offset + 1];
-                        }
-                    } else {
-                        if (m_data[offset + 1] == prefixOrUri) {
-                            return m_data[offset];
-                        }
-                    }
-                    offset -= 2;
-                }
-            }
-            return -1;
-        }
-
-        private int get(int index, boolean prefix) {
-            if (m_dataLength == 0 || index < 0) {
-                return -1;
-            }
-            int offset = 0;
-            for (int i = m_depth; i != 0; --i) {
-                int count = m_data[offset];
-                if (index >= count) {
-                    index -= count;
-                    offset += (2 + count * 2);
-                    continue;
-                }
-                offset += (1 + index * 2);
-                if (!prefix) {
-                    offset += 1;
-                }
-                return m_data[offset];
-            }
-            return -1;
         }
     }
 }

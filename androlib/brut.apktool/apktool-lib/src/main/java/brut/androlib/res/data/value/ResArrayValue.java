@@ -21,15 +21,12 @@ import org.xmlpull.v1.XmlSerializer;
 import java.io.IOException;
 import java.util.Arrays;
 
-import brut.androlib.AndrolibException;
+import brut.androlib.exceptions.AndrolibException;
 import brut.androlib.res.data.ResResource;
 import brut.androlib.res.xml.ResValuesXmlSerializable;
 import brut.util.Duo;
 
-public class ResArrayValue extends ResBagValue implements
-        ResValuesXmlSerializable {
-
-    public static final int BAG_KEY_ARRAY_START = 0x02000000;
+public class ResArrayValue extends ResBagValue implements ResValuesXmlSerializable {
     private final ResScalarValue[] mItems;
     private final String[] AllowedArrayTypes = {"string", "integer"};
 

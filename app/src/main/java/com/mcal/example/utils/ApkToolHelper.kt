@@ -1,8 +1,9 @@
 package com.mcal.example.utils
 
-import brut.androlib.Androlib
+import brut.androlib.ApkBuilder
 import brut.androlib.ApkDecoder
-import com.mcal.androlib.options.BuildOptions
+import brut.androlib.Config
+import brut.directory.ExtFile
 import com.mcal.androlib.utils.Logger
 import java.io.File
 
@@ -16,35 +17,24 @@ object ApkToolHelper {
      */
     fun decode(apkPath: File, decodeRootPath: File, toolsDir: String, logger: Logger) {
         try {
-            ApkDecoder(apkPath, Androlib(BuildOptions().apply {
-                frameworkFolderLocation = toolsDir
-                aaptPath = toolsDir + File.separator + "aapt"
-                aapt2Path = toolsDir + File.separator + "aapt2"
-                useNewBuildRules = true
-                ignoreMultiRes = false
-            }, logger)).apply {
-                setApkFile(apkPath)
-                setBaksmaliDebugMode(false)
-                setFrameworkDir(toolsDir)
-                setDecodeResources(ApkDecoder.DECODE_RESOURCES_FULL)
-                setDecodeSources(ApkDecoder.DECODE_SOURCES_SMALI)
-                setOutDir(decodeRootPath)
-                setApiLevel(14)
-                setForceDelete(true)
-            }.decode()
+            val apkFile = ExtFile(apkPath)
+            val config = Config.getDefaultConfig()
+            config.setDecodeSources(Config.DECODE_SOURCES_NONE)
+            config.setDefaultFramework(toolsDir)
+            ApkDecoder(config, apkFile, logger).decode(decodeRootPath)
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
     fun buildProject(apkPath: File, decodeRootPath: File, toolsDir: String, logger: Logger) {
-        Androlib(BuildOptions().apply {
-            useNewBuildRules = true
-            useAapt2 = true
-            aaptPath = toolsDir + File.separator + "aapt"
-            aapt2Path = toolsDir + File.separator + "aapt2"
-            frameworkFolderLocation = toolsDir
-            ignoreMultiRes = true
-        }, logger).build(decodeRootPath, apkPath)
+        val appDecodeDir = ExtFile(decodeRootPath)
+        val config = Config.getDefaultConfig()
+        config.setUseAapt2(true)
+        config.setAaptPath("$toolsDir/aapt")
+        config.setAapt2Path("$toolsDir/aapt2")
+        config.setDefaultFramework(toolsDir)
+        config.setIgnoreMultiRes(true)
+        ApkBuilder(config, appDecodeDir, logger).build(apkPath)
     }
 }

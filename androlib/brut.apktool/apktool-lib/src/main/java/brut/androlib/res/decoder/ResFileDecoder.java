@@ -23,9 +23,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import brut.androlib.AndrolibException;
-import brut.androlib.err.CantFind9PatchChunkException;
-import brut.androlib.err.RawXmlEncounteredException;
+import brut.androlib.exceptions.AndrolibException;
+import brut.androlib.exceptions.CantFind9PatchChunkException;
+import brut.androlib.exceptions.RawXmlEncounteredException;
 import brut.androlib.res.data.ResResource;
 import brut.androlib.res.data.value.ResBoolValue;
 import brut.androlib.res.data.value.ResFileValue;
@@ -72,6 +72,8 @@ public class ResFileDecoder {
         if (!inFilePath.equals(outFilePath)) {
             resFileMapping.put(inFilePath, outFilePath);
         }
+
+        LOGGER.fine("Decoding file " + inFilePath + " to " + outFilePath);
 
         try {
             if (typeName.equals("raw")) {
@@ -162,18 +164,6 @@ public class ResFileDecoder {
         try {
             DirUtil.copyToDir(inDir, outDir, inFilename, outFilename);
         } catch (DirectoryException ex) {
-            throw new AndrolibException(ex);
-        }
-    }
-
-    public void decodeManifest(Directory inDir, String inFileName,
-                               Directory outDir, String outFileName) throws AndrolibException {
-        try (
-                InputStream in = inDir.getFileInput(inFileName);
-                OutputStream out = outDir.getFileOutput(outFileName)
-        ) {
-            ((XmlPullStreamDecoder) mDecoders.getDecoder("xml")).decodeManifest(in, out);
-        } catch (DirectoryException | IOException ex) {
             throw new AndrolibException(ex);
         }
     }

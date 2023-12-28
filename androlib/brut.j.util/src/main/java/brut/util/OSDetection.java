@@ -17,19 +17,33 @@
 package brut.util;
 
 public class OSDetection {
-    private static final String OS = System.getProperty("os.name").toLowerCase();
-    private static final String BIT = System.getProperty("sun.arch.data.model").toLowerCase();
+    private static final String OS = System.getProperty("os.name");
+    private static final String BIT = System.getProperty("sun.arch.data.model");
 
     public static boolean isWindows() {
-        return (OS.contains("win"));
+        String os = OS;
+        if (os != null && !os.isEmpty()) {
+            os = os.toLowerCase();
+            return (os.contains("win"));
+        }
+        return false;
     }
 
     public static boolean isMacOSX() {
-        return (OS.contains("mac"));
+        String os = OS;
+        if (os != null && !os.isEmpty()) {
+            os = os.toLowerCase();
+            return (os.contains("mac"));
+        }
+        return false;
     }
 
     public static boolean isUnix() {
-        return (OS.contains("nix") || OS.contains("nux") || OS.contains("aix") || (OS.contains("sunos")));
+        final String os = OS;
+        if (os != null && !os.isEmpty()) {
+            return (os.contains("nix") || os.contains("nux") || os.contains("aix") || (os.contains("sunos")));
+        }
+        return false;
     }
 
     public static boolean is64Bit() {

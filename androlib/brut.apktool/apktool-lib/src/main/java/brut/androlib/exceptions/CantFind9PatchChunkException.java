@@ -14,13 +14,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package brut.androlib.res.util;
+package brut.androlib.exceptions;
 
-import java.io.File;
-
-
-public class ExtFile extends brut.directory.ExtFile {
-    public ExtFile(File file) {
-        super(file.getPath());
+public class CantFind9PatchChunkException extends AndrolibException {
+    public CantFind9PatchChunkException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

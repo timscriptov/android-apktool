@@ -16,28 +16,29 @@
  */
 package brut.androlib.res.decoder;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 import com.mcal.xmlpull.v1.wrapper.XmlPullParserWrapper;
 import com.mcal.xmlpull.v1.wrapper.XmlPullWrapperFactory;
 import com.mcal.xmlpull.v1.wrapper.XmlSerializerWrapper;
 import com.mcal.xmlpull.v1.wrapper.classic.StaticXmlSerializerWrapper;
 
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import brut.androlib.AndrolibException;
-import brut.androlib.err.AXmlDecodingException;
-import brut.androlib.err.RawXmlEncounteredException;
+import brut.androlib.exceptions.AXmlDecodingException;
+import brut.androlib.exceptions.AndrolibException;
+import brut.androlib.exceptions.RawXmlEncounteredException;
 import brut.androlib.res.data.ResTable;
 import brut.androlib.res.util.ExtXmlSerializer;
 
 public class XmlPullStreamDecoder implements ResStreamDecoder {
-    private final XmlPullParser mParser;
+    private final AXmlResourceParser mParser;
     private final ExtXmlSerializer mSerial;
 
-    public XmlPullStreamDecoder(XmlPullParser parser,
+    public XmlPullStreamDecoder(AXmlResourceParser parser,
                                 ExtXmlSerializer serializer) {
         this.mParser = parser;
         this.mSerial = serializer;
@@ -49,7 +50,7 @@ public class XmlPullStreamDecoder implements ResStreamDecoder {
         try {
             XmlPullWrapperFactory factory = XmlPullWrapperFactory.newInstance();
             XmlPullParserWrapper par = factory.newPullParserWrapper(mParser);
-            final ResTable resTable = ((AXmlResourceParser) mParser).getAttrDecoder().getCurrentPackage().getResTable();
+            final ResTable resTable = mParser.getResTable();
 
             XmlSerializerWrapper ser = new StaticXmlSerializerWrapper(mSerial, factory) {
                 boolean hideSdkInfo = false;

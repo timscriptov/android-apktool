@@ -21,18 +21,20 @@ import org.xmlpull.v1.XmlSerializer;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
-import brut.androlib.AndrolibException;
+import brut.androlib.exceptions.AndrolibException;
 import brut.androlib.res.data.ResResSpec;
 import brut.androlib.res.data.ResResource;
 import brut.util.Duo;
 
 public class ResEnumAttr extends ResAttr {
-    private final Duo<ResReferenceValue, ResIntValue>[] mItems;
+    private static final Logger LOGGER = Logger.getLogger(ResEnumAttr.class.getName());
+    private final Duo<ResReferenceValue, ResScalarValue>[] mItems;
     private final Map<Integer, String> mItemsCache = new HashMap<>();
 
     ResEnumAttr(ResReferenceValue parent, int type, Integer min, Integer max,
-                Boolean l10n, Duo<ResReferenceValue, ResIntValue>[] items) {
+                Boolean l10n, Duo<ResReferenceValue, ResScalarValue>[] items) {
         super(parent, type, min, max, l10n);
         mItems = items;
     }
@@ -50,15 +52,21 @@ public class ResEnumAttr extends ResAttr {
     }
 
     @Override
-    protected void serializeBody(XmlSerializer serializer, ResResource res)
-            throws AndrolibException, IOException {
-        for (Duo<ResReferenceValue, ResIntValue> duo : mItems) {
-            int intVal = duo.m2.getValue();
+    protected void serializeBody(XmlSerializer serializer, ResResource res) throws AndrolibException, IOException {
+        for (Duo<ResReferenceValue, ResScalarValue> duo : mItems) {
+            int intVal = duo.m2.getRawIntValue();
+
+            // #2836 - Support skipping items if the resource cannot be identified.
             ResResSpec m1Referent = duo.m1.getReferent();
+            if (m1Referent == null && shouldRemoveUnknownRes()) {
+                LOGGER.fine(String.format("null enum reference: m1=0x%08x(%s), m2=0x%08x(%s)",
+                        duo.m1.getRawIntValue(), duo.m1.getType(), duo.m2.getRawIntValue(), duo.m2.getType()));
+                continue;
+            }
 
             serializer.startTag(null, "enum");
             serializer.attribute(null, "name",
-                    m1Referent != null ? m1Referent.getName() : "@null"
+                    m1Referent != null ? m1Referent.getName() : String.format("APKTOOL_MISSING_0x%08x", duo.m1.getRawIntValue())
             );
             serializer.attribute(null, "value", String.valueOf(intVal));
             serializer.endTag(null, "enum");
@@ -69,8 +77,8 @@ public class ResEnumAttr extends ResAttr {
         String value2 = mItemsCache.get(value);
         if (value2 == null) {
             ResReferenceValue ref = null;
-            for (Duo<ResReferenceValue, ResIntValue> duo : mItems) {
-                if (duo.m2.getValue() == value) {
+            for (Duo<ResReferenceValue, ResScalarValue> duo : mItems) {
+                if (duo.m2.getRawIntValue() == value) {
                     ref = duo.m1;
                     break;
                 }

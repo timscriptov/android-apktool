@@ -19,6 +19,12 @@
                 android:layout_height="wrap_content"
                 android:hint="Enter apk path" />
 
+            <EditText
+                android:id="@+id/out_dir_path"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter output dir" />
+
             <Button
                 android:id="@+id/decode"
                 android:layout_width="match_parent"
@@ -30,6 +36,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Enter decode path" />
+
+            <EditText
+                android:id="@+id/out_apk_path"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter output APK" />
 
             <Button
                 android:id="@+id/build"

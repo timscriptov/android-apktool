@@ -20,14 +20,13 @@ import org.xmlpull.v1.XmlSerializer;
 
 import java.io.IOException;
 
-import brut.androlib.AndrolibException;
+import brut.androlib.exceptions.AndrolibException;
 import brut.androlib.res.data.ResPackage;
 import brut.androlib.res.data.ResResource;
 import brut.androlib.res.xml.ResValuesXmlSerializable;
 import brut.util.Duo;
 
 public class ResAttr extends ResBagValue implements ResValuesXmlSerializable {
-    public static final int BAG_KEY_ATTR_TYPE = 0x01000000;
     private static final int BAG_KEY_ATTR_MIN = 0x01000001;
     private static final int BAG_KEY_ATTR_MAX = 0x01000002;
     private static final int BAG_KEY_ATTR_L10N = 0x01000003;
@@ -47,8 +46,7 @@ public class ResAttr extends ResBagValue implements ResValuesXmlSerializable {
     private final Integer mMax;
     private final Boolean mL10n;
 
-    ResAttr(ResReferenceValue parentVal, int type, Integer min, Integer max,
-            Boolean l10n) {
+    ResAttr(ResReferenceValue parentVal, int type, Integer min, Integer max, Boolean l10n) {
         super(parentVal);
         mType = type;
         mMin = min;
@@ -59,38 +57,39 @@ public class ResAttr extends ResBagValue implements ResValuesXmlSerializable {
     public static ResAttr factory(ResReferenceValue parent,
                                   Duo<Integer, ResScalarValue>[] items, ResValueFactory factory,
                                   ResPackage pkg) throws AndrolibException {
-
-        int type = ((ResIntValue) items[0].m2).getValue();
-        int scalarType = type & 0xffff;
         Integer min = null, max = null;
         Boolean l10n = null;
         int i;
         for (i = 1; i < items.length; i++) {
             switch (items[i].m1) {
                 case BAG_KEY_ATTR_MIN:
-                    min = ((ResIntValue) items[i].m2).getValue();
+                    min = (items[i].m2).getRawIntValue();
                     continue;
                 case BAG_KEY_ATTR_MAX:
-                    max = ((ResIntValue) items[i].m2).getValue();
+                    max = (items[i].m2).getRawIntValue();
                     continue;
                 case BAG_KEY_ATTR_L10N:
-                    l10n = ((ResIntValue) items[i].m2).getValue() != 0;
+                    l10n = (items[i].m2).getRawIntValue() != 0;
                     continue;
             }
             break;
         }
 
+        // #2806 - Make sure we handle int-based values and not just ResIntValue
+        int rawValue = items[0].m2.getRawIntValue();
+        int scalarType = rawValue & 0xffff;
+
         if (i == items.length) {
             return new ResAttr(parent, scalarType, min, max, l10n);
         }
-        Duo<ResReferenceValue, ResIntValue>[] attrItems = new Duo[items.length - i];
+        Duo<ResReferenceValue, ResScalarValue>[] attrItems = new Duo[items.length - i];
         int j = 0;
         for (; i < items.length; i++) {
             int resId = items[i].m1;
             pkg.addSynthesizedRes(resId);
-            attrItems[j++] = new Duo<>(factory.newReference(resId, null), (ResIntValue) items[i].m2);
+            attrItems[j++] = new Duo<>(factory.newReference(resId, null), items[i].m2);
         }
-        switch (type & 0xff0000) {
+        switch (rawValue & 0xff0000) {
             case TYPE_ENUM:
                 return new ResEnumAttr(parent, scalarType, min, max, l10n, attrItems);
             case TYPE_FLAGS:
@@ -105,8 +104,7 @@ public class ResAttr extends ResBagValue implements ResValuesXmlSerializable {
     }
 
     @Override
-    public void serializeToResValuesXml(XmlSerializer serializer, ResResource res)
-            throws IOException, AndrolibException {
+    public void serializeToResValuesXml(XmlSerializer serializer, ResResource res) throws IOException, AndrolibException {
         String type = getTypeAsString();
 
         serializer.startTag(null, "attr");
@@ -127,7 +125,7 @@ public class ResAttr extends ResBagValue implements ResValuesXmlSerializable {
         serializer.endTag(null, "attr");
     }
 
-    protected void serializeBody(XmlSerializer serializer, ResResource res) throws AndrolibException, IOException {
+    protected void serializeBody(XmlSerializer serializer, ResResource res) throws IOException, AndrolibException {
     }
 
     protected String getTypeAsString() {

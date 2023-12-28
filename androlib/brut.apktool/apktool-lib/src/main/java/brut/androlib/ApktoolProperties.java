@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 
 public class ApktoolProperties {
     private static final Logger LOGGER = Logger.getLogger(ApktoolProperties.class.getName());
+
     private static Properties sProps;
 
     public static String get(String key) {
@@ -34,6 +35,10 @@ public class ApktoolProperties {
             loadProps();
         }
         return sProps;
+    }
+
+    public static String getVersion() {
+        return get("application.version");
     }
 
     private static void loadProps() {

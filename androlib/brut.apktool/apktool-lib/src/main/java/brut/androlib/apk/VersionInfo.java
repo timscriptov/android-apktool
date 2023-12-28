@@ -14,20 +14,30 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package brut.androlib.res.data;
+package brut.androlib.apk;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+public class VersionInfo implements YamlSerializable {
+    public String versionCode;
+    public String versionName;
 
-public class ResUnknownFiles {
-
-    private final Map<String, String> mUnknownFiles = new LinkedHashMap<>();
-
-    public void addUnknownFileInfo(String file, String value) {
-        mUnknownFiles.put(file, value);
+    @Override
+    public void readItem(YamlReader reader) {
+        YamlLine line = reader.getLine();
+        switch (line.getKey()) {
+            case "versionCode": {
+                versionCode = line.getValue();
+                break;
+            }
+            case "versionName": {
+                versionName = line.getValue();
+                break;
+            }
+        }
     }
 
-    public Map<String, String> getUnknownFiles() {
-        return mUnknownFiles;
+    @Override
+    public void write(YamlWriter writer) {
+        writer.writeString("versionCode", versionCode);
+        writer.writeString("versionName", versionName);
     }
 }

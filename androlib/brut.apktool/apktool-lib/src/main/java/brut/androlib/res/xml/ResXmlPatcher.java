@@ -43,7 +43,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import brut.androlib.AndrolibException;
+import brut.androlib.exceptions.AndrolibException;
 
 public final class ResXmlPatcher {
 
@@ -390,7 +390,7 @@ public final class ResXmlPatcher {
      * @throws SAXException
      * @throws ParserConfigurationException
      */
-    private static Document loadDocument(File file)
+    public static Document loadDocument(File file)
             throws IOException, SAXException, ParserConfigurationException {
 
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();

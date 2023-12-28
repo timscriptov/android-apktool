@@ -20,12 +20,11 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -51,14 +50,17 @@ public class OS {
             if (file.isDirectory()) {
                 rmdir(file);
             } else {
+                //noinspection ResultOfMethodCallIgnored
                 file.delete();
             }
         }
+        //noinspection ResultOfMethodCallIgnored
         dir.delete();
     }
 
     public static void rmfile(String file) {
         File del = new File(file);
+        //noinspection ResultOfMethodCallIgnored
         del.delete();
     }
 
@@ -67,6 +69,7 @@ public class OS {
     }
 
     public static void cpdir(File src, File dest) throws BrutException {
+        //noinspection ResultOfMethodCallIgnored
         dest.mkdirs();
         File[] files = src.listFiles();
         if (files == null) {
@@ -80,8 +83,8 @@ public class OS {
                 continue;
             }
             try {
-                try (InputStream in = new FileInputStream(file)) {
-                    try (OutputStream out = new FileOutputStream(destFile)) {
+                try (InputStream in = Files.newInputStream(file.toPath())) {
+                    try (OutputStream out = Files.newOutputStream(destFile.toPath())) {
                         IOUtils.copy(in, out);
                     }
                 }
@@ -123,12 +126,10 @@ public class OS {
             StreamCollector collector = new StreamCollector(process.getInputStream());
             executor.execute(collector);
 
-            process.waitFor();
-            if (!executor.awaitTermination(15, TimeUnit.SECONDS)) {
-                executor.shutdownNow();
-                if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {
-                    System.err.println("Stream collector did not terminate.");
-                }
+            process.waitFor(15, TimeUnit.SECONDS);
+            executor.shutdownNow();
+            if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {
+                System.err.println("Stream collector did not terminate.");
             }
             return collector.get();
         } catch (IOException | InterruptedException e) {

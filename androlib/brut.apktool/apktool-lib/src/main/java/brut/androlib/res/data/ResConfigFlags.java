@@ -50,7 +50,8 @@ public class ResConfigFlags {
     public final static byte SDK_R = 30;
     public final static byte SDK_S = 31;
     public final static byte SDK_S_V2 = 32;
-    public final static byte SDK_T = 33;
+    public final static byte SDK_TIRAMISU = 33;
+    public final static byte SDK_UPSIDEDOWN_CAKE = 34;
     // AOSP has this as 10,000 for dev purposes.
     // platform_frameworks_base/commit/c7a1109a1fe0771d4c9b572dcf178e2779fc4f2d
     public final static int SDK_DEVELOPMENT = 10000;
@@ -83,6 +84,10 @@ public class ResConfigFlags {
     public final static short SCREENLAYOUT_ROUND_ANY = 0;
     public final static short SCREENLAYOUT_ROUND_NO = 0x1;
     public final static short SCREENLAYOUT_ROUND_YES = 0x2;
+    public final static byte GRAMMATICAL_GENDER_ANY = 0;
+    public final static byte GRAMMATICAL_GENDER_NEUTER = 1;
+    public final static byte GRAMMATICAL_GENDER_FEMININE = 2;
+    public final static byte GRAMMATICAL_GENDER_MASCULINE = 3;
     public final static byte KEYBOARD_ANY = 0;
     public final static byte KEYBOARD_NOKEYS = 1;
     public final static byte KEYBOARD_QWERTY = 2;
@@ -154,6 +159,7 @@ public class ResConfigFlags {
     public final byte keyboard;
     public final byte navigation;
     public final byte inputFlags;
+    public final byte grammaticalInflection;
     public final short screenWidth;
     public final short screenHeight;
     public final short sdkVersion;
@@ -164,10 +170,11 @@ public class ResConfigFlags {
     public final short screenHeightDp;
     public final boolean isInvalid;
     private final char[] localeScript;
-    // end - miui
     private final char[] localeVariant;
+    // end - miui
     private final byte screenLayout2;
     private final byte colorMode;
+    private final char[] localeNumberingSystem;
     private final String mQualifiers;
     private final int size;
 
@@ -182,6 +189,7 @@ public class ResConfigFlags {
         keyboard = KEYBOARD_ANY;
         navigation = NAVIGATION_ANY;
         inputFlags = KEYSHIDDEN_ANY | NAVHIDDEN_ANY;
+        grammaticalInflection = GRAMMATICAL_GENDER_ANY;
         screenWidth = 0;
         screenHeight = 0;
         sdkVersion = 0;
@@ -194,6 +202,7 @@ public class ResConfigFlags {
         localeVariant = null;
         screenLayout2 = 0;
         colorMode = COLOR_WIDE_UNDEFINED;
+        localeNumberingSystem = null;
         isInvalid = false;
         mQualifiers = "";
         size = 0;
@@ -202,11 +211,12 @@ public class ResConfigFlags {
     public ResConfigFlags(short mcc, short mnc, char[] language,
                           char[] region, byte orientation,
                           byte touchscreen, int density, byte keyboard, byte navigation,
-                          byte inputFlags, short screenWidth, short screenHeight,
+                          byte inputFlags, byte grammaticalInflection, short screenWidth, short screenHeight,
                           short sdkVersion, byte screenLayout, byte uiMode,
                           short smallestScreenWidthDp, short screenWidthDp,
                           short screenHeightDp, char[] localeScript, char[] localeVariant,
-                          byte screenLayout2, byte colorMode, boolean isInvalid, int size) {
+                          byte screenLayout2, byte colorMode, char[] localeNumberingSystem,
+                          boolean isInvalid, int size) {
         if (orientation < 0 || orientation > 3) {
             LOGGER.warning("Invalid orientation value: " + orientation);
             orientation = 0;
@@ -259,6 +269,7 @@ public class ResConfigFlags {
         this.keyboard = keyboard;
         this.navigation = navigation;
         this.inputFlags = inputFlags;
+        this.grammaticalInflection = grammaticalInflection;
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
         this.sdkVersion = sdkVersion;
@@ -271,6 +282,7 @@ public class ResConfigFlags {
         this.localeVariant = localeVariant;
         this.screenLayout2 = screenLayout2;
         this.colorMode = colorMode;
+        this.localeNumberingSystem = localeNumberingSystem;
         this.isInvalid = isInvalid;
         this.size = size;
         mQualifiers = generateQualifiers();
@@ -306,6 +318,18 @@ public class ResConfigFlags {
             }
         }
         ret.append(getLocaleString());
+
+        switch (grammaticalInflection) {
+            case GRAMMATICAL_GENDER_NEUTER:
+                ret.append("-neuter");
+                break;
+            case GRAMMATICAL_GENDER_FEMININE:
+                ret.append("-feminine");
+                break;
+            case GRAMMATICAL_GENDER_MASCULINE:
+                ret.append("-masculine");
+                break;
+        }
 
         switch (screenLayout & MASK_LAYOUTDIR) {
             case SCREENLAYOUT_LAYOUTDIR_RTL:
@@ -530,6 +554,9 @@ public class ResConfigFlags {
     }
 
     private short getNaturalSdkVersionRequirement() {
+        if (grammaticalInflection != 0) {
+            return SDK_UPSIDEDOWN_CAKE;
+        }
         if ((uiMode & MASK_UI_MODE_TYPE) == UI_MODE_TYPE_VR_HEADSET || (colorMode & COLOR_WIDE_MASK) != 0 || ((colorMode & COLOR_HDR_MASK) != 0)) {
             return SDK_OREO;
         }
@@ -579,6 +606,12 @@ public class ResConfigFlags {
             }
             if (localeVariant != null && localeVariant.length >= 5) {
                 sb.append("+").append(toUpper(localeVariant));
+            }
+
+            // If we have a numbering system - it isn't used in qualifiers for build tools, but AOSP understands it
+            // So chances are - this may be valid, but aapt 1/2 will not like it.
+            if (localeNumberingSystem != null && localeNumberingSystem.length > 0) {
+                sb.append("+u+nu+").append(localeNumberingSystem);
             }
         }
         return sb.toString();

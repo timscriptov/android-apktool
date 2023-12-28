@@ -16,34 +16,31 @@
  */
 package brut.androlib.res.data;
 
+import androidx.annotation.NonNull;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import brut.androlib.AndrolibException;
-import brut.androlib.err.UndefinedResObjectException;
+import brut.androlib.exceptions.AndrolibException;
+import brut.androlib.exceptions.UndefinedResObjectException;
 
 public final class ResTypeSpec {
 
     public static final String RES_TYPE_NAME_ARRAY = "array";
-    public static final String RES_TYPE_NAME_PLURALS = "plurals";
-    public static final String RES_TYPE_NAME_STYLES = "style";
     public static final String RES_TYPE_NAME_ATTR = "attr";
+    public static final String RES_TYPE_NAME_ATTR_PRIVATE = "^attr-private";
+    public static final String RES_TYPE_NAME_PLURALS = "plurals";
+    public static final String RES_TYPE_NAME_STRING = "string";
+    public static final String RES_TYPE_NAME_STYLES = "style";
 
     private final String mName;
     private final Map<String, ResResSpec> mResSpecs = new LinkedHashMap<>();
 
-    private final ResTable mResTable;
-    private final ResPackage mPackage;
-
     private final int mId;
-    private final int mEntryCount;
 
-    public ResTypeSpec(String name, ResTable resTable, ResPackage package_, int id, int entryCount) {
+    public ResTypeSpec(String name, int id) {
         this.mName = name;
-        this.mResTable = resTable;
-        this.mPackage = package_;
         this.mId = id;
-        this.mEntryCount = entryCount;
     }
 
     public String getName() {
@@ -55,7 +52,7 @@ public final class ResTypeSpec {
     }
 
     public boolean isString() {
-        return mName.equalsIgnoreCase("string");
+        return mName.equalsIgnoreCase(RES_TYPE_NAME_STRING);
     }
 
     public ResResSpec getResSpec(String name) throws AndrolibException {
@@ -70,14 +67,14 @@ public final class ResTypeSpec {
         return mResSpecs.get(name);
     }
 
-    public void removeResSpec(ResResSpec spec) {
-        mResSpecs.remove(spec.getName());
-    }
-
     public void addResSpec(ResResSpec spec) throws AndrolibException {
         if (mResSpecs.put(spec.getName(), spec) != null) {
             throw new AndrolibException(String.format("Multiple res specs: %s/%s", getName(), spec.getName()));
         }
+    }
+
+    public void removeResSpec(@NonNull ResResSpec spec) {
+        mResSpecs.remove(spec.getName());
     }
 
     @Override

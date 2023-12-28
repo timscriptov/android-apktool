@@ -1,8 +1,7 @@
 package com.mcal.androlib.utils
 
-import com.mcal.androlib.options.BuildOptions
-import com.mcal.androlib.utils.FileHelper.readInputStream
 import java.io.File
+import java.nio.charset.StandardCharsets
 
 object Aapt {
     @JvmStatic
@@ -13,10 +12,11 @@ object Aapt {
         resDir: File,
         minSdk: String?,
         targetSdk: String?,
-        options: BuildOptions
+        aaptPath: String,
+        ignoreMultiRes: Boolean
     ) {
         val args: MutableList<String> = ArrayList()
-        args.add(options.aaptPath)
+        args.add(aaptPath)
         args.add("package")
         args.add("-f")
         include?.forEach { framework ->
@@ -34,7 +34,7 @@ object Aapt {
 
         args.add("-S")
         args.add(resDir.path)
-        if (!options.ignoreMultiRes) {
+        if (!ignoreMultiRes) {
             resDir.parent?.let { path ->
                 File(path).walk().forEach { file ->
                     if (file.name.startsWith("res_") && file.exists() && file.isDirectory) {
@@ -53,7 +53,7 @@ object Aapt {
         args.add(apkFile.path)
 
         val aaptProcess = Runtime.getRuntime().exec(args.toTypedArray())
-        val error = readInputStream(aaptProcess.errorStream)
+        val error = aaptProcess.errorStream.readBytes().toString(StandardCharsets.UTF_8)
         if (error.isNotEmpty()) {
             throw Exception(LogHelper.formatLog(error))
         }

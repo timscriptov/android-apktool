@@ -41,7 +41,9 @@ class MainActivity : Activity(), Logger {
         installTools()
 
         val apkPathView = findViewById<EditText>(R.id.apk_path)
+        val outDirPathView = findViewById<EditText>(R.id.out_dir_path)
         val decodePathView = findViewById<EditText>(R.id.decode_path)
+        val outApkPathView = findViewById<EditText>(R.id.out_apk_path)
         val buildView = findViewById<Button>(R.id.build)
         val decodeView = findViewById<Button>(R.id.decode)
 
@@ -59,7 +61,7 @@ class MainActivity : Activity(), Logger {
                     decodeView.isEnabled = false
                     buildView.isEnabled = false
                     CoroutineScope(Dispatchers.IO).launch {
-                        val decodeDir = getDecodeDir(context)
+                        val decodeDir = File(outDirPathView.text.toString())
                         decodeDir.deleteRecursively()
                         try {
                             decode(apkFile, decodeDir, getToolsDir(context).path, context)
@@ -92,8 +94,8 @@ class MainActivity : Activity(), Logger {
                     buildView.isEnabled = false
                     decodeView.isEnabled = false
                     CoroutineScope(Dispatchers.IO).launch {
-                        val decodeDir = getDecodeDir(context)
-                        val apkFile = File(context.filesDir, "app.apk")
+                        val decodeDir = File(decodePathView.text.toString())
+                        val apkFile = File(outApkPathView.text.toString())
                         try {
                             buildProject(apkFile, decodeDir, getToolsDir(context).path, context)
                             withContext(Dispatchers.Main) {

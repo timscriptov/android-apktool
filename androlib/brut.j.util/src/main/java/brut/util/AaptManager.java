@@ -16,8 +16,6 @@
  */
 package brut.util;
 
-import com.mcal.androlib.options.BuildOptions;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,18 +24,16 @@ import brut.common.BrutException;
 
 public class AaptManager {
 
-    public static File getAapt2() throws BrutException {
-        return getAapt(2);
+    public static File getAapt2(String toolsDir) throws BrutException {
+        return getAapt(2, toolsDir);
     }
 
-    public static File getAapt1() throws BrutException {
-        return getAapt(1);
+    public static File getAapt1(String toolsDir) throws BrutException {
+        return getAapt(1, toolsDir);
     }
 
-    private static File getAapt(Integer version) {
-        BuildOptions options = new BuildOptions();
-        File aaptBinary = new File(version == 1 ? options.aaptPath : options.aapt2Path);
-        //noinspection ResultOfMethodCallIgnored
+    private static File getAapt(Integer version, String toolsDir) {
+        File aaptBinary = new File(toolsDir, version == 1 ? "aapt" : "aapt2");
         aaptBinary.setExecutable(true);
         return aaptBinary;
     }

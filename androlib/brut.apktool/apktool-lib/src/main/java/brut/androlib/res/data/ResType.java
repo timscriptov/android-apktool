@@ -19,8 +19,8 @@ package brut.androlib.res.data;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import brut.androlib.AndrolibException;
-import brut.androlib.err.UndefinedResObjectException;
+import brut.androlib.exceptions.AndrolibException;
+import brut.androlib.exceptions.UndefinedResObjectException;
 
 public class ResType {
     private final ResConfigFlags mFlags;
