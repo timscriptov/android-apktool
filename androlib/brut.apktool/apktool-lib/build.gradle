@@ -47,29 +47,29 @@ dependencies {
     implementation project(':androlib:brut.j.core')
     implementation project(':xpp3')
 
-    implementation tools.dexlib2
-    implementation tools.smali
-    implementation tools.baksmali
+    implementation(libs.tools.dexlib2)
+    implementation(libs.tools.smali)
+    implementation(libs.tools.baksmali)
 
-    implementation misc.guava
-    implementation misc.commons.lang
-    implementation misc.commons.io
-    implementation misc.commons.text
-    implementation misc.antlr
-    implementation misc.annotations
-    implementation misc.coroutines.core
-    implementation misc.annotations.android
+    implementation(libs.misc.guava)
+    implementation(libs.misc.commons.lang)
+    implementation(libs.misc.commons.io)
+    implementation(libs.misc.commons.text)
+    implementation(libs.misc.antlr)
+    implementation(libs.misc.annotations)
+    implementation(libs.misc.coroutines.core)
+    implementation(libs.misc.annotations.android)
 }
 
-afterEvaluate {
-    publishing {
-        publications {
-            // Creates a Maven publication called "release".
-            release(MavenPublication) {
+publishing {
+    publications {
+        release(MavenPublication) {
+            groupId = 'com.mcal'
+            artifactId = 'apktool-lib'
+            version = project.artifactVersion
+
+            afterEvaluate {
                 from components.release
-                groupId = 'com.mcal'
-                artifactId = 'apktool-lib'
-                version = project.artifactVersion
             }
         }
     }

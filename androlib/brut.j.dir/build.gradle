@@ -40,18 +40,18 @@ dependencies {
     implementation project(':androlib:brut.j.common')
     implementation project(':androlib:brut.j.util')
 
-    implementation misc.commons.io
+    implementation(libs.misc.commons.io)
 }
 
-afterEvaluate {
-    publishing {
-        publications {
-            // Creates a Maven publication called "release".
-            release(MavenPublication) {
+publishing {
+    publications {
+        release(MavenPublication) {
+            groupId = 'com.mcal'
+            artifactId = 'dir'
+            version = project.artifactVersion
+
+            afterEvaluate {
                 from components.release
-                groupId = 'com.mcal'
-                artifactId = 'brut.j.dir'
-                version = project.artifactVersion
             }
         }
     }

@@ -13,6 +13,30 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:text="Community" />
+
+            <Button
+                android:id="@+id/github"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="GitHub" />
+
+            <Button
+                android:id="@+id/telegram"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Telegram" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:text="Apktool Decoder" />
+
             <EditText
                 android:id="@+id/apk_path"
                 android:layout_width="match_parent"
@@ -30,6 +54,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Decode" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:text="Apktool Builder" />
 
             <EditText
                 android:id="@+id/decode_path"

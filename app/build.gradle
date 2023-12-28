@@ -11,8 +11,8 @@ android {
         applicationId "com.mcal.apktool"
         minSdk project.minSDK.toInteger()
         targetSdk project.targetSDK.toInteger()
-        versionCode 270
-        versionName "2.7.0"
+        versionCode 291
+        versionName "2.9.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -34,7 +34,8 @@ android {
 dependencies {
     implementation project(':androlib:brut.j.core')
     implementation project(':androlib:brut.apktool:apktool-lib')
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
-    runtimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     implementation project(':androlib:brut.j.dir')
+
+    implementation(libs.misc.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
 }

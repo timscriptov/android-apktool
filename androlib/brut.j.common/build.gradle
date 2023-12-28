@@ -36,15 +36,15 @@ android {
     namespace 'com.mcal.androlib.common'
 }
 
-afterEvaluate {
-    publishing {
-        publications {
-            // Creates a Maven publication called "release".
-            release(MavenPublication) {
+publishing {
+    publications {
+        release(MavenPublication) {
+            groupId = 'com.mcal'
+            artifactId = 'common'
+            version = project.artifactVersion
+
+            afterEvaluate {
                 from components.release
-                groupId = 'com.mcal'
-                artifactId = 'brut.j.common'
-                version = project.artifactVersion
             }
         }
     }

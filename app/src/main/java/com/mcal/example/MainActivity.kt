@@ -47,6 +47,19 @@ class MainActivity : Activity(), Logger {
         val buildView = findViewById<Button>(R.id.build)
         val decodeView = findViewById<Button>(R.id.decode)
 
+        findViewById<Button>(R.id.github).setOnClickListener {
+            val url = "https://github.com/timscriptov"
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.data = Uri.parse(url)
+            startActivity(intent)
+        }
+        findViewById<Button>(R.id.telegram).setOnClickListener {
+            val url = "https://t.me/apkeditorproofficial"
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.data = Uri.parse(url)
+            startActivity(intent)
+        }
+
         decodeView.setOnClickListener {
             val apkPath = apkPathView.text.toString().trim()
             if (apkPath.isNotEmpty()) {

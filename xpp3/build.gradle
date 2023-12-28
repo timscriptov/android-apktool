@@ -38,19 +38,19 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation misc.annotations
-    implementation misc.annotations.android
+    implementation(libs.misc.annotations)
+    implementation(libs.misc.annotations.android)
 }
 
-afterEvaluate {
-    publishing {
-        publications {
-            // Creates a Maven publication called "release".
-            release(MavenPublication) {
+publishing {
+    publications {
+        release(MavenPublication) {
+            groupId = 'com.mcal'
+            artifactId = 'xpp3'
+            version = project.artifactVersion
+
+            afterEvaluate {
                 from components.release
-                groupId = 'com.mcal'
-                artifactId = 'xpp3'
-                version = project.artifactVersion
             }
         }
     }
