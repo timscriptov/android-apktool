@@ -19,8 +19,11 @@ object ApkToolHelper {
         try {
             val apkFile = ExtFile(apkPath)
             val config = Config.getDefaultConfig()
-            config.setDecodeSources(Config.DECODE_SOURCES_NONE)
+            config.setDecodeSources(Config.DECODE_SOURCES_SMALI)
+            config.setDecodeResources(Config.DECODE_RESOURCES_FULL)
+            config.setDecodeAssets(Config.DECODE_ASSETS_NONE)
             config.setDefaultFramework(toolsDir)
+            config.forceDelete = true
             ApkDecoder(config, apkFile, logger).decode(decodeRootPath)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -35,6 +38,7 @@ object ApkToolHelper {
         config.setAapt2Path("$toolsDir/aapt2")
         config.setDefaultFramework(toolsDir)
         config.setIgnoreMultiRes(true)
+        config.forceDelete = true
         ApkBuilder(config, appDecodeDir, logger).build(apkPath)
     }
 }
