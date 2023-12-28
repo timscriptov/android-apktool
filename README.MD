@@ -1,6 +1,6 @@
 ### ApkTool [2.9.1][1] for Android
 
-[![](https://jitpack.io/v/timscriptov/android-apktool-library.svg)](https://jitpack.io/#timscriptov/android-apktool-library)
+[![](https://jitpack.io/v/timscriptov/android-apktool.svg)](https://jitpack.io/#timscriptov/android-apktool)
 
 # Screenshot
 | ![Decode](/ART/screenshot_decode.png) | ![Build](/ART/screenshot_build.png) |
