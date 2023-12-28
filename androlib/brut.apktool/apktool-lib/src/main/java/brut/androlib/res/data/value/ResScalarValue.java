@@ -121,4 +121,8 @@ public abstract class ResScalarValue extends ResIntBasedValue implements
     }
 
     protected abstract String encodeAsResXml() throws AndrolibException;
+
+    public String getRawValue() {
+        return mRawValue;
+    }
 }
