@@ -215,50 +215,6 @@ public class Framework {
         if (apk.exists()) {
             return apk;
         }
-
-        if (id == 1) {
-            try (
-                    InputStream in = getAndroidFrameworkResourcesAsStream();
-                    OutputStream out = Files.newOutputStream(apk.toPath())
-            ) {
-                IOUtils.copy(in, out);
-                return apk;
-            } catch (IOException ex) {
-                throw new AndrolibException(ex);
-            }
-        }
-
         throw new CantFindFrameworkResException(id);
-    }
-
-    public void emptyFrameworkDirectory() throws AndrolibException {
-        File dir = getFrameworkDirectory();
-        File apk;
-
-        apk = new File(dir, "1.apk");
-
-        if (!apk.exists()) {
-            LOGGER.warning("Can't empty framework directory, no file found at: " + apk.getAbsolutePath());
-        } else {
-            try {
-                if (apk.exists() && Objects.requireNonNull(dir.listFiles()).length > 1 && !config.forceDeleteFramework) {
-                    LOGGER.warning("More than default framework detected. Please run command with `--force` parameter to wipe framework directory.");
-                } else {
-                    for (File file : Objects.requireNonNull(dir.listFiles())) {
-                        if (file.isFile() && file.getName().endsWith(".apk")) {
-                            LOGGER.info("Removing " + file.getName() + " framework file...");
-                            //noinspection ResultOfMethodCallIgnored
-                            file.delete();
-                        }
-                    }
-                }
-            } catch (NullPointerException e) {
-                throw new AndrolibException(e);
-            }
-        }
-    }
-
-    private InputStream getAndroidFrameworkResourcesAsStream() {
-        return Jar.class.getResourceAsStream("/brut/androlib/android-framework.jar");
     }
 }

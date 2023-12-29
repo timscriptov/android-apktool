@@ -18,6 +18,14 @@
   <component name="ChangeListManager">
     <list default="true" id="ca88d2d9-d344-4f04-914d-6bf6d7a51375" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/AaptInvoker.java" beforeDir="false" afterPath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/AaptInvoker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/Config.java" beforeDir="false" afterPath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/Config.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/res/Framework.java" beforeDir="false" afterPath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/res/Framework.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/res/ResourcesDecoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/res/ResourcesDecoder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/res/data/ResTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/res/data/ResTable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/androlib/brut.j.core/src/main/java/com/mcal/androlib/utils/Aapt.kt" beforeDir="false" afterPath="$PROJECT_DIR$/androlib/brut.j.core/src/main/java/com/mcal/androlib/utils/Aapt.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/androlib/brut.j.core/src/main/java/com/mcal/androlib/utils/Aapt2.kt" beforeDir="false" afterPath="$PROJECT_DIR$/androlib/brut.j.core/src/main/java/com/mcal/androlib/utils/Aapt2.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/mcal/example/utils/ApkToolHelper.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/mcal/example/utils/ApkToolHelper.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

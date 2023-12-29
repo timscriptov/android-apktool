@@ -13,7 +13,7 @@ object Aapt {
         minSdk: String?,
         targetSdk: String?,
         aaptPath: String,
-        ignoreMultiRes: Boolean
+        buildAllPackages: Boolean
     ) {
         val args: MutableList<String> = ArrayList()
         args.add(aaptPath)
@@ -34,7 +34,7 @@ object Aapt {
 
         args.add("-S")
         args.add(resDir.path)
-        if (!ignoreMultiRes) {
+        if (buildAllPackages) {
             resDir.parent?.let { path ->
                 File(path).walk().forEach { file ->
                     if (file.name.startsWith("res_") && file.exists() && file.isDirectory) {

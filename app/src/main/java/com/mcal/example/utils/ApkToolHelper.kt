@@ -23,7 +23,8 @@ object ApkToolHelper {
             config.setDecodeResources(Config.DECODE_RESOURCES_FULL)
             config.setDecodeAssets(Config.DECODE_ASSETS_NONE)
             config.setDefaultFramework(toolsDir)
-            config.forceDelete = true
+            config.setDecodeAllPackages(true)
+            config.setForceDelete(true)
             ApkDecoder(config, apkFile, logger).decode(decodeRootPath)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -37,8 +38,8 @@ object ApkToolHelper {
         config.setAaptPath("$toolsDir/aapt")
         config.setAapt2Path("$toolsDir/aapt2")
         config.setDefaultFramework(toolsDir)
-        config.setIgnoreMultiRes(true)
-        config.forceDelete = true
+        config.setDecodeAllPackages(true)
+        config.setForceDelete(true)
         ApkBuilder(config, appDecodeDir, logger).build(apkPath)
     }
 }

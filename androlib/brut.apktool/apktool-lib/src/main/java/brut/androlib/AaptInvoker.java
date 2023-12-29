@@ -81,9 +81,9 @@ public class AaptInvoker {
     public void invokeAapt(File apkFile, File manifest, File resDir, File rawDir, File assetDir, File[] include)
             throws AndrolibException {
         if (mConfig.isAapt2()) {
-            Aapt2.build(apkFile, include, manifest, resDir, mApkInfo.getMinSdkVersion(), mApkInfo.getTargetSdkVersion(), mConfig.aapt2Path, mConfig.ignoreMultiRes);
+            Aapt2.build(apkFile, include, manifest, resDir, mApkInfo.getMinSdkVersion(), mApkInfo.getTargetSdkVersion(), mConfig.aapt2Path, mConfig.decodeAllPackages);
         } else {
-            Aapt.build(apkFile, include, manifest, resDir, mApkInfo.getMinSdkVersion(), mApkInfo.getTargetSdkVersion(), mConfig.aaptPath, mConfig.ignoreMultiRes);
+            Aapt.build(apkFile, include, manifest, resDir, mApkInfo.getMinSdkVersion(), mApkInfo.getTargetSdkVersion(), mConfig.aaptPath, mConfig.decodeAllPackages);
         }
     }
 }

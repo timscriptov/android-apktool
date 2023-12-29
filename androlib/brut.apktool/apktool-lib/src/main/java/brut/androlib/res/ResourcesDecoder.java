@@ -168,29 +168,26 @@ public class ResourcesDecoder {
         decoders.setDecoder("xml", new XmlPullStreamDecoder(axmlParser, getResXmlSerializer()));
 
         ResFileDecoder fileDecoder = new ResFileDecoder(decoders);
-        Directory in, out;
-
         try {
-            out = new FileDirectory(outDir);
-            in = mApkInfo.getApkFile().getDirectory();
-            out = out.createDir("res");
+            Directory in = mApkInfo.getApkFile().getDirectory();
+            ExtMXSerializer xmlSerializer = getResXmlSerializer();
+            for (ResPackage pkg : mResTable.listMainPackages()) {
+
+                Directory output = new FileDirectory(outDir).createDir("res" + (pkg.getId() == 127 ? "" : "_" + pkg.getName()));
+
+                LOGGER.info("Decoding file-resources...");
+                for (ResResource res : pkg.listFiles()) {
+                    fileDecoder.decode(res, in, output, mResFileMapping);
+                }
+
+                LOGGER.info("Decoding values */* XMLs...");
+                for (ResValuesFile valuesFile : pkg.listValuesFiles()) {
+                    generateValuesFile(valuesFile, output, xmlSerializer);
+                }
+                generatePublicXml(pkg, output, xmlSerializer);
+            }
         } catch (DirectoryException ex) {
             throw new AndrolibException(ex);
-        }
-
-        ExtMXSerializer xmlSerializer = getResXmlSerializer();
-        for (ResPackage pkg : mResTable.listMainPackages()) {
-
-            LOGGER.info("Decoding file-resources...");
-            for (ResResource res : pkg.listFiles()) {
-                fileDecoder.decode(res, in, out, mResFileMapping);
-            }
-
-            LOGGER.info("Decoding values */* XMLs...");
-            for (ResValuesFile valuesFile : pkg.listValuesFiles()) {
-                generateValuesFile(valuesFile, out, xmlSerializer);
-            }
-            generatePublicXml(pkg, out, xmlSerializer);
         }
 
         AndrolibException decodeError = axmlParser.getFirstError();

@@ -137,24 +137,17 @@ public class ResTable {
     public void loadMainPkg(ExtFile apkFile) throws AndrolibException {
         LOGGER.info("Loading resource table...");
         ResPackage[] pkgs = loadResPackagesFromApk(apkFile, mConfig.keepBrokenResources);
-        ResPackage pkg;
 
-        switch (pkgs.length) {
-            case 0:
-                pkg = new ResPackage(this, 0, null);
-                break;
-            case 1:
-                pkg = pkgs[0];
-                break;
-            case 2:
-                LOGGER.warning("Skipping package group: " + pkgs[0].getName());
-                pkg = pkgs[1];
-                break;
-            default:
-                pkg = selectPkgWithMostResSpecs(pkgs);
-                break;
+        LOGGER.info("Loading resource table...");
+
+        if (mConfig.decodeAllPackages) {
+            for (ResPackage _pkg : pkgs) {
+                addPackage(_pkg, true);
+            }
+        } else {
+            addPackage(pkgs[0], true);
         }
-        addPackage(pkg, true);
+
         mMainPkgLoaded = true;
     }
 

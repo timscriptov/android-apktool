@@ -66,7 +66,7 @@ public class Config {
     public String frameworkTag = null;
     public String aaptPath = "";
     public String aapt2Path = "";
-    public boolean ignoreMultiRes = true;
+    public boolean decodeAllPackages = false;
     public int aaptVersion = 1; // default to v1
 
     private Config() {
@@ -133,8 +133,8 @@ public class Config {
         frameworkDirectory = path;
     }
 
-    public void setIgnoreMultiRes(boolean mode) {
-        ignoreMultiRes = mode;
+    public void setDecodeAllPackages(boolean mode) {
+        decodeAllPackages = mode;
     }
 
     public void setDecodeSources(short mode) throws AndrolibException {
@@ -174,5 +174,9 @@ public class Config {
             throw new AndrolibException("Invalid decode asset mode");
         }
         decodeAssets = mode;
+    }
+
+    public void setForceDelete(boolean forceDelete) {
+        this.forceDelete = forceDelete;
     }
 }

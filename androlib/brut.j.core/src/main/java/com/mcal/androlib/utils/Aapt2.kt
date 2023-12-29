@@ -15,10 +15,10 @@ object Aapt2 {
         minSdk: String?,
         targetSdk: String?,
         aapt2Path: String,
-        ignoreMultiRes: Boolean
+        decodeAllPackages: Boolean
     ) {
         val buildDir = File(resDir.parent, "build")
-        compile(resDir, buildDir, aapt2Path, ignoreMultiRes)
+        compile(resDir, buildDir, aapt2Path, decodeAllPackages)
         link(apkFile, buildDir, include, manifest, minSdk, targetSdk, aapt2Path)
     }
 
@@ -26,7 +26,7 @@ object Aapt2 {
         resDir: File,
         buildDir: File,
         aapt2Path: String,
-        ignoreMultiRes: Boolean
+        decodeAllPackages: Boolean
     ) {
         val args: MutableList<String> = ArrayList()
         args.add(aapt2Path)
@@ -42,7 +42,7 @@ object Aapt2 {
             throw Exception(formatLog(error))
         }
 
-        if (!ignoreMultiRes) {
+        if (decodeAllPackages) {
             resDir.parent?.let { path ->
                 compileLibraries(File(path), buildDir, aapt2Path)
             }
