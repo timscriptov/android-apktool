@@ -36,7 +36,8 @@ dependencies {
     implementation project(':androlib:brut.j.core')
     implementation project(':androlib:brut.apktool:apktool-lib')
     implementation project(':androlib:brut.j.dir')
-
+    implementation project(':androlib:brut.j.common')
+    
     implementation(libs.misc.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
 }

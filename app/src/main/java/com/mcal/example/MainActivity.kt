@@ -18,10 +18,8 @@ import android.widget.TextView
 import android.widget.Toast
 import com.mcal.androlib.utils.Logger
 import com.mcal.apktool.R
-import com.mcal.example.utils.ApkToolHelper.buildProject
-import com.mcal.example.utils.ApkToolHelper.decode
+import com.mcal.example.utils.ApktoolHelper
 import com.mcal.example.utils.FileHelper.copyAssetsFile
-import com.mcal.example.utils.FileHelper.getDecodeDir
 import com.mcal.example.utils.FileHelper.getToolsDir
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -77,7 +75,12 @@ class MainActivity : Activity(), Logger {
                         val decodeDir = File(outDirPathView.text.toString())
                         decodeDir.deleteRecursively()
                         try {
-                            decode(apkFile, decodeDir, getToolsDir(context).path, context)
+                            ApktoolHelper.decode(
+                                apkFile,
+                                decodeDir,
+                                getToolsDir(context).path,
+                                context
+                            )
                             withContext(Dispatchers.Main) {
                                 decodeView.isEnabled = true
                                 buildView.isEnabled = true
@@ -110,7 +113,12 @@ class MainActivity : Activity(), Logger {
                         val decodeDir = File(decodePathView.text.toString())
                         val apkFile = File(outApkPathView.text.toString())
                         try {
-                            buildProject(apkFile, decodeDir, getToolsDir(context).path, context)
+                            ApktoolHelper.buildProject(
+                                apkFile,
+                                decodeDir,
+                                getToolsDir(context).path,
+                                context
+                            )
                             withContext(Dispatchers.Main) {
                                 buildView.isEnabled = true
                                 decodeView.isEnabled = true
