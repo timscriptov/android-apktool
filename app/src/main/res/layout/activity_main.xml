@@ -35,6 +35,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
+                android:text="Framework"/>
+
+            <EditText
+                android:id="@+id/fw_path"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter framework path (optional)"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
                 android:text="Apktool Decoder" />
 
             <EditText

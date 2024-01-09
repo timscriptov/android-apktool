@@ -12,6 +12,7 @@ import brut.androlib.exceptions.AndrolibException;
 import brut.common.BrutException;
 import brut.directory.DirectoryException;
 import brut.directory.ExtFile;
+import brut.androlib.res.Framework;
 
 public class ApktoolHelper {
     /**
@@ -21,7 +22,7 @@ public class ApktoolHelper {
      *                 ../toolsDir/aapt
      *                 ../toolsDir/aapt2
      */
-    public static void decode(File apkPath, File decodeRootPath, String toolsDir, Logger logger) {
+    public static void decode(File apkPath, File decodeRootPath, String toolsDir, String fwPath, Logger logger) {
         try {
             ExtFile apkFile = new ExtFile(apkPath);
             Config config = Config.getDefaultConfig();
@@ -31,6 +32,10 @@ public class ApktoolHelper {
             config.setDefaultFramework(toolsDir);
             config.setDecodeAllPackages(true);
             config.setForceDelete(true);
+            if (!fwPath.matches("")) {
+                Framework fw = new Framework(config);
+                fw.installFramework(new File(fwPath), logger);
+            }
             new ApkDecoder(config, apkFile, logger).decode(decodeRootPath);
         } catch (AndrolibException | IOException | DirectoryException e) {
             throw new RuntimeException(e);

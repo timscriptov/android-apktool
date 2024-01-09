@@ -38,6 +38,7 @@ class MainActivity : Activity(), Logger {
         initPermission()
         installTools()
 
+        val fwPath = findViewById<EditText>(R.id.fw_path)
         val apkPathView = findViewById<EditText>(R.id.apk_path)
         val outDirPathView = findViewById<EditText>(R.id.out_dir_path)
         val decodePathView = findViewById<EditText>(R.id.decode_path)
@@ -75,10 +76,16 @@ class MainActivity : Activity(), Logger {
                         val decodeDir = File(outDirPathView.text.toString())
                         decodeDir.deleteRecursively()
                         try {
+                            val fwPathText = fwPath.text.toString().trim()
+                            val path = getToolsDir(context)
+                            if (fwPathText != "") {
+                                copyAssetsFile(context, "android-framework.jar", File(path, "1.apk"), false)
+                            }
                             ApktoolHelper.decode(
                                 apkFile,
                                 decodeDir,
                                 getToolsDir(context).path,
+                                fwPathText,
                                 context
                             )
                             withContext(Dispatchers.Main) {
