@@ -25,7 +25,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.util.Objects;
-import java.util.logging.Logger;
+import com.mcal.androlib.utils.Logger;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -40,7 +40,8 @@ import brut.androlib.res.decoder.ARSCDecoder;
 import brut.util.Jar;
 
 public class Framework {
-    private final static Logger LOGGER = Logger.getLogger(Framework.class.getName());
+//    private final static Logger LOGGER = Logger.getLogger(Framework.class.getName());
+    private Logger LOGGER = null;
     private final Config config;
     private File mFrameworkDirectory = null;
 
@@ -48,7 +49,8 @@ public class Framework {
         this.config = config;
     }
 
-    public void installFramework(File frameFile) throws AndrolibException {
+    public void installFramework(File frameFile, Logger logger) throws AndrolibException {
+        this.LOGGER = logger;
         installFramework(frameFile, config.frameworkTag);
     }
 
@@ -114,7 +116,7 @@ public class Framework {
     public void listFrameworkDirectory() throws AndrolibException {
         File dir = getFrameworkDirectory();
         if (dir == null) {
-            LOGGER.severe("No framework directory found. Nothing to list.");
+            LOGGER.error("No framework directory found. Nothing to list.");
             return;
         }
 
@@ -177,7 +179,7 @@ public class Framework {
         if (!dir.exists()) {
             if (!dir.mkdirs()) {
                 if (config.frameworkDirectory != null) {
-                    LOGGER.severe("Can't create Framework directory: " + dir);
+                    LOGGER.error("Can't create Framework directory: " + dir);
                 }
                 throw new AndrolibException(String.format(
                         "Can't create directory: (%s). Pass a writable path with --frame-path {DIR}. ", dir
@@ -187,9 +189,9 @@ public class Framework {
 
         if (config.frameworkDirectory == null) {
             if (!dir.canWrite()) {
-                LOGGER.severe(String.format("WARNING: Could not write to (%1$s), using %2$s instead...",
+                LOGGER.error(String.format("WARNING: Could not write to (%1$s), using %2$s instead...",
                         dir.getAbsolutePath(), System.getProperty("java.io.tmpdir")));
-                LOGGER.severe("Please be aware this is a volatile directory and frameworks could go missing, " +
+                LOGGER.error("Please be aware this is a volatile directory and frameworks could go missing, " +
                         "please utilize --frame-path if the default storage directory is unavailable");
 
                 dir = new File(System.getProperty("java.io.tmpdir"));
