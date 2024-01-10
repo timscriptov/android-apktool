@@ -22,13 +22,19 @@ object FileHelper {
 
     @Throws(IOException::class)
     fun copyAssetsFile(context: Context, filename: String, output: File, execute: Boolean) {
-        val input = context.assets.open(filename)
-        copyFile(input, FileOutputStream(output), input.readBytes().size)
-        output.setExecutable(execute)
+        val input: InputStream = context.assets.open(filename)
+        try {
+            FileOutputStream(output).use { target ->
+                copyFile(input, target, input.available())
+            }
+            output.setExecutable(execute)
+        } finally {
+            input.close()
+        }
     }
 
     @Throws(IOException::class)
-    fun copyFile(source: InputStream, target: OutputStream, size: Int) {
+    fun copyFile(source: InputStream, target: FileOutputStream, size: Int) {
         val buf = ByteArray(size)
         var length: Int
         while (source.read(buf).also { length = it } != -1) {

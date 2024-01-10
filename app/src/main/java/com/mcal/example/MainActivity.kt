@@ -78,9 +78,6 @@ class MainActivity : Activity(), Logger {
                         try {
                             val fwPathText = fwPath.text.toString().trim()
                             val path = getToolsDir(context)
-                            if (fwPathText != "") {
-                                copyAssetsFile(context, "android-framework.jar", File(path, "1.apk"), false)
-                            }
                             ApktoolHelper.decode(
                                 apkFile,
                                 decodeDir,
