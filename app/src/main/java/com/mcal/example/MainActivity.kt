@@ -4,7 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
-import android.app.ProgressDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -12,12 +11,13 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
-import android.widget.Button
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.View
 import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
 import com.mcal.androlib.utils.Logger
 import com.mcal.apktool.R
+import com.mcal.apktool.databinding.ActivityMainBinding
 import com.mcal.example.utils.ApktoolHelper
 import com.mcal.example.utils.FileHelper.copyAssetsFile
 import com.mcal.example.utils.FileHelper.getToolsDir
@@ -25,109 +25,77 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.*
+import java.io.File
 import java.util.logging.Level
 
 
 class MainActivity : Activity(), Logger {
-    private lateinit var logView: TextView
+    private val binding by lazy(LazyThreadSafetyMode.NONE) { ActivityMainBinding.inflate(layoutInflater) }
+    private lateinit var framework: File
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        logView = findViewById(R.id.log)
+        setContentView(binding.root)
+        framework = File(getToolsDir(this), "android.jar")
         initPermission()
         installTools()
+        setCustomFramework()
+        decodeClick()
+        buildClick()
+        gitHubClick()
+        telegramClick()
+    }
 
-        val fwPath = findViewById<EditText>(R.id.fw_path)
-        val apkPathView = findViewById<EditText>(R.id.apk_path)
-        val outDirPathView = findViewById<EditText>(R.id.out_dir_path)
-        val decodePathView = findViewById<EditText>(R.id.decode_path)
-        val outApkPathView = findViewById<EditText>(R.id.out_apk_path)
-        val buildView = findViewById<Button>(R.id.build)
-        val decodeView = findViewById<Button>(R.id.decode)
-
-        findViewById<Button>(R.id.github).setOnClickListener {
-            val url = "https://github.com/timscriptov"
-            val intent = Intent(Intent.ACTION_VIEW)
-            intent.data = Uri.parse(url)
-            startActivity(intent)
+    private fun gitHubClick() {
+        binding.github.setOnClickListener {
+            openUrl("https://github.com/timscriptov")
         }
-        findViewById<Button>(R.id.telegram).setOnClickListener {
-            val url = "https://t.me/apkeditorproofficial"
-            val intent = Intent(Intent.ACTION_VIEW)
-            intent.data = Uri.parse(url)
-            startActivity(intent)
-        }
+    }
 
-        decodeView.setOnClickListener {
-            val apkPath = apkPathView.text.toString().trim()
-            if (apkPath.isNotEmpty()) {
-                val context = this@MainActivity
-                val apkFile = File(apkPath)
-                if (apkFile.exists()) {
-                    logView.text = ""
-                    val dialog = ProgressDialog(context).apply {
-                        setMessage("Decoding...")
-                        show()
-                    }
-                    decodeView.isEnabled = false
-                    buildView.isEnabled = false
-                    CoroutineScope(Dispatchers.IO).launch {
-                        val decodeDir = File(outDirPathView.text.toString())
-                        decodeDir.deleteRecursively()
-                        try {
-                            val fwPathText = fwPath.text.toString().trim()
-                            val path = getToolsDir(context)
-                            ApktoolHelper.decode(
-                                apkFile,
-                                decodeDir,
-                                getToolsDir(context).path,
-                                fwPathText,
-                                context
-                            )
-                            withContext(Dispatchers.Main) {
-                                decodeView.isEnabled = true
-                                buildView.isEnabled = true
-                                dialog.dismiss()
-                                decodePathView.setText(decodeDir.path)
-                                Toast.makeText(context, "Finished", Toast.LENGTH_LONG).show()
-                            }
-                        } catch (e: Exception) {
-                            e.message?.let { it1 -> alertDialog("Error", it1) }
-                        }
-                    }
-                }
-            }
+    private fun telegramClick() {
+        binding.telegram.setOnClickListener {
+            openUrl("https://t.me/apkeditorproofficial")
         }
+    }
 
+    private fun openUrl(url: String) {
+        runCatching {
+            startActivity(Intent(Intent.ACTION_VIEW).apply {
+                data = Uri.parse(url)
+            })
+        }
+    }
+
+    private fun buildClick() {
+        val decodePathView = binding.decodePath
+        val buildView = binding.build
+        val decodeView = binding.decode
         buildView.setOnClickListener {
             val decodePath = decodePathView.text.toString().trim()
             if (decodePath.isNotEmpty()) {
                 val context = this@MainActivity
                 val decodeFolder = File(decodePath)
                 if (decodeFolder.exists()) {
-                    logView.text = ""
-                    val dialog = ProgressDialog(context).apply {
-                        setMessage("Building...")
-                        show()
-                    }
+                    binding.log.text = ""
+                    binding.progressbar.visibility = View.VISIBLE
                     buildView.isEnabled = false
                     decodeView.isEnabled = false
                     CoroutineScope(Dispatchers.IO).launch {
                         val decodeDir = File(decodePathView.text.toString())
-                        val apkFile = File(outApkPathView.text.toString())
+                        val apkFile = File(binding.outApkPath.text.toString())
                         try {
                             ApktoolHelper.buildProject(
                                 apkFile,
                                 decodeDir,
                                 getToolsDir(context).path,
+                                framework,
                                 context
                             )
                             withContext(Dispatchers.Main) {
                                 buildView.isEnabled = true
                                 decodeView.isEnabled = true
-                                dialog.dismiss()
-                                Toast.makeText(context, "Finished", Toast.LENGTH_LONG).show()
+                                binding.progressbar.visibility = View.GONE
+                                fine("Building finished.")
                             }
                         } catch (e: Exception) {
                             e.message?.let { it1 -> alertDialog("Error", it1) }
@@ -138,20 +106,79 @@ class MainActivity : Activity(), Logger {
         }
     }
 
+    private fun decodeClick() {
+        val buildView = binding.build
+        val decodeView = binding.decode
+        decodeView.setOnClickListener {
+            val apkPath = binding.apkPath.text.toString().trim()
+            if (apkPath.isNotEmpty()) {
+                val context = this@MainActivity
+                val apkFile = File(apkPath)
+                if (apkFile.exists()) {
+                    binding.log.text = ""
+                    binding.progressbar.visibility = View.VISIBLE
+                    decodeView.isEnabled = false
+                    buildView.isEnabled = false
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val decodeDir = File(binding.outDirPath.text.toString())
+                        decodeDir.deleteRecursively()
+                        try {
+                            ApktoolHelper.decode(
+                                apkFile,
+                                decodeDir,
+                                framework,
+                                context
+                            )
+                            withContext(Dispatchers.Main) {
+                                decodeView.isEnabled = true
+                                buildView.isEnabled = true
+                                binding.progressbar.visibility = View.GONE
+                                binding.decodePath.setText(decodeDir.path)
+                                fine("Decoding finished.")
+                            }
+                        } catch (e: Exception) {
+                            e.message?.let { it1 -> alertDialog("Error", it1) }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setCustomFramework() {
+        findViewById<EditText>(R.id.fw_path).addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                if (!s.isNullOrEmpty()) {
+                    val file = File(s.toString())
+                    if (file.exists()) {
+                        framework = file
+                    }
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+        })
+    }
+
     @SuppressLint("SetTextI18n")
     private fun setText(message: String) {
         runOnUiThread {
+            val logView = binding.log
             logView.text = logView.text.toString() + "\n$message"
         }
     }
 
-    @Throws(Exception::class)
-    fun installTools() {
-        val path = getToolsDir(this)
-        copyAssetsFile(this, "android-framework.jar", File(path, "android-framework.jar"), false)
-        copyAssetsFile(this, "android-framework.jar", File(path, "1.apk"), false)
-        copyAssetsFile(this, "aapt", File(path, "aapt"), true)
-        copyAssetsFile(this, "aapt2", File(path, "aapt2"), true)
+    private fun installTools() {
+        kotlin.runCatching {
+            val path = getToolsDir(this)
+            copyAssetsFile(this, "android-framework.jar", File(path, "android.jar"), false)
+            copyAssetsFile(this, "aapt", File(path, "aapt"), true)
+            copyAssetsFile(this, "aapt2", File(path, "aapt2"), true)
+        }
     }
 
     private fun initPermission() {

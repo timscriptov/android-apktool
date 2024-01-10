@@ -26,6 +26,9 @@ android {
     kotlinOptions {
         jvmTarget = project.jvmTarget
     }
+    buildFeatures {
+        viewBinding true
+    }
     compileOptions {
         sourceCompatibility project.sourceCompatibility.toInteger()
         targetCompatibility project.targetCompatibility.toInteger()

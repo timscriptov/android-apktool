@@ -4,17 +4,17 @@ import android.content.Context
 import java.io.*
 
 object FileHelper {
-   fun getToolsDir(context: Context) : File {
+    fun getToolsDir(context: Context): File {
         val dir = File(context.filesDir, "bin")
-        if(!dir.exists()) {
+        if (!dir.exists()) {
             dir.mkdirs()
         }
         return dir
     }
 
-    fun getDecodeDir(context: Context) : File {
+    fun getDecodeDir(context: Context): File {
         val dir = File(context.filesDir, "decode")
-        if(!dir.exists()) {
+        if (!dir.exists()) {
             dir.mkdirs()
         }
         return dir

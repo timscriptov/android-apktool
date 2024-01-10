@@ -16,11 +16,9 @@
  */
 package brut.androlib;
 
-import java.io.File;
 import java.util.logging.Logger;
 
 import brut.androlib.exceptions.AndrolibException;
-import brut.util.OSDetection;
 
 public class Config {
     public final static short DECODE_SOURCES_NONE = 0x0000;
@@ -62,7 +60,7 @@ public class Config {
 
     // Common options
     public int jobs = Runtime.getRuntime().availableProcessors();
-    public String frameworkDirectory = null;
+    public String framework = null;
     public String frameworkTag = null;
     public String aaptPath = "";
     public String aapt2Path = "";
@@ -81,9 +79,7 @@ public class Config {
     }
 
     public static Config getDefaultConfig() {
-        Config config = new Config();
-        config.setDefaultFrameworkDirectory();
-        return config;
+        return new Config();
     }
 
     // Utility functions
@@ -111,26 +107,8 @@ public class Config {
         this.useAapt2 = useAapt2;
     }
 
-    private void setDefaultFrameworkDirectory() {
-        File parentPath = new File(System.getProperty("user.home"));
-        String path;
-        if (OSDetection.isMacOSX()) {
-            path = parentPath.getAbsolutePath() + String.format("%1$sLibrary%1$sapktool%1$sframework", File.separatorChar);
-        } else if (OSDetection.isWindows()) {
-            path = parentPath.getAbsolutePath() + String.format("%1$sAppData%1$sLocal%1$sapktool%1$sframework", File.separatorChar);
-        } else {
-            String xdgDataFolder = System.getenv("XDG_DATA_HOME");
-            if (xdgDataFolder != null) {
-                path = xdgDataFolder + String.format("%1$sapktool%1$sframework", File.separatorChar);
-            } else {
-                path = parentPath.getAbsolutePath() + String.format("%1$s.local%1$sshare%1$sapktool%1$sframework", File.separatorChar);
-            }
-        }
-        frameworkDirectory = path;
-    }
-
     public void setDefaultFramework(String path) {
-        frameworkDirectory = path;
+        framework = path;
     }
 
     public void setDecodeAllPackages(boolean mode) {

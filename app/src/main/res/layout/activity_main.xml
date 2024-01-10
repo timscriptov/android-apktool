@@ -1,100 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent" xmlns:tools="http://schemas.android.com/tools"
+              android:padding="16dp">
 
     <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:text="Community" />
+                android:orientation="vertical">
+
+            <ProgressBar
+                    android:id="@+id/progressbar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:indeterminate="true"
+                    android:max="100"
+                    android:indeterminateTint="#1a09d6"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:visibility="gone"
+                    tools:visibility="visible"/>
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:text="Community"/>
+
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                <Button
+                        android:layout_weight="1"
+                        android:id="@+id/github"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="GitHub"/>
+
+                <Button
+                        android:layout_weight="1"
+                        android:id="@+id/telegram"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Telegram"/>
+
+            </LinearLayout>
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:text="Framework"/>
+
+            <EditText
+                    android:id="@+id/fw_path"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter framework path (optional)"/>
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:text="Apktool Decoder"/>
+
+            <EditText
+                    android:id="@+id/apk_path"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter apk path"/>
+
+            <EditText
+                    android:id="@+id/out_dir_path"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter output dir"/>
 
             <Button
-                android:id="@+id/github"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="GitHub" />
+                    android:id="@+id/decode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Decode"/>
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:text="Apktool Builder"/>
+
+            <EditText
+                    android:id="@+id/decode_path"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter decode path"/>
+
+            <EditText
+                    android:id="@+id/out_apk_path"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter output APK"/>
 
             <Button
-                android:id="@+id/telegram"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Telegram" />
+                    android:id="@+id/build"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Build"/>
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:text="Framework"/>
-
-            <EditText
-                android:id="@+id/fw_path"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Enter framework path (optional)"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:text="Apktool Decoder" />
-
-            <EditText
-                android:id="@+id/apk_path"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Enter apk path" />
-
-            <EditText
-                android:id="@+id/out_dir_path"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Enter output dir" />
-
-            <Button
-                android:id="@+id/decode"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Decode" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:text="Apktool Builder" />
-
-            <EditText
-                android:id="@+id/decode_path"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Enter decode path" />
-
-            <EditText
-                android:id="@+id/out_apk_path"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Enter output APK" />
-
-            <Button
-                android:id="@+id/build"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Build" />
-
-            <TextView
-                android:id="@+id/log"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                    android:id="@+id/log"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
 
         </LinearLayout>
 

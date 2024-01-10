@@ -37,13 +37,10 @@ import brut.androlib.exceptions.CantFindFrameworkResException;
 import brut.androlib.res.data.arsc.ARSCData;
 import brut.androlib.res.data.arsc.FlagsOffset;
 import brut.androlib.res.decoder.ARSCDecoder;
-import brut.util.Jar;
 
 public class Framework {
-//    private final static Logger LOGGER = Logger.getLogger(Framework.class.getName());
     private Logger LOGGER = null;
     private final Config config;
-    private File mFrameworkDirectory = null;
 
     public Framework(Config config) {
         this.config = config;
@@ -71,10 +68,7 @@ public class Framework {
             ARSCData arsc = ARSCDecoder.decode(new ByteArrayInputStream(data), true, true);
             publicizeResources(data, arsc.getFlagsOffsets());
 
-            File outFile = new File(getFrameworkDirectory(), arsc
-                    .getOnePackage().getId()
-                    + (tag == null ? "" : '-' + tag)
-                    + ".apk");
+            File outFile = new File(config.framework);
 
             out = new ZipOutputStream(Files.newOutputStream(outFile.toPath()));
             out.setMethod(ZipOutputStream.STORED);
@@ -113,38 +107,6 @@ public class Framework {
         }
     }
 
-    public void listFrameworkDirectory() throws AndrolibException {
-        File dir = getFrameworkDirectory();
-        if (dir == null) {
-            LOGGER.error("No framework directory found. Nothing to list.");
-            return;
-        }
-
-        for (File file : Objects.requireNonNull(dir.listFiles())) {
-            if (file.isFile() && file.getName().endsWith(".apk")) {
-                LOGGER.info(file.getName());
-            }
-        }
-    }
-
-    public void publicizeResources(File arscFile) throws AndrolibException {
-        byte[] data = new byte[(int) arscFile.length()];
-
-        try (InputStream in = Files.newInputStream(arscFile.toPath());
-             OutputStream out = Files.newOutputStream(arscFile.toPath())) {
-            //noinspection ResultOfMethodCallIgnored
-            in.read(data);
-            publicizeResources(data);
-            out.write(data);
-        } catch (IOException ex) {
-            throw new AndrolibException(ex);
-        }
-    }
-
-    private void publicizeResources(byte[] arsc) throws AndrolibException {
-        publicizeResources(arsc, ARSCDecoder.decode(new ByteArrayInputStream(arsc), true, true).getFlagsOffsets());
-    }
-
     public void publicizeResources(byte[] arsc, FlagsOffset[] flagsOffsets) {
         for (FlagsOffset flags : flagsOffsets) {
             int offset = flags.offset + 3;
@@ -156,64 +118,8 @@ public class Framework {
         }
     }
 
-    public File getFrameworkDirectory() throws AndrolibException {
-        if (mFrameworkDirectory != null) {
-            return mFrameworkDirectory;
-        }
-
-        String path;
-
-        // use default framework path or specified on the command line
-        path = config.frameworkDirectory;
-
-        File dir = new File(path);
-
-        if (!dir.isDirectory() && dir.isFile()) {
-            throw new AndrolibException("--frame-path is set to a file, not a directory.");
-        }
-
-        if (dir.getParentFile() != null && dir.getParentFile().isFile()) {
-            throw new AndrolibException("Please remove file at " + dir.getParentFile());
-        }
-
-        if (!dir.exists()) {
-            if (!dir.mkdirs()) {
-                if (config.frameworkDirectory != null) {
-                    LOGGER.error("Can't create Framework directory: " + dir);
-                }
-                throw new AndrolibException(String.format(
-                        "Can't create directory: (%s). Pass a writable path with --frame-path {DIR}. ", dir
-                ));
-            }
-        }
-
-        if (config.frameworkDirectory == null) {
-            if (!dir.canWrite()) {
-                LOGGER.error(String.format("WARNING: Could not write to (%1$s), using %2$s instead...",
-                        dir.getAbsolutePath(), System.getProperty("java.io.tmpdir")));
-                LOGGER.error("Please be aware this is a volatile directory and frameworks could go missing, " +
-                        "please utilize --frame-path if the default storage directory is unavailable");
-
-                dir = new File(System.getProperty("java.io.tmpdir"));
-            }
-        }
-
-        mFrameworkDirectory = dir;
-        return dir;
-    }
-
     public File getFrameworkApk(int id, String frameTag) throws AndrolibException {
-        File dir = getFrameworkDirectory();
-        File apk;
-
-        if (frameTag != null) {
-            apk = new File(dir, String.valueOf(id) + '-' + frameTag + ".apk");
-            if (apk.exists()) {
-                return apk;
-            }
-        }
-
-        apk = new File(dir, id + ".apk");
+        final File apk = new File(config.framework);
         if (apk.exists()) {
             return apk;
         }
