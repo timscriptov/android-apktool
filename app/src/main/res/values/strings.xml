@@ -1,3 +1,22 @@
 <resources>
-    <string name="app_name">ApkTool</string>
+    <string name="app_name">ApkTool Mobile</string>
+    <string name="restore_preferences">Restore</string>
+    <string name="community">Community</string>
+    <string name="github">GitHub</string>
+    <string name="telegram">Telegram</string>
+    <string name="tools_optional">Tools(optional)</string>
+    <string name="use_aapt2">Use aapt2</string>
+    <string name="enter_framework_path">Enter framework path</string>
+    <string name="enter_aapt_path">Enter aapt path</string>
+    <string name="enter_aapt2_path">Enter aapt2 path</string>
+    <string name="apktool_decoder">Apktool Decoder</string>
+    <string name="enter_apk_path">Enter apk path</string>
+    <string name="enter_output_dir">Enter output dir</string>
+    <string name="decode">Decode</string>
+    <string name="apktool_builder">Apktool Builder</string>
+    <string name="enter_decode_path">Enter decode path</string>
+    <string name="enter_output_apk">Enter output APK</string>
+    <string name="build">Build</string>
+    <string name="decoding_finished">Decoding finished.</string>
+    <string name="building_finished">Building finished.</string>
 </resources>

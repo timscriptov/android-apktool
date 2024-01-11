@@ -21,6 +21,7 @@ import com.mcal.apktool.databinding.ActivityMainBinding
 import com.mcal.example.utils.ApktoolHelper
 import com.mcal.example.utils.FileHelper.copyAssetsFile
 import com.mcal.example.utils.FileHelper.getToolsDir
+import com.mcal.example.utils.Preferences
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -31,19 +32,37 @@ import java.util.logging.Level
 
 class MainActivity : Activity(), Logger {
     private val binding by lazy(LazyThreadSafetyMode.NONE) { ActivityMainBinding.inflate(layoutInflater) }
-    private lateinit var framework: File
+    private lateinit var framework: String
+    private lateinit var aapt: String
+    private lateinit var aapt2: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        framework = File(getToolsDir(this), "android.jar")
+        framework = Preferences.getFrameworkPath(this)
+        aapt = Preferences.getAaptPath(this)
+        aapt2 = Preferences.getAapt2Path(this)
         initPermission()
         installTools()
         setCustomFramework()
+        setCustomAapt()
+        setCustomAapt2()
         decodeClick()
         buildClick()
         gitHubClick()
         telegramClick()
+        restorePreferences()
+    }
+
+    private fun restorePreferences() {
+        binding.restore.setOnClickListener {
+            Preferences.setAaptPath(this, File(getToolsDir(this), "aapt").path)
+            Preferences.setAapt2Path(this, File(getToolsDir(this), "aapt2").path)
+            Preferences.setFrameworkPath(this, File(getToolsDir(this), "android.jar").path)
+            Preferences.setUseAapt2(this, true).also {
+                binding.useAapt2.isChecked = true
+            }
+        }
     }
 
     private fun gitHubClick() {
@@ -87,15 +106,17 @@ class MainActivity : Activity(), Logger {
                             ApktoolHelper.buildProject(
                                 apkFile,
                                 decodeDir,
-                                getToolsDir(context).path,
                                 framework,
+                                aapt,
+                                aapt2,
+                                binding.useAapt2.isChecked,
                                 context
                             )
                             withContext(Dispatchers.Main) {
                                 buildView.isEnabled = true
                                 decodeView.isEnabled = true
                                 binding.progressbar.visibility = View.GONE
-                                fine("Building finished.")
+                                fine(getString(R.string.building_finished))
                             }
                         } catch (e: Exception) {
                             e.message?.let { it1 -> alertDialog("Error", it1) }
@@ -134,7 +155,7 @@ class MainActivity : Activity(), Logger {
                                 buildView.isEnabled = true
                                 binding.progressbar.visibility = View.GONE
                                 binding.decodePath.setText(decodeDir.path)
-                                fine("Decoding finished.")
+                                fine(getString(R.string.decoding_finished))
                             }
                         } catch (e: Exception) {
                             e.message?.let { it1 -> alertDialog("Error", it1) }
@@ -145,13 +166,34 @@ class MainActivity : Activity(), Logger {
         }
     }
 
+    private fun setCustomAapt2() {
+        binding.aapt2Path.setCustomPath(onNewFile = {
+            aapt2 = it
+            Preferences.setAapt2Path(this, it)
+        })
+    }
+
+    private fun setCustomAapt() {
+        binding.aaptPath.setCustomPath(onNewFile = {
+            aapt = it
+            Preferences.setAaptPath(this, it)
+        })
+    }
+
     private fun setCustomFramework() {
-        findViewById<EditText>(R.id.fw_path).addTextChangedListener(object : TextWatcher {
+        binding.fwPath.setCustomPath(onNewFile = {
+            framework = it
+            Preferences.setFrameworkPath(this, it)
+        })
+    }
+
+    private fun EditText.setCustomPath(onNewFile: (String) -> Unit) {
+        addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 if (!s.isNullOrEmpty()) {
                     val file = File(s.toString())
                     if (file.exists()) {
-                        framework = file
+                        onNewFile(file.path)
                     }
                 }
             }
@@ -173,7 +215,7 @@ class MainActivity : Activity(), Logger {
     }
 
     private fun installTools() {
-        kotlin.runCatching {
+        runCatching {
             val path = getToolsDir(this)
             copyAssetsFile(this, "android-framework.jar", File(path, "android.jar"), false)
             copyAssetsFile(this, "aapt", File(path, "aapt"), true)

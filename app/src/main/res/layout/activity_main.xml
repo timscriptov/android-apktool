@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
-              android:layout_height="match_parent" xmlns:tools="http://schemas.android.com/tools"
-              android:padding="16dp">
+              android:layout_height="match_parent"
+              xmlns:tools="http://schemas.android.com/tools">
 
     <ScrollView
             android:layout_width="match_parent"
@@ -27,12 +27,17 @@
                     tools:visibility="visible"/>
 
             <TextView
+                    android:layout_marginTop="8dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:text="Community"/>
+                    android:textColor="#2196F3"
+                    android:text="@string/community"/>
 
             <LinearLayout
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -42,79 +47,177 @@
                         android:id="@+id/github"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="GitHub"/>
+                        android:text="@string/github"/>
 
                 <Button
                         android:layout_weight="1"
                         android:id="@+id/telegram"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Telegram"/>
+                        android:text="@string/telegram"/>
 
             </LinearLayout>
 
+            <View
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="#2196F3"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"/>
+
             <TextView
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:textColor="#2196F3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:text="Framework"/>
+                    android:text="@string/tools_optional"/>
+
+            <LinearLayout
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                <TextView
+                        android:layout_marginTop="8dp"
+                        android:textSize="18sp"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/use_aapt2"/>
+
+                <Switch
+                        android:checked="true"
+                        android:id="@+id/use_aapt2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+            </LinearLayout>
 
             <EditText
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
                     android:id="@+id/fw_path"
+                    android:textSize="18sp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Enter framework path (optional)"/>
-
-            <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:text="Apktool Decoder"/>
+                    android:hint="@string/enter_framework_path"/>
 
             <EditText
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:id="@+id/aapt_path"
+                    android:textSize="18sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/enter_aapt_path"/>
+
+            <EditText
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:id="@+id/aapt2_path"
+                    android:textSize="18sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/enter_aapt2_path"/>
+
+            <Button
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:id="@+id/restore"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/restore_preferences"/>
+
+            <View
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="#2196F3"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"/>
+
+            <TextView
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:textColor="#2196F3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/apktool_decoder"/>
+
+            <EditText
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:textSize="18sp"
                     android:id="@+id/apk_path"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Enter apk path"/>
+                    android:hint="@string/enter_apk_path"/>
 
             <EditText
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:textSize="18sp"
                     android:id="@+id/out_dir_path"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Enter output dir"/>
+                    android:hint="@string/enter_output_dir"/>
 
             <Button
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
                     android:id="@+id/decode"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Decode"/>
+                    android:text="@string/decode"/>
+
+            <View
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="#2196F3"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"/>
 
             <TextView
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:textColor="#2196F3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:text="Apktool Builder"/>
+                    android:text="@string/apktool_builder"/>
 
             <EditText
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:textSize="18sp"
                     android:id="@+id/decode_path"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Enter decode path"/>
+                    android:hint="@string/enter_decode_path"/>
 
             <EditText
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:textSize="18sp"
                     android:id="@+id/out_apk_path"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Enter output APK"/>
+                    android:hint="@string/enter_output_apk"/>
 
             <Button
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
                     android:id="@+id/build"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Build"/>
+                    android:text="@string/build"/>
 
             <TextView
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
                     android:id="@+id/log"
+                    android:textSize="16sp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 

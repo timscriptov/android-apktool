@@ -4,6 +4,7 @@ import android.content.Context
 import java.io.*
 
 object FileHelper {
+    @JvmStatic
     fun getToolsDir(context: Context): File {
         val dir = File(context.filesDir, "bin")
         if (!dir.exists()) {

@@ -18,14 +18,12 @@
   <component name="ChangeListManager">
     <list default="true" id="ca88d2d9-d344-4f04-914d-6bf6d7a51375" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/AaptInvoker.java" beforeDir="false" afterPath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/AaptInvoker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/Config.java" beforeDir="false" afterPath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/Config.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/res/Framework.java" beforeDir="false" afterPath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/res/Framework.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/mcal/example/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/mcal/example/MainActivity.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/mcal/example/utils/ApktoolHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/mcal/example/utils/ApktoolHelper.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/mcal/example/utils/FileHelper.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/mcal/example/utils/FileHelper.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,7 +88,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Android App.app.executor": "Run",
+    "Android App.app.executor": "Debug",
     "ApkExportedModule": "android-apktool.app",
     "ExportApk.ApkPathForandroid-apktool.app": "C:\\AppProjects\\android-apktool\\app",
     "RunOnceActivity.OpenProjectViewOnStart": "true",

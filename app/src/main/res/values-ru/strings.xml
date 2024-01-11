@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">ApkTool Mobile</string>
+    <string name="restore_preferences">Восстановить</string>
+    <string name="community">Сообщество</string>
+    <string name="github">GitHub</string>
+    <string name="telegram">Telegram</string>
+    <string name="tools_optional">Инструменты(Не обязательно)</string>
+    <string name="use_aapt2">Использовать aapt2</string>
+    <string name="enter_framework_path">Введите путь к фреймфорку</string>
+    <string name="enter_aapt_path">Введите путь к aapt</string>
+    <string name="enter_aapt2_path">Введите путь к aapt2</string>
+    <string name="apktool_decoder">Декомпилятор</string>
+    <string name="enter_apk_path">Введите путь к apk</string>
+    <string name="enter_output_dir">Введите путь к директории проекта</string>
+    <string name="decode">Декомпилировать</string>
+    <string name="apktool_builder">Компилятор</string>
+    <string name="enter_decode_path">Введите путь к директории проекта</string>
+    <string name="enter_output_apk">Введите путь к APK</string>
+    <string name="build">Компилировать</string>
+    <string name="decoding_finished">Декомпиляция завершена.</string>
+    <string name="building_finished">Компиляция завершена.</string>
+</resources>

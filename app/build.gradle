@@ -40,7 +40,10 @@ dependencies {
     implementation project(':androlib:brut.apktool:apktool-lib')
     implementation project(':androlib:brut.j.dir')
     implementation project(':androlib:brut.j.common')
-    
+
+    implementation(libs.jetpack.preference)
+
+
     implementation(libs.misc.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
 }
