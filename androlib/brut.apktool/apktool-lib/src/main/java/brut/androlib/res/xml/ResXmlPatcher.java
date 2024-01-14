@@ -16,18 +16,10 @@
  */
 package brut.androlib.res.xml;
 
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import brut.androlib.exceptions.AndrolibException;
+import org.jetbrains.annotations.NotNull;
+import org.w3c.dom.*;
 import org.xml.sax.SAXException;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -37,13 +29,11 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-
-import brut.androlib.exceptions.AndrolibException;
+import javax.xml.xpath.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.logging.Logger;
 
 public final class ResXmlPatcher {
 
@@ -59,7 +49,7 @@ public final class ResXmlPatcher {
      * @param file AndroidManifest file
      * @throws AndrolibException Error reading Manifest file
      */
-    public static void removeApplicationDebugTag(File file) throws AndrolibException {
+    public static void removeApplicationDebugTag(@NotNull File file) throws AndrolibException {
         if (file.exists()) {
             try {
                 Document doc = loadDocument(file);
@@ -87,7 +77,7 @@ public final class ResXmlPatcher {
      *
      * @param file AndroidManifest file
      */
-    public static void setApplicationDebugTagTrue(File file) {
+    public static void setApplicationDebugTagTrue(@NotNull File file) {
         if (file.exists()) {
             try {
                 Document doc = loadDocument(file);
@@ -118,7 +108,7 @@ public final class ResXmlPatcher {
      *
      * @param file AndroidManifest file
      */
-    public static void setNetworkSecurityConfig(File file) {
+    public static void setNetworkSecurityConfig(@NotNull File file) {
         if (file.exists()) {
             try {
                 Document doc = loadDocument(file);
@@ -194,7 +184,7 @@ public final class ResXmlPatcher {
      *
      * @param file File for AndroidManifest.xml
      */
-    public static void fixingPublicAttrsInProviderAttributes(File file) {
+    public static void fixingPublicAttrsInProviderAttributes(@NotNull File file) {
         boolean saved = false;
         if (file.exists()) {
             try {
@@ -250,7 +240,7 @@ public final class ResXmlPatcher {
      * @param provider Node we are attempting to replace
      * @return boolean
      */
-    private static boolean isSaved(File file, boolean saved, Node provider) {
+    private static boolean isSaved(@NotNull File file, boolean saved, @NotNull Node provider) {
         String reference = provider.getNodeValue();
         String replacement = pullValueFromStrings(file.getParentFile(), reference);
 
@@ -336,7 +326,7 @@ public final class ResXmlPatcher {
      *
      * @param file File representing AndroidManifest.xml
      */
-    public static void removeManifestVersions(File file) {
+    public static void removeManifestVersions(@NotNull File file) {
         if (file.exists()) {
             try {
                 Document doc = loadDocument(file);

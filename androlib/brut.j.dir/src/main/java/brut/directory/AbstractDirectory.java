@@ -16,6 +16,9 @@
  */
 package brut.directory;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -241,7 +244,8 @@ public abstract class AbstractDirectory implements Directory {
 
     }
 
-    private SubPath getSubPath(String path) throws PathNotExist {
+    @Contract("_ -> new")
+    private @NotNull SubPath getSubPath(String path) throws PathNotExist {
         ParsedPath parsed = parsePath(path);
         if (parsed.dir == null) {
             return new SubPath(null, parsed.subpath);
@@ -252,7 +256,8 @@ public abstract class AbstractDirectory implements Directory {
         return new SubPath(getAbstractDirs().get(parsed.dir), parsed.subpath);
     }
 
-    private ParsedPath parsePath(String path) {
+    @Contract("_ -> new")
+    private @NotNull ParsedPath parsePath(String path) {
         int pos = path.indexOf(separator);
         if (pos == -1) {
             return new ParsedPath(null, path);

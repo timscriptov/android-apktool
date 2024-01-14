@@ -16,9 +16,11 @@
  */
 package brut.androlib.res.data.ninepatch;
 
-import java.io.IOException;
-
 import brut.util.ExtDataInput;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
 
 public class NinePatchData {
     public final int padLeft, padRight, padTop, padBottom;
@@ -33,7 +35,8 @@ public class NinePatchData {
         this.yDivs = yDivs;
     }
 
-    public static NinePatchData decode(ExtDataInput di) throws IOException {
+    @Contract("_ -> new")
+    public static @NotNull NinePatchData decode(@NotNull ExtDataInput di) throws IOException {
         di.skipBytes(1); // wasDeserialized
         byte numXDivs = di.readByte();
         byte numYDivs = di.readByte();

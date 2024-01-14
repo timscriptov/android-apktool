@@ -16,12 +16,14 @@
  */
 package brut.androlib.apk;
 
+import org.jetbrains.annotations.NotNull;
+
 public class VersionInfo implements YamlSerializable {
     public String versionCode;
     public String versionName;
 
     @Override
-    public void readItem(YamlReader reader) {
+    public void readItem(@NotNull YamlReader reader) {
         YamlLine line = reader.getLine();
         switch (line.getKey()) {
             case "versionCode": {
@@ -36,7 +38,7 @@ public class VersionInfo implements YamlSerializable {
     }
 
     @Override
-    public void write(YamlWriter writer) {
+    public void write(@NotNull YamlWriter writer) {
         writer.writeString("versionCode", versionCode);
         writer.writeString("versionName", versionName);
     }

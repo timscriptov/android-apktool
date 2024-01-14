@@ -41,6 +41,9 @@ dependencies {
     implementation project(':androlib:brut.j.dir')
     implementation project(':androlib:brut.j.common')
 
+    implementation(libs.ktor.client.okhttp)
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.cio)
 
     implementation(libs.misc.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)

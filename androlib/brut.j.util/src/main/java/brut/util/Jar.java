@@ -16,24 +16,19 @@
  */
 package brut.util;
 
-import org.apache.commons.io.IOUtils;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 import brut.common.BrutException;
+import com.mcal.androlib.utils.FileHelper;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class Jar {
     private static final Map<String, File> mExtracted = new HashMap<>();
 
-    public static File getResourceAsFile(String name, Class<?> clazz) throws BrutException {
+    public static @NotNull File getResourceAsFile(String name, Class<?> clazz) throws BrutException {
         File file = mExtracted.get(name);
         if (file == null) {
             file = extractToTmp(name, clazz);
@@ -42,11 +37,11 @@ public abstract class Jar {
         return file;
     }
 
-    public static File extractToTmp(String resourcePath, Class<?> clazz) throws BrutException {
+    public static @NotNull File extractToTmp(String resourcePath, Class<?> clazz) throws BrutException {
         return extractToTmp(resourcePath, "brut_util_Jar_", clazz);
     }
 
-    public static File extractToTmp(String resourcePath, String tmpPrefix, Class<?> clazz) throws BrutException {
+    public static @NotNull File extractToTmp(String resourcePath, String tmpPrefix, @NotNull Class<?> clazz) throws BrutException {
         try {
             InputStream in = clazz.getResourceAsStream(resourcePath);
             if (in == null) {
@@ -57,8 +52,8 @@ public abstract class Jar {
             File fileOut = File.createTempFile(tmpPrefix, suffix + ".tmp");
             fileOut.deleteOnExit();
 
-            OutputStream out = Files.newOutputStream(fileOut.toPath());
-            IOUtils.copy(in, out);
+            OutputStream out = new FileOutputStream(fileOut);
+            FileHelper.copyFile(in, out);
             in.close();
             out.close();
 

@@ -16,15 +16,16 @@
  */
 package brut.androlib.res.data.value;
 
-import org.xmlpull.v1.XmlSerializer;
-
-import java.io.IOException;
-
 import brut.androlib.exceptions.AndrolibException;
 import brut.androlib.res.data.ResPackage;
 import brut.androlib.res.data.ResResource;
 import brut.androlib.res.xml.ResValuesXmlSerializable;
 import brut.util.Duo;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.xmlpull.v1.XmlSerializer;
+
+import java.io.IOException;
 
 public class ResAttr extends ResBagValue implements ResValuesXmlSerializable {
     private static final int BAG_KEY_ATTR_MIN = 0x01000001;
@@ -54,9 +55,10 @@ public class ResAttr extends ResBagValue implements ResValuesXmlSerializable {
         mL10n = l10n;
     }
 
-    public static ResAttr factory(ResReferenceValue parent,
-                                  Duo<Integer, ResScalarValue>[] items, ResValueFactory factory,
-                                  ResPackage pkg) throws AndrolibException {
+    @Contract("_, _, _, _ -> new")
+    public static @NotNull ResAttr factory(ResReferenceValue parent,
+                                           Duo<Integer, ResScalarValue> @NotNull [] items, ResValueFactory factory,
+                                           ResPackage pkg) throws AndrolibException {
         Integer min = null, max = null;
         Boolean l10n = null;
         int i;
@@ -104,7 +106,7 @@ public class ResAttr extends ResBagValue implements ResValuesXmlSerializable {
     }
 
     @Override
-    public void serializeToResValuesXml(XmlSerializer serializer, ResResource res) throws IOException, AndrolibException {
+    public void serializeToResValuesXml(@NotNull XmlSerializer serializer, @NotNull ResResource res) throws IOException, AndrolibException {
         String type = getTypeAsString();
 
         serializer.startTag(null, "attr");

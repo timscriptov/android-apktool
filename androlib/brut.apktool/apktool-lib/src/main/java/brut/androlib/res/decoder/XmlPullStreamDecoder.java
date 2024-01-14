@@ -16,23 +16,22 @@
  */
 package brut.androlib.res.decoder;
 
+import brut.androlib.exceptions.AXmlDecodingException;
+import brut.androlib.exceptions.AndrolibException;
+import brut.androlib.exceptions.RawXmlEncounteredException;
+import brut.androlib.res.data.ResTable;
+import brut.androlib.res.util.ExtXmlSerializer;
 import com.mcal.xmlpull.v1.wrapper.XmlPullParserWrapper;
 import com.mcal.xmlpull.v1.wrapper.XmlPullWrapperFactory;
 import com.mcal.xmlpull.v1.wrapper.XmlSerializerWrapper;
 import com.mcal.xmlpull.v1.wrapper.classic.StaticXmlSerializerWrapper;
-
+import org.jetbrains.annotations.NotNull;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
-import brut.androlib.exceptions.AXmlDecodingException;
-import brut.androlib.exceptions.AndrolibException;
-import brut.androlib.exceptions.RawXmlEncounteredException;
-import brut.androlib.res.data.ResTable;
-import brut.androlib.res.util.ExtXmlSerializer;
 
 public class XmlPullStreamDecoder implements ResStreamDecoder {
     private final AXmlResourceParser mParser;
@@ -87,7 +86,7 @@ public class XmlPullStreamDecoder implements ResStreamDecoder {
                     super.event(pp);
                 }
 
-                private boolean parseManifest(XmlPullParser pp)
+                private boolean parseManifest(@NotNull XmlPullParser pp)
                         throws AndrolibException {
                     String attr_name;
 
@@ -106,7 +105,7 @@ public class XmlPullStreamDecoder implements ResStreamDecoder {
                     return true;
                 }
 
-                private boolean parseAttr(XmlPullParser pp)
+                private boolean parseAttr(@NotNull XmlPullParser pp)
                         throws AndrolibException {
                     for (int i = 0; i < pp.getAttributeCount(); i++) {
                         final String a_ns = "http://schemas.android.com/apk/res/android";

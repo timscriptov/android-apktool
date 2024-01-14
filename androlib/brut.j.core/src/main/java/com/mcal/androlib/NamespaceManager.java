@@ -73,15 +73,13 @@ public class NamespaceManager {
         // Enlarge the array
         if (depth >= namespaces.length) {
             Object[] newArray = new Object[depth + 1];
-            for (int i = 0; i < namespaces.length; i++) {
-                newArray[i] = namespaces[i];
-            }
+            System.arraycopy(namespaces, 0, newArray, 0, namespaces.length);
             namespaces = newArray;
         }
 
         // Put namespace to related depth name space record
         if (namespaces[depth] == null) {
-            ArrayList<Pair<String, String>> t = new ArrayList<Pair<String, String>>();
+            ArrayList<Pair<String, String>> t = new ArrayList<>();
             t.add(Pair.create(namespace, uri));
             namespaces[depth] = t;
             depthNum += 1;

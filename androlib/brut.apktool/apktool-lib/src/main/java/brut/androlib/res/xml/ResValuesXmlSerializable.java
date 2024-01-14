@@ -16,12 +16,11 @@
  */
 package brut.androlib.res.xml;
 
+import brut.androlib.exceptions.AndrolibException;
+import brut.androlib.res.data.ResResource;
 import org.xmlpull.v1.XmlSerializer;
 
 import java.io.IOException;
-
-import brut.androlib.exceptions.AndrolibException;
-import brut.androlib.res.data.ResResource;
 
 public interface ResValuesXmlSerializable {
     void serializeToResValuesXml(XmlSerializer serializer,

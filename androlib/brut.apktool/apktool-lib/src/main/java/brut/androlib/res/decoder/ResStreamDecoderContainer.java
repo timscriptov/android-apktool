@@ -16,12 +16,12 @@
  */
 package brut.androlib.res.decoder;
 
+import brut.androlib.exceptions.AndrolibException;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
-
-import brut.androlib.exceptions.AndrolibException;
 
 public class ResStreamDecoderContainer {
     private final Map<String, ResStreamDecoder> mDecoders = new HashMap<>();

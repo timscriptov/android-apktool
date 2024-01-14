@@ -16,9 +16,9 @@
  */
 package brut.androlib;
 
-import java.util.logging.Logger;
-
 import brut.androlib.exceptions.AndrolibException;
+
+import java.util.logging.Logger;
 
 public class Config {
     public final static short DECODE_SOURCES_NONE = 0x0000;

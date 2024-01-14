@@ -16,21 +16,20 @@
  */
 package brut.directory;
 
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
+
+import brut.common.BrutException;
+import brut.util.BrutIO;
+import com.mcal.androlib.utils.FileHelper;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.Collection;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
-import brut.common.BrutException;
-import brut.util.BrutIO;
 
 public class ZipUtils {
 
@@ -57,7 +56,7 @@ public class ZipUtils {
         processFolder(folder, outputStream, folder.getPath().length() + 1);
     }
 
-    private static void processFolder(final File folder, final ZipOutputStream zipOutputStream, final int prefixLength)
+    private static void processFolder(final @NotNull File folder, final ZipOutputStream zipOutputStream, final int prefixLength)
             throws BrutException, IOException {
         for (final File file : folder.listFiles()) {
             if (file.isFile()) {
@@ -66,11 +65,11 @@ public class ZipUtils {
 
                 // aapt binary by default takes in parameters via -0 arsc to list extensions that shouldn't be
                 // compressed. We will replicate that behavior
-                final String extension = FilenameUtils.getExtension(file.getAbsolutePath());
+                final String extension = FileHelper.getExtension(file.getAbsolutePath());
                 if (mDoNotCompress != null && (mDoNotCompress.contains(extension) || mDoNotCompress.contains(zipEntry.getName()))) {
                     zipEntry.setMethod(ZipEntry.STORED);
                     zipEntry.setSize(file.length());
-                    BufferedInputStream unknownFile = new BufferedInputStream(Files.newInputStream(file.toPath()));
+                    BufferedInputStream unknownFile = new BufferedInputStream(new FileInputStream(file));
                     CRC32 crc = BrutIO.calculateCrc(unknownFile);
                     zipEntry.setCrc(crc.getValue());
                     unknownFile.close();
@@ -80,7 +79,7 @@ public class ZipUtils {
 
                 zipOutputStream.putNextEntry(zipEntry);
                 try (FileInputStream inputStream = new FileInputStream(file)) {
-                    IOUtils.copy(inputStream, zipOutputStream);
+                    FileHelper.copyFile(inputStream, zipOutputStream);
                 }
                 zipOutputStream.closeEntry();
             } else if (file.isDirectory()) {

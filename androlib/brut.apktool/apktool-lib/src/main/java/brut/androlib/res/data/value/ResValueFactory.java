@@ -17,11 +17,11 @@
 package brut.androlib.res.data.value;
 
 import android.util.TypedValue;
-
 import brut.androlib.exceptions.AndrolibException;
 import brut.androlib.res.data.ResPackage;
 import brut.androlib.res.data.ResTypeSpec;
 import brut.util.Duo;
+import org.jetbrains.annotations.NotNull;
 
 public class ResValueFactory {
     private final ResPackage mPackage;
@@ -79,7 +79,7 @@ public class ResValueFactory {
         return new ResStringValue(value, rawValue);
     }
 
-    public ResBagValue bagFactory(int parent, Duo<Integer, ResScalarValue>[] items, ResTypeSpec resTypeSpec)
+    public ResBagValue bagFactory(int parent, Duo<Integer, ResScalarValue> @NotNull [] items, ResTypeSpec resTypeSpec)
             throws AndrolibException {
         ResReferenceValue parentVal = newReference(parent, null);
 

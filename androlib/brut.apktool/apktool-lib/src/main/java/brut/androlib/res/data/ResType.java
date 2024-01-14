@@ -16,11 +16,12 @@
  */
 package brut.androlib.res.data;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import brut.androlib.exceptions.AndrolibException;
 import brut.androlib.exceptions.UndefinedResObjectException;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class ResType {
     private final ResConfigFlags mFlags;
@@ -46,7 +47,7 @@ public class ResType {
         addResource(res, false);
     }
 
-    public void addResource(ResResource res, boolean overwrite) throws AndrolibException {
+    public void addResource(@NotNull ResResource res, boolean overwrite) throws AndrolibException {
         ResResSpec spec = res.getResSpec();
         if (mResources.put(spec, res) != null && !overwrite) {
             throw new AndrolibException(String.format("Multiple resources: spec=%s, config=%s", spec, this));

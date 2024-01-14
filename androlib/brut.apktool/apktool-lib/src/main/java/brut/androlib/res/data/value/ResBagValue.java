@@ -16,14 +16,14 @@
  */
 package brut.androlib.res.data.value;
 
-import org.xmlpull.v1.XmlSerializer;
-
-import java.io.IOException;
-
 import brut.androlib.exceptions.AndrolibException;
 import brut.androlib.res.data.ResResource;
 import brut.androlib.res.xml.ResValuesXmlSerializable;
 import brut.util.Duo;
+import org.jetbrains.annotations.NotNull;
+import org.xmlpull.v1.XmlSerializer;
+
+import java.io.IOException;
 
 public class ResBagValue extends ResValue implements ResValuesXmlSerializable {
     protected final ResReferenceValue mParent;
@@ -34,7 +34,7 @@ public class ResBagValue extends ResValue implements ResValuesXmlSerializable {
 
     @Override
     public void serializeToResValuesXml(XmlSerializer serializer,
-                                        ResResource res) throws IOException, AndrolibException {
+                                        @NotNull ResResource res) throws IOException, AndrolibException {
         String type = res.getResSpec().getType().getName();
         if ("style".equals(type)) {
             new ResStyleValue(mParent, new Duo[0], null).serializeToResValuesXml(serializer, res);

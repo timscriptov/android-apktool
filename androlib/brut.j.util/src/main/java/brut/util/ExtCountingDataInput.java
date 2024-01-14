@@ -16,9 +16,8 @@
  */
 package brut.util;
 
+import com.google.common.io.CountingInputStream;
 import com.google.common.io.LittleEndianDataInputStream;
-
-import org.apache.commons.io.input.CountingInputStream;
 
 import java.io.DataInput;
 import java.io.IOException;
@@ -41,7 +40,7 @@ public class ExtCountingDataInput extends ExtDataInput {
     }
 
     public int position() {
-        return mCountIn.getCount();
+        return (int) mCountIn.getCount();
     }
 
     public int remaining() throws IOException {

@@ -16,6 +16,8 @@
  */
 package brut.androlib.res.data;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -46,7 +48,7 @@ public class ResValuesFile {
         return mType;
     }
 
-    public boolean isSynthesized(ResResource res) {
+    public boolean isSynthesized(@NotNull ResResource res) {
         return mPackage.isSynthesized(res.getResSpec().getId());
     }
 

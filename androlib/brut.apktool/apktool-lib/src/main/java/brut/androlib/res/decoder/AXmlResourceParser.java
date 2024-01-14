@@ -18,17 +18,6 @@ package brut.androlib.res.decoder;
 
 import android.content.res.XmlResourceParser;
 import android.util.TypedValue;
-
-import com.google.common.io.LittleEndianDataInputStream;
-
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import brut.androlib.exceptions.AndrolibException;
 import brut.androlib.exceptions.CantFindFrameworkResException;
 import brut.androlib.exceptions.UndefinedResObjectException;
@@ -41,6 +30,14 @@ import brut.androlib.res.data.value.ResAttr;
 import brut.androlib.res.data.value.ResScalarValue;
 import brut.androlib.res.xml.ResXmlEncoders;
 import brut.util.ExtCountingDataInput;
+import com.google.common.io.LittleEndianDataInputStream;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Binary xml files parser.

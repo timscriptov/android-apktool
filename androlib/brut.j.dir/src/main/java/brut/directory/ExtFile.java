@@ -16,6 +16,8 @@
  */
 package brut.directory;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -23,7 +25,7 @@ import java.net.URI;
 public class ExtFile extends File {
     private Directory mDirectory;
 
-    public ExtFile(File file) {
+    public ExtFile(@NotNull File file) {
         super(file.getPath());
     }
 

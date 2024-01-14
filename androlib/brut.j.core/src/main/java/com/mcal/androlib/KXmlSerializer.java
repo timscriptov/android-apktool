@@ -356,7 +356,7 @@ public class KXmlSerializer implements XmlSerializer {
         }
         if (standalone != null) {
             append("standalone='");
-            append(standalone.booleanValue() ? "yes" : "no");
+            append(standalone ? "yes" : "no");
             append("' ");
         }
         append("?>");

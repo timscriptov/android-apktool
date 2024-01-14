@@ -16,17 +16,16 @@
  */
 package brut.androlib.res.data.value;
 
+import brut.androlib.exceptions.AndrolibException;
+import brut.androlib.res.data.ResResSpec;
+import brut.androlib.res.data.ResResource;
+import brut.util.Duo;
 import org.xmlpull.v1.XmlSerializer;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
-
-import brut.androlib.exceptions.AndrolibException;
-import brut.androlib.res.data.ResResSpec;
-import brut.androlib.res.data.ResResource;
-import brut.util.Duo;
 
 public class ResEnumAttr extends ResAttr {
     private static final Logger LOGGER = Logger.getLogger(ResEnumAttr.class.getName());

@@ -18,18 +18,14 @@ package brut.androlib.res.decoder;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-
-import org.apache.commons.io.IOUtils;
-
-import java.io.ByteArrayInputStream;
-import java.io.DataInput;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import brut.androlib.exceptions.AndrolibException;
 import brut.androlib.exceptions.CantFind9PatchChunkException;
 import brut.util.ExtDataInput;
+import com.mcal.androlib.utils.FileHelper;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.*;
 
 /**
  * @author Ryszard Wiśniewski <brut.alll@gmail.com>
@@ -44,7 +40,7 @@ public class Res9patchStreamDecoder implements ResStreamDecoder {
     public void decode(InputStream in, OutputStream out)
             throws AndrolibException {
         try {
-            byte[] data = IOUtils.toByteArray(in);
+            byte[] data = FileHelper.toByteArray(in);
 
             Bitmap im = BitmapFactory.decodeByteArray(data, 0, data.length);
             int w = im.getWidth(), h = im.getHeight();
@@ -111,21 +107,21 @@ public class Res9patchStreamDecoder implements ResStreamDecoder {
         }
     }
 
-    private NinePatch getNinePatch(byte[] data) throws AndrolibException,
+    private @NotNull NinePatch getNinePatch(byte[] data) throws AndrolibException,
             IOException {
         ExtDataInput di = new ExtDataInput(new ByteArrayInputStream(data));
         find9patchChunk(di, NP_CHUNK_TYPE);
         return NinePatch.decode(di);
     }
 
-    private OpticalInset getOpticalInset(byte[] data) throws AndrolibException,
+    private @NotNull OpticalInset getOpticalInset(byte[] data) throws AndrolibException,
             IOException {
         ExtDataInput di = new ExtDataInput(new ByteArrayInputStream(data));
         find9patchChunk(di, OI_CHUNK_TYPE);
         return OpticalInset.decode(di);
     }
 
-    private void find9patchChunk(DataInput di, int magic) throws AndrolibException,
+    private void find9patchChunk(@NotNull DataInput di, int magic) throws AndrolibException,
             IOException {
         di.skipBytes(8);
         while (true) {
@@ -168,7 +164,8 @@ public class Res9patchStreamDecoder implements ResStreamDecoder {
             this.yDivs = yDivs;
         }
 
-        public static NinePatch decode(ExtDataInput di) throws IOException {
+        @Contract("_ -> new")
+        public static @NotNull NinePatch decode(@NotNull ExtDataInput di) throws IOException {
             di.skipBytes(1); // wasDeserialized
             byte numXDivs = di.readByte();
             byte numYDivs = di.readByte();
@@ -198,7 +195,7 @@ public class Res9patchStreamDecoder implements ResStreamDecoder {
             this.layoutBoundsBottom = layoutBoundsBottom;
         }
 
-        public static OpticalInset decode(ExtDataInput di) throws IOException {
+        public static @NotNull OpticalInset decode(ExtDataInput di) throws IOException {
             int layoutBoundsLeft = Integer.reverseBytes(di.readInt());
             int layoutBoundsTop = Integer.reverseBytes(di.readInt());
             int layoutBoundsRight = Integer.reverseBytes(di.readInt());

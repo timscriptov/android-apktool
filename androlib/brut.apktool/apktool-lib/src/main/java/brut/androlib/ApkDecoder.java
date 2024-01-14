@@ -16,20 +16,6 @@
  */
 package brut.androlib;
 
-import com.android.tools.smali.dexlib2.iface.DexFile;
-import com.mcal.androlib.utils.Logger;
-
-import org.apache.commons.io.FilenameUtils;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.regex.Pattern;
-
 import brut.androlib.apk.ApkInfo;
 import brut.androlib.exceptions.AndrolibException;
 import brut.androlib.exceptions.InFileNotFoundException;
@@ -41,6 +27,18 @@ import brut.directory.Directory;
 import brut.directory.DirectoryException;
 import brut.directory.ExtFile;
 import brut.util.OS;
+import com.android.tools.smali.dexlib2.iface.DexFile;
+import com.mcal.androlib.utils.FileHelper;
+import com.mcal.androlib.utils.Logger;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Pattern;
 
 public class ApkDecoder {
     private final static String SMALI_DIRNAME = "smali";
@@ -358,7 +356,7 @@ public class ApkDecoder {
                 if (isAPKFileNames(file) && unk.getCompressionLevel(file) == 0) {
                     String extOrFile = "";
                     if (unk.getSize(file) != 0) {
-                        extOrFile = FilenameUtils.getExtension(file);
+                        extOrFile = FileHelper.getExtension(file);
                     }
 
                     if (extOrFile.isEmpty() || !NO_COMPRESS_PATTERN.matcher(extOrFile).find()) {

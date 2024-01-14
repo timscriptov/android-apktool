@@ -19,4 +19,8 @@
     <string name="build">Build</string>
     <string name="decoding_finished">Decoding finished.</string>
     <string name="building_finished">Building finished.</string>
+    <string name="tools">Tools</string>
+    <string name="download_framework">Download framework</string>
+    <string name="download_aapt">Download aapt</string>
+    <string name="download_aapt2">Download aapt2</string>
 </resources>

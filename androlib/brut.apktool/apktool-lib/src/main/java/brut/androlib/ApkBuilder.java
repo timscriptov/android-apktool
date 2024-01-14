@@ -16,29 +16,6 @@
  */
 package brut.androlib;
 
-import com.mcal.androlib.utils.Logger;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.xml.sax.SAXException;
-
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.zip.CRC32;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-
 import brut.androlib.apk.ApkInfo;
 import brut.androlib.apk.UsesFramework;
 import brut.androlib.exceptions.AndrolibException;
@@ -56,6 +33,21 @@ import brut.directory.ExtFile;
 import brut.directory.ZipUtils;
 import brut.util.BrutIO;
 import brut.util.OS;
+import com.mcal.androlib.utils.FileHelper;
+import com.mcal.androlib.utils.Logger;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import java.io.*;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.zip.CRC32;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 public class ApkBuilder {
     private final static String APK_DIRNAME = "build/apk";
@@ -118,12 +110,8 @@ public class ApkBuilder {
             // we copied the AndroidManifest.xml to AndroidManifest.xml.orig so we can edit it
             // lets restore the unedited one, to not change the original
             if (manifest.isFile() && manifest.exists() && manifestOriginal.isFile()) {
-                try {
-                    if (new File(mApkDir, "AndroidManifest.xml").delete()) {
-                        FileUtils.moveFile(manifestOriginal, manifest);
-                    }
-                } catch (IOException ex) {
-                    throw new AndrolibException(ex.getMessage());
+                if (new File(mApkDir, "AndroidManifest.xml").delete()) {
+                    FileHelper.moveFile(manifestOriginal, manifest);
                 }
             }
             LOGGER.info("Built apk into: " + outFile.getPath());
@@ -143,7 +131,7 @@ public class ApkBuilder {
                     //noinspection ResultOfMethodCallIgnored
                     manifestOriginal.delete();
                 }
-                FileUtils.copyFile(manifest, manifestOriginal);
+                FileHelper.copyFile(manifest, manifestOriginal);
                 ResXmlPatcher.fixingPublicAttrsInProviderAttributes(manifest);
             } catch (IOException ex) {
                 throw new AndrolibException(ex.getMessage());
@@ -202,7 +190,7 @@ public class ApkBuilder {
         if (mConfig.forceBuildAll || isModified(working, stored)) {
             LOGGER.info("Copying " + mApkDir.toString() + " " + filename + " file...");
             try {
-                BrutIO.copyAndClose(Files.newInputStream(working.toPath()), Files.newOutputStream(stored.toPath()));
+                FileHelper.copyFile(working, stored);
                 return true;
             } catch (IOException ex) {
                 throw new AndrolibException(ex);
@@ -445,7 +433,7 @@ public class ApkBuilder {
         }
     }
 
-    private void buildApk(File outApk) throws AndrolibException {
+    private void buildApk(@NotNull File outApk) throws AndrolibException {
         LOGGER.info("Building apk file...");
         if (outApk.exists()) {
             //noinspection ResultOfMethodCallIgnored
@@ -461,7 +449,7 @@ public class ApkBuilder {
         if (!assetDir.exists()) {
             assetDir = null;
         }
-        try (ZipOutputStream zipOutputStream = new ZipOutputStream(Files.newOutputStream(outApk.toPath()))) {
+        try (ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(outApk))) {
             // zip all AAPT-generated files
             ZipUtils.zipFoldersPreserveStream(new File(mApkDir, APK_DIRNAME), zipOutputStream, assetDir, mApkInfo.doNotCompress);
 
@@ -476,7 +464,7 @@ public class ApkBuilder {
         }
     }
 
-    private void copyUnknownFiles(ZipOutputStream outputFile, Map<String, String> files)
+    private void copyUnknownFiles(ZipOutputStream outputFile, @NotNull Map<String, String> files)
             throws BrutException, IOException {
         File unknownFileDir = new File(mApkDir, UNK_DIRNAME);
 
@@ -503,7 +491,7 @@ public class ApkBuilder {
                 newEntry.setMethod(ZipEntry.STORED);
                 newEntry.setSize(inputFile.length());
                 newEntry.setCompressedSize(-1);
-                BufferedInputStream unknownFile = new BufferedInputStream(Files.newInputStream(inputFile.toPath()));
+                BufferedInputStream unknownFile = new BufferedInputStream(new FileInputStream(inputFile));
                 CRC32 crc = BrutIO.calculateCrc(unknownFile);
                 newEntry.setCrc(crc.getValue());
                 unknownFile.close();
@@ -517,7 +505,7 @@ public class ApkBuilder {
         }
     }
 
-    private File[] getIncludeFiles() throws AndrolibException {
+    private File @Nullable [] getIncludeFiles() throws AndrolibException {
         UsesFramework usesFramework = mApkInfo.usesFramework;
         if (usesFramework == null) {
             return null;
@@ -538,15 +526,15 @@ public class ApkBuilder {
         return files;
     }
 
-    private boolean isModified(File working, File stored) {
+    private boolean isModified(File working, @NotNull File stored) {
         return !stored.exists() || BrutIO.recursiveModifiedTime(working) > BrutIO.recursiveModifiedTime(stored);
     }
 
-    private boolean isFile(File working) {
+    private boolean isFile(@NotNull File working) {
         return working.exists();
     }
 
-    private boolean isModified(File[] working, File[] stored) {
+    private boolean isModified(File[] working, File @NotNull [] stored) {
         for (File file : stored) {
             if (!file.exists()) {
                 return true;
@@ -555,29 +543,11 @@ public class ApkBuilder {
         return BrutIO.recursiveModifiedTime(working) > BrutIO.recursiveModifiedTime(stored);
     }
 
-    private File[] newFiles(String[] names, File dir) {
+    private File @NotNull [] newFiles(String @NotNull [] names, File dir) {
         File[] files = new File[names.length];
         for (int i = 0; i < names.length; i++) {
             files[i] = new File(dir, names[i]);
         }
         return files;
-    }
-
-    public boolean detectWhetherAppIsFramework() throws AndrolibException {
-        File publicXml = new File(mApkDir, "res/values/public.xml");
-        if (!publicXml.exists()) {
-            return false;
-        }
-
-        Iterator<String> it;
-        try {
-            it = IOUtils.lineIterator(new FileReader(new File(mApkDir, "res/values/public.xml")));
-        } catch (FileNotFoundException ex) {
-            throw new AndrolibException(
-                    "Could not detect whether app is framework one", ex);
-        }
-        it.next();
-        it.next();
-        return it.next().contains("0x01");
     }
 }

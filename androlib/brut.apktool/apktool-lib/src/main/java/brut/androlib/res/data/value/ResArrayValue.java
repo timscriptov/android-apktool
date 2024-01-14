@@ -16,21 +16,21 @@
  */
 package brut.androlib.res.data.value;
 
+import brut.androlib.exceptions.AndrolibException;
+import brut.androlib.res.data.ResResource;
+import brut.androlib.res.xml.ResValuesXmlSerializable;
+import brut.util.Duo;
+import org.jetbrains.annotations.NotNull;
 import org.xmlpull.v1.XmlSerializer;
 
 import java.io.IOException;
 import java.util.Arrays;
 
-import brut.androlib.exceptions.AndrolibException;
-import brut.androlib.res.data.ResResource;
-import brut.androlib.res.xml.ResValuesXmlSerializable;
-import brut.util.Duo;
-
 public class ResArrayValue extends ResBagValue implements ResValuesXmlSerializable {
     private final ResScalarValue[] mItems;
     private final String[] AllowedArrayTypes = {"string", "integer"};
 
-    ResArrayValue(ResReferenceValue parent, Duo<Integer, ResScalarValue>[] items) {
+    ResArrayValue(ResReferenceValue parent, Duo<Integer, ResScalarValue> @NotNull [] items) {
         super(parent);
 
         mItems = new ResScalarValue[items.length];
@@ -45,8 +45,8 @@ public class ResArrayValue extends ResBagValue implements ResValuesXmlSerializab
     }
 
     @Override
-    public void serializeToResValuesXml(XmlSerializer serializer,
-                                        ResResource res) throws IOException, AndrolibException {
+    public void serializeToResValuesXml(@NotNull XmlSerializer serializer,
+                                        @NotNull ResResource res) throws IOException, AndrolibException {
         String type = getType();
         type = (type == null ? "" : type + "-") + "array";
         serializer.startTag(null, type);

@@ -16,10 +16,10 @@
  */
 package brut.androlib.res.decoder;
 
+import brut.androlib.exceptions.AndrolibException;
+
 import java.io.InputStream;
 import java.io.OutputStream;
-
-import brut.androlib.exceptions.AndrolibException;
 
 public interface ResStreamDecoder {
     void decode(InputStream in, OutputStream out)

@@ -1,11 +1,7 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
-    id("maven-publish")
 }
-
-group = 'com.mcal'
-version = project.artifactVersion
 
 android {
     compileSdk project.compileSDK.toInteger()
@@ -18,12 +14,6 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-        }
-    }
-    publishing {
-        singleVariant('release') {
-            withSourcesJar()
-            withJavadocJar()
         }
     }
     kotlinOptions {
@@ -40,21 +30,5 @@ dependencies {
     implementation project(':androlib:brut.j.core')
     implementation project(':androlib:brut.j.common')
 
-    implementation libs.misc.commons.io
-
     implementation("com.google.guava:guava:33.0.0-android")
-}
-
-publishing {
-    publications {
-        release(MavenPublication) {
-            groupId = 'com.mcal'
-            artifactId = 'util'
-            version = project.artifactVersion
-
-            afterEvaluate {
-                from components.release
-            }
-        }
-    }
 }

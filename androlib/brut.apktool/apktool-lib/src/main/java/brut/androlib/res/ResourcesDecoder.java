@@ -16,6 +16,19 @@
  */
 package brut.androlib.res;
 
+import brut.androlib.Config;
+import brut.androlib.apk.ApkInfo;
+import brut.androlib.exceptions.AndrolibException;
+import brut.androlib.res.data.*;
+import brut.androlib.res.decoder.*;
+import brut.androlib.res.util.ExtMXSerializer;
+import brut.androlib.res.util.ExtXmlSerializer;
+import brut.androlib.res.xml.ResValuesXmlSerializable;
+import brut.androlib.res.xml.ResXmlPatcher;
+import brut.directory.Directory;
+import brut.directory.DirectoryException;
+import brut.directory.FileDirectory;
+import org.jetbrains.annotations.NotNull;
 import org.xmlpull.v1.XmlSerializer;
 
 import java.io.File;
@@ -26,29 +39,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
-
-import brut.androlib.Config;
-import brut.androlib.apk.ApkInfo;
-import brut.androlib.exceptions.AndrolibException;
-import brut.androlib.res.data.ResPackage;
-import brut.androlib.res.data.ResResSpec;
-import brut.androlib.res.data.ResResource;
-import brut.androlib.res.data.ResTable;
-import brut.androlib.res.data.ResValuesFile;
-import brut.androlib.res.decoder.AXmlResourceParser;
-import brut.androlib.res.decoder.AndroidManifestResourceParser;
-import brut.androlib.res.decoder.Res9patchStreamDecoder;
-import brut.androlib.res.decoder.ResFileDecoder;
-import brut.androlib.res.decoder.ResRawStreamDecoder;
-import brut.androlib.res.decoder.ResStreamDecoderContainer;
-import brut.androlib.res.decoder.XmlPullStreamDecoder;
-import brut.androlib.res.util.ExtMXSerializer;
-import brut.androlib.res.util.ExtXmlSerializer;
-import brut.androlib.res.xml.ResValuesXmlSerializable;
-import brut.androlib.res.xml.ResXmlPatcher;
-import brut.directory.Directory;
-import brut.directory.DirectoryException;
-import brut.directory.FileDirectory;
 
 public class ResourcesDecoder {
     private final static Logger LOGGER = Logger.getLogger(ResourcesDecoder.class.getName());
@@ -196,7 +186,7 @@ public class ResourcesDecoder {
         }
     }
 
-    private ExtMXSerializer getResXmlSerializer() {
+    private @NotNull ExtMXSerializer getResXmlSerializer() {
         ExtMXSerializer serial = new ExtMXSerializer();
         serial.setProperty(ExtXmlSerializer.PROPERTY_SERIALIZER_INDENTATION, "    ");
         serial.setProperty(ExtXmlSerializer.PROPERTY_SERIALIZER_LINE_SEPARATOR, System.getProperty("line.separator"));
@@ -205,8 +195,8 @@ public class ResourcesDecoder {
         return serial;
     }
 
-    private void generateValuesFile(ResValuesFile valuesFile, Directory out,
-                                    ExtXmlSerializer serial) throws AndrolibException {
+    private void generateValuesFile(@NotNull ResValuesFile valuesFile, @NotNull Directory out,
+                                    @NotNull ExtXmlSerializer serial) throws AndrolibException {
         try {
             OutputStream outStream = out.getFileOutput(valuesFile.getPath());
             serial.setOutput((outStream), null);
@@ -230,8 +220,8 @@ public class ResourcesDecoder {
         }
     }
 
-    private void generatePublicXml(ResPackage pkg, Directory out,
-                                   XmlSerializer serial) throws AndrolibException {
+    private void generatePublicXml(@NotNull ResPackage pkg, @NotNull Directory out,
+                                   @NotNull XmlSerializer serial) throws AndrolibException {
         try {
             OutputStream outStream = out.getFileOutput("values/public.xml");
             serial.setOutput(outStream, null);

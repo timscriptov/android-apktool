@@ -17,12 +17,12 @@
 package brut.androlib.res.data;
 
 import androidx.annotation.NonNull;
+import brut.androlib.exceptions.AndrolibException;
+import brut.androlib.exceptions.UndefinedResObjectException;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import brut.androlib.exceptions.AndrolibException;
-import brut.androlib.exceptions.UndefinedResObjectException;
 
 public final class ResTypeSpec {
 
@@ -55,7 +55,7 @@ public final class ResTypeSpec {
         return mName.equalsIgnoreCase(RES_TYPE_NAME_STRING);
     }
 
-    public ResResSpec getResSpec(String name) throws AndrolibException {
+    public @NotNull ResResSpec getResSpec(String name) throws AndrolibException {
         ResResSpec spec = getResSpecUnsafe(name);
         if (spec == null) {
             throw new UndefinedResObjectException(String.format("resource spec: %s/%s", getName(), name));

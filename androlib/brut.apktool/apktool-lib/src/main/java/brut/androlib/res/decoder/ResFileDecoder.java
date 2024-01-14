@@ -16,13 +16,6 @@
  */
 package brut.androlib.res.decoder;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import brut.androlib.exceptions.AndrolibException;
 import brut.androlib.exceptions.CantFind9PatchChunkException;
 import brut.androlib.exceptions.RawXmlEncounteredException;
@@ -32,6 +25,14 @@ import brut.androlib.res.data.value.ResFileValue;
 import brut.directory.DirUtil;
 import brut.directory.Directory;
 import brut.directory.DirectoryException;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ResFileDecoder {
     private final static Logger LOGGER = Logger.getLogger(ResFileDecoder.class.getName());
@@ -49,7 +50,7 @@ public class ResFileDecoder {
         this.mDecoders = decoders;
     }
 
-    public void decode(ResResource res, Directory inDir, Directory outDir, Map<String, String> resFileMapping)
+    public void decode(@NotNull ResResource res, Directory inDir, Directory outDir, Map<String, String> resFileMapping)
             throws AndrolibException {
 
         ResFileValue fileValue = (ResFileValue) res.getValue();
@@ -147,7 +148,7 @@ public class ResFileDecoder {
         }
     }
 
-    public void decode(Directory inDir, String inFileName, Directory outDir,
+    public void decode(@NotNull Directory inDir, String inFileName, @NotNull Directory outDir,
                        String outFileName, String decoder) throws AndrolibException {
         try (
                 InputStream in = inDir.getFileInput(inFileName);

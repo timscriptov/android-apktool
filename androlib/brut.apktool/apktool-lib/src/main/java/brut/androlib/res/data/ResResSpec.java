@@ -16,31 +16,21 @@
  */
 package brut.androlib.res.data;
 
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-
 import brut.androlib.exceptions.AndrolibException;
 import brut.androlib.exceptions.UndefinedResObjectException;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.*;
 
 public class ResResSpec {
-    private static final Set<String> EMPTY_RESOURCE_NAMES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
-            "0_resource_name_obfuscated",
-            "(name removed)"
-    )));
+    private static final Set<String> EMPTY_RESOURCE_NAMES = Set.of("0_resource_name_obfuscated", "(name removed)");
     private final ResID mId;
     private final String mName;
     private final ResPackage mPackage;
     private final ResTypeSpec mType;
     private final Map<ResConfigFlags, ResResource> mResources = new LinkedHashMap<>();
 
-    public ResResSpec(ResID id, String name, ResPackage pkg, ResTypeSpec type) {
+    public ResResSpec(ResID id, String name, ResPackage pkg, @NotNull ResTypeSpec type) {
         this.mId = id;
         String cleanName;
         name = EMPTY_RESOURCE_NAMES.contains(name) ? null : name;
@@ -61,7 +51,7 @@ public class ResResSpec {
         return new LinkedHashSet<>(mResources.values());
     }
 
-    public ResResource getResource(ResType config) throws AndrolibException {
+    public ResResource getResource(@NotNull ResType config) throws AndrolibException {
         return getResource(config.getFlags());
     }
 
@@ -95,7 +85,7 @@ public class ResResSpec {
     }
 
     public String getName() {
-        return StringUtils.replace(mName, "\"", "q");
+        return mName.replace("\"", "q");
     }
 
     public ResPackage getPackage() {
@@ -114,7 +104,7 @@ public class ResResSpec {
         addResource(res, false);
     }
 
-    public void addResource(ResResource res, boolean overwrite) throws AndrolibException {
+    public void addResource(@NotNull ResResource res, boolean overwrite) throws AndrolibException {
         ResConfigFlags flags = res.getConfig().getFlags();
         if (mResources.put(flags, res) != null && !overwrite) {
             throw new AndrolibException(String.format("Multiple resources: spec=%s, config=%s", this, flags));
@@ -126,7 +116,7 @@ public class ResResSpec {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return mId.toString() + " " + mType.toString() + "/" + mName;
     }
 }

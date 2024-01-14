@@ -14,19 +14,25 @@ import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.widget.Button
 import android.widget.EditText
 import com.mcal.androlib.utils.Logger
 import com.mcal.apktool.R
 import com.mcal.apktool.databinding.ActivityMainBinding
 import com.mcal.example.utils.ApktoolHelper
-import com.mcal.example.utils.FileHelper.copyAssetsFile
 import com.mcal.example.utils.FileHelper.getToolsDir
 import com.mcal.example.utils.Preferences
+import io.ktor.client.*
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import io.ktor.http.*
+import io.ktor.utils.io.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.io.FileOutputStream
 import java.util.logging.Level
 
 
@@ -39,11 +45,11 @@ class MainActivity : Activity(), Logger {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        checkInstalledTools()
         framework = Preferences.getFrameworkPath(this)
         aapt = Preferences.getAaptPath(this)
         aapt2 = Preferences.getAapt2Path(this)
         initPermission()
-        installTools()
         setCustomFramework()
         setCustomAapt()
         setCustomAapt2()
@@ -214,12 +220,112 @@ class MainActivity : Activity(), Logger {
         }
     }
 
-    private fun installTools() {
-        runCatching {
-            val path = getToolsDir(this)
-            copyAssetsFile(this, "android-framework.jar", File(path, "android.jar"), false)
-            copyAssetsFile(this, "aapt", File(path, "aapt"), true)
-            copyAssetsFile(this, "aapt2", File(path, "aapt2"), true)
+    private fun checkInstalledTools() {
+        val toolDir = getToolsDir(this)
+        val framework = File(toolDir, "android.jar")
+        if (!framework.exists()) {
+            val button = binding.downloadFramework
+            button.isEnabled = true
+            button.setOnClickListener {
+                val sdkVersionCode = 34 // 21 - 34
+                downloadFile(button, "framework/$sdkVersionCode/android.jar", framework)
+            }
+        }
+        val abi = getAbi()
+        val aapt = File(toolDir, "aapt")
+        if (!aapt.exists()) {
+            val button = binding.downloadAapt
+            button.isEnabled = true
+            button.setOnClickListener {
+                downloadFile(button, "bin/$abi/aapt", aapt)
+            }
+        }
+        val aapt2 = File(toolDir, "aapt2")
+        if (!aapt2.exists()) {
+            val button = binding.downloadAapt2
+            button.isEnabled = true
+            button.setOnClickListener {
+                downloadFile(button, "bin/$abi/aapt2", aapt2)
+            }
+        }
+    }
+
+    private fun getAbi(): String {
+        for (androidArch in Build.SUPPORTED_ABIS) {
+            return when (androidArch) {
+                "arm64-v8a" -> return "arm64-v8a"
+                "armeabi-v7a" -> return "armeabi-v7a"
+                "x86_64" -> return "x86_64"
+                "x86" -> return "x86"
+                else -> "armeabi-v7a"
+            }
+        }
+        return "armeabi-v7a"
+    }
+
+    private fun downloadFile(view: Button, endUrl: String, saveFile: File) {
+        val downloadUrl = "https://timscriptov.ru/apkeditor/$endUrl"
+        val btnText = view.text.toString()
+        downloadFile(downloadUrl, saveFile,
+            onUpdate = {
+                view.text = it
+            },
+            onSuccess = {
+                view.text = btnText
+                view.isEnabled = false
+            },
+            onFailed = {
+                error(it)
+            }
+        )
+    }
+
+    private fun downloadFile(
+        url: String,
+        saveFile: File,
+        onUpdate: (String) -> Unit,
+        onSuccess: () -> Unit,
+        onFailed: (String) -> Unit
+    ) = CoroutineScope(Dispatchers.IO).launch {
+        try {
+            HttpClient().use { client ->
+                val response = client.get(url)
+                val contentLength = response.contentLength() ?: -1L
+
+                val body = response.bodyAsChannel()
+                FileOutputStream(saveFile).use { output ->
+                    var bytesReceived = 0L
+                    val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
+                    do {
+                        val bytesRead = body.readAvailable(buffer)
+                        if (bytesRead > 0) {
+                            output.write(buffer, 0, bytesRead)
+                            bytesReceived += bytesRead
+                            val progress = if (contentLength > 0) {
+                                (bytesReceived.toDouble() / contentLength.toDouble()) * 100
+                            } else {
+                                bytesReceived.toDouble()
+                            }
+                            withContext(Dispatchers.Main) {
+                                onUpdate(String.format("%.2f%%", progress))
+                            }
+                        }
+                    } while (bytesRead >= 0)
+                }
+            }
+            if (saveFile.exists()) {
+                val path = saveFile.path
+                if (path.contains("aapt")) {
+                    saveFile.setExecutable(true)
+                }
+            }
+            withContext(Dispatchers.Main) {
+                onSuccess()
+            }
+        } catch (exception: Exception) {
+            withContext(Dispatchers.Main) {
+                onFailed(exception.message ?: "Unknown error")
+            }
         }
     }
 

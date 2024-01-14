@@ -16,7 +16,13 @@
  */
 package brut.androlib.res.decoder;
 
+import brut.androlib.res.data.arsc.ARSCHeader;
+import brut.androlib.res.xml.ResXmlEncoders;
+import brut.util.ExtCountingDataInput;
 import com.google.common.annotations.VisibleForTesting;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -28,10 +34,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
-
-import brut.androlib.res.data.arsc.ARSCHeader;
-import brut.androlib.res.xml.ResXmlEncoders;
-import brut.util.ExtCountingDataInput;
 
 public class StringBlock {
     private static final Logger LOGGER = Logger.getLogger(StringBlock.class.getName());
@@ -55,7 +57,7 @@ public class StringBlock {
         mIsUtf8 = isUTF8;
     }
 
-    public static StringBlock readWithChunk(ExtCountingDataInput reader) throws IOException {
+    public static @NotNull StringBlock readWithChunk(@NotNull ExtCountingDataInput reader) throws IOException {
         int startPosition = reader.position();
         reader.skipCheckShort(ARSCHeader.RES_STRING_POOL_TYPE);
         int headerSize = reader.readShort();
@@ -64,8 +66,8 @@ public class StringBlock {
         return readWithoutChunk(reader, startPosition, headerSize, chunkSize);
     }
 
-    public static StringBlock readWithoutChunk(ExtCountingDataInput reader, int startPosition, int headerSize,
-                                               int chunkSize) throws IOException {
+    public static @NotNull StringBlock readWithoutChunk(@NotNull ExtCountingDataInput reader, int startPosition, int headerSize,
+                                                        int chunkSize) throws IOException {
         // ResStringPool_header
         int stringCount = reader.readInt();
         int styleCount = reader.readInt();
@@ -115,11 +117,13 @@ public class StringBlock {
         return block;
     }
 
-    private static int getShort(byte[] array, int offset) {
+    @Contract(pure = true)
+    private static int getShort(byte @NotNull [] array, int offset) {
         return (array[offset + 1] & 0xff) << 8 | array[offset] & 0xff;
     }
 
-    public static int[] getUtf8(byte[] array, int offset) {
+    @Contract(value = "_, _ -> new", pure = true)
+    public static int @NotNull [] getUtf8(byte @NotNull [] array, int offset) {
         int val = array[offset];
         int length;
         // We skip the utf16 length of the string
@@ -141,7 +145,8 @@ public class StringBlock {
         return new int[]{offset, length};
     }
 
-    public static int[] getUtf16(byte[] array, int offset) {
+    @Contract(value = "_, _ -> new", pure = true)
+    public static int @NotNull [] getUtf16(byte @NotNull [] array, int offset) {
         int val = ((array[offset + 1] & 0xFF) << 8 | array[offset] & 0xFF);
 
         if ((val & 0x8000) != 0) {
@@ -244,7 +249,8 @@ public class StringBlock {
      * * first int is index of tag name ('b','i', etc.) * second int is tag
      * start index in string * third int is tag end index in string
      */
-    private int[] getStyle(int index) {
+    @Contract(pure = true)
+    private int @Nullable [] getStyle(int index) {
         if (mStyleOffsets == null || mStyles == null || index >= mStyleOffsets.length) {
             return null;
         }

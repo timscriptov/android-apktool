@@ -16,13 +16,15 @@
  */
 package brut.androlib.res.data.arsc;
 
+import brut.util.ExtCountingDataInput;
+import brut.util.ExtDataInput;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
 import java.io.EOFException;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.logging.Logger;
-
-import brut.util.ExtCountingDataInput;
-import brut.util.ExtDataInput;
 
 public class ARSCHeader {
     public final static short RES_NONE_TYPE = -1;
@@ -62,7 +64,8 @@ public class ARSCHeader {
         this.endPosition = headerStart + chunkSize;
     }
 
-    public static ARSCHeader read(ExtCountingDataInput in) throws IOException {
+    @Contract("_ -> new")
+    public static @NotNull ARSCHeader read(@NotNull ExtCountingDataInput in) throws IOException {
         short type;
         int start = in.position();
         try {
@@ -73,7 +76,7 @@ public class ARSCHeader {
         return new ARSCHeader(type, in.readShort(), in.readInt(), start);
     }
 
-    public void checkForUnreadHeader(ExtCountingDataInput in) throws IOException {
+    public void checkForUnreadHeader(@NotNull ExtCountingDataInput in) throws IOException {
         // Some applications lie about the reported size of their chunk header. Trusting the chunkSize is misleading
         // So compare to what we actually read in the header vs reported and skip the rest.
         // However, this runs after each chunk and not every chunk reading has a specific distinction between the
@@ -97,7 +100,7 @@ public class ARSCHeader {
         }
     }
 
-    public void skipChunk(ExtDataInput in) throws IOException {
+    public void skipChunk(@NotNull ExtDataInput in) throws IOException {
         in.skipBytes(chunkSize - headerSize);
     }
 }

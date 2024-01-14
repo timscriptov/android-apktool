@@ -16,6 +16,8 @@
  */
 package org.xmlpull.renamed;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.xmlpull.v1.XmlSerializer;
 
 import java.io.IOException;
@@ -99,7 +101,7 @@ public class MXSerializer implements XmlSerializer {
     protected boolean writeLineSepartor; // should end-of-line be written
     protected boolean writeIndentation; // is indentation used?
 
-    protected static String printable(String s) {
+    protected static @NotNull String printable(String s) {
         if (s == null) {
             return "null";
         }
@@ -112,7 +114,7 @@ public class MXSerializer implements XmlSerializer {
         return retval.toString();
     }
 
-    protected static String printable(char ch) {
+    protected static @NotNull String printable(char ch) {
         StringBuffer retval = new StringBuffer();
         addPrintable(retval, ch);
         return retval.toString();
@@ -342,9 +344,9 @@ public class MXSerializer implements XmlSerializer {
             default:
                 throw new IllegalStateException("unsupported property " + name);
         }
-        writeLineSepartor = lineSeparator != null && lineSeparator.length() > 0;
+        writeLineSepartor = lineSeparator != null && !lineSeparator.isEmpty();
         writeIndentation = indentationString != null
-                && indentationString.length() > 0;
+                && !indentationString.isEmpty();
         // optimize - do not write when nothing to write ...
         doIndent = indentationString != null
                 && (writeLineSepartor || writeIndentation);
@@ -371,7 +373,8 @@ public class MXSerializer implements XmlSerializer {
         }
     }
 
-    private String getLocation() {
+    @Contract(pure = true)
+    private @NotNull String getLocation() {
         return location != null ? " @" + location : "";
     }
 
@@ -488,7 +491,7 @@ public class MXSerializer implements XmlSerializer {
         }
         if (namespace == null) {
             throw new IllegalArgumentException("namespace must be not null" + getLocation());
-        } else if (namespace.length() == 0) {
+        } else if (namespace.isEmpty()) {
             throw new IllegalArgumentException("default namespace cannot have prefix" + getLocation());
         }
 
@@ -496,7 +499,7 @@ public class MXSerializer implements XmlSerializer {
         for (int i = namespaceEnd - 1; i >= 0; --i) {
             if (namespace.equals(namespaceUri[i])) {
                 final String prefix = namespacePrefix[i];
-                if (nonEmpty && prefix.length() == 0) {
+                if (nonEmpty && prefix.isEmpty()) {
                     continue;
                 }
 
@@ -575,7 +578,7 @@ public class MXSerializer implements XmlSerializer {
         }
         out.write('<');
         if (namespace != null) {
-            if (namespace.length() > 0) {
+            if (!namespace.isEmpty()) {
                 // in future make this algo a feature on serializer
                 String prefix = null;
                 if (depth > 0 && (namespaceEnd - elNamespaceCount[depth - 1]) == 1) {
@@ -601,7 +604,7 @@ public class MXSerializer implements XmlSerializer {
                     prefix = lookupOrDeclarePrefix(namespace);
                 }
                 // make sure that default ("") namespace to not print ":"
-                if (prefix.length() > 0) {
+                if (!prefix.isEmpty()) {
                     elPrefix[depth] = prefix;
                     out.write(prefix);
                     out.write(':');
@@ -611,11 +614,11 @@ public class MXSerializer implements XmlSerializer {
             } else {
                 // make sure that default namespace can be declared
                 for (int i = namespaceEnd - 1; i >= 0; --i) {
-                    if (namespacePrefix[i] == "") {
+                    if (namespacePrefix[i].isEmpty()) {
                         final String uri = namespaceUri[i];
                         if (uri == null) {
                             setPrefix("", "");
-                        } else if (uri.length() > 0) {
+                        } else if (!uri.isEmpty()) {
                             throw new IllegalStateException("start tag can not be written in empty default namespace "
                                     + "as default namespace is currently bound to '"
                                     + uri + "'" + getLocation());
@@ -639,7 +642,7 @@ public class MXSerializer implements XmlSerializer {
             throw new IllegalArgumentException("startTag() must be called before attribute()" + getLocation());
         }
         out.write(' ');
-        if (namespace != null && namespace.length() > 0) {
+        if (namespace != null && !namespace.isEmpty()) {
             if (!namesInterned) {
                 namespace = namespace.intern();
             } else if (checkNamesInterned) {
@@ -694,7 +697,7 @@ public class MXSerializer implements XmlSerializer {
                 writeIndent();
                 out.write(" ");
             }
-            if (namespacePrefix[i] != "") {
+            if (!namespacePrefix[i].isEmpty()) {
                 out.write(" xmlns:");
                 out.write(namespacePrefix[i]);
                 out.write('=');
@@ -745,7 +748,7 @@ public class MXSerializer implements XmlSerializer {
             }
             out.write("</");
             String startTagPrefix = elPrefix[depth];
-            if (startTagPrefix.length() > 0) {
+            if (!startTagPrefix.isEmpty()) {
                 out.write(startTagPrefix);
                 out.write(':');
             }
@@ -856,7 +859,7 @@ public class MXSerializer implements XmlSerializer {
         out.flush();
     }
 
-    protected void writeAttributeValue(String value, Writer out)
+    protected void writeAttributeValue(@NotNull String value, Writer out)
             throws IOException {
         // .[apostrophe and <, & escaped],
         final char quot = attributeUseApostrophe ? '\'' : '"';

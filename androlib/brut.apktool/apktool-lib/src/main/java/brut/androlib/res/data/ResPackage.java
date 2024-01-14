@@ -16,23 +16,16 @@
  */
 package brut.androlib.res.data;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.logging.Logger;
-
 import brut.androlib.exceptions.AndrolibException;
 import brut.androlib.exceptions.UndefinedResObjectException;
 import brut.androlib.res.data.value.ResFileValue;
 import brut.androlib.res.data.value.ResValueFactory;
 import brut.androlib.res.xml.ResValuesXmlSerializable;
 import brut.util.Duo;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.*;
+import java.util.logging.Logger;
 
 public class ResPackage {
     private final static Logger LOGGER = Logger.getLogger(ResPackage.class.getName());
@@ -142,7 +135,7 @@ public class ResPackage {
         }
     }
 
-    public void addType(ResTypeSpec type) {
+    public void addType(@NotNull ResTypeSpec type) {
         if (mTypes.containsKey(type.getName())) {
             LOGGER.warning("Multiple types detected! " + type + " ignored!");
         } else {

@@ -16,12 +16,14 @@
  */
 package brut.androlib.apk;
 
+import org.jetbrains.annotations.NotNull;
+
 public class PackageInfo implements YamlSerializable {
     public String forcedPackageId;
     public String renameManifestPackage;
 
     @Override
-    public void readItem(YamlReader reader) {
+    public void readItem(@NotNull YamlReader reader) {
         YamlLine line = reader.getLine();
         switch (line.getKey()) {
             case "forcedPackageId": {
@@ -36,7 +38,7 @@ public class PackageInfo implements YamlSerializable {
     }
 
     @Override
-    public void write(YamlWriter writer) {
+    public void write(@NotNull YamlWriter writer) {
         writer.writeString("forcedPackageId", forcedPackageId);
         writer.writeString("renameManifestPackage", renameManifestPackage);
     }

@@ -16,17 +16,18 @@
  */
 package brut.androlib.apk;
 
+import brut.androlib.exceptions.AndrolibException;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import brut.androlib.exceptions.AndrolibException;
 
 public class UsesFramework implements YamlSerializable {
     public List<Integer> ids;
     public String tag;
 
     @Override
-    public void readItem(YamlReader reader) throws AndrolibException {
+    public void readItem(@NotNull YamlReader reader) throws AndrolibException {
         YamlLine line = reader.getLine();
         switch (line.getKey()) {
             case "ids": {
@@ -42,7 +43,7 @@ public class UsesFramework implements YamlSerializable {
     }
 
     @Override
-    public void write(YamlWriter writer) {
+    public void write(@NotNull YamlWriter writer) {
         writer.writeList("ids", ids);
         writer.writeString("tag", tag);
     }

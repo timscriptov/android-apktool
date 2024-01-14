@@ -16,10 +16,10 @@
  */
 package brut.androlib.res.data.arsc;
 
-import java.util.logging.Logger;
-
 import brut.androlib.exceptions.AndrolibException;
 import brut.androlib.res.data.ResPackage;
+
+import java.util.logging.Logger;
 
 public class ARSCData {
     private static final Logger LOGGER = Logger.getLogger(ARSCData.class.getName());

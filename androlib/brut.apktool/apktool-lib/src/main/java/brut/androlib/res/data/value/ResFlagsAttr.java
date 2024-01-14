@@ -16,17 +16,18 @@
  */
 package brut.androlib.res.data.value;
 
-import org.xmlpull.v1.XmlSerializer;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.logging.Logger;
-
 import brut.androlib.exceptions.AndrolibException;
 import brut.androlib.res.data.ResResSpec;
 import brut.androlib.res.data.ResResource;
 import brut.androlib.res.data.arsc.FlagItem;
 import brut.util.Duo;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.xmlpull.v1.XmlSerializer;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.logging.Logger;
 
 public class ResFlagsAttr extends ResAttr {
     private static final Logger LOGGER = Logger.getLogger(ResFlagsAttr.class.getName());
@@ -35,7 +36,7 @@ public class ResFlagsAttr extends ResAttr {
     private FlagItem[] mFlags;
 
     ResFlagsAttr(ResReferenceValue parent, int type, Integer min, Integer max,
-                 Boolean l10n, Duo<ResReferenceValue, ResScalarValue>[] items) {
+                 Boolean l10n, Duo<ResReferenceValue, ResScalarValue> @NotNull [] items) {
         super(parent, type, min, max, l10n);
 
         mItems = new FlagItem[items.length];
@@ -96,7 +97,8 @@ public class ResFlagsAttr extends ResAttr {
         }
     }
 
-    private boolean isSubpartOf(int flag, int[] flags) {
+    @Contract(pure = true)
+    private boolean isSubpartOf(int flag, int @NotNull [] flags) {
         for (int j : flags) {
             if ((j & flag) == flag) {
                 return true;
@@ -105,7 +107,7 @@ public class ResFlagsAttr extends ResAttr {
         return false;
     }
 
-    private String renderFlags(FlagItem[] flags) throws AndrolibException {
+    private String renderFlags(FlagItem @NotNull [] flags) throws AndrolibException {
         StringBuilder ret = new StringBuilder();
         for (FlagItem flag : flags) {
             ret.append("|").append(flag.getValue());

@@ -16,16 +16,16 @@
  */
 package brut.androlib.res.decoder;
 
+import brut.androlib.res.xml.ResXmlEncoders;
 import com.google.common.base.Splitter;
 import com.google.common.base.Splitter.MapSplitter;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.PeekingIterator;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-
-import brut.androlib.res.xml.ResXmlEncoders;
 
 public class StyledString {
     private static final Logger LOGGER = Logger.getLogger(StyledString.class.getName());
@@ -89,7 +89,7 @@ public class StyledString {
         }
 
         @Override
-        public int compareTo(Span o) {
+        public int compareTo(@NotNull Span o) {
             int res = Integer.compare(firstChar, o.firstChar);
             if (res != 0) {
                 return res;
@@ -107,7 +107,7 @@ public class StyledString {
         private StringBuilder xmlValue;
         private int lastOffset;
 
-        String decode(StyledString styledString) {
+        @NotNull String decode(@NotNull StyledString styledString) {
             text = styledString.getText();
             xmlValue = new StringBuilder(text.length() * 2);
             lastOffset = 0;
@@ -125,7 +125,7 @@ public class StyledString {
             return xmlValue.toString();
         }
 
-        private void decodeIterate(PeekingIterator<Span> it) {
+        private void decodeIterate(@NotNull PeekingIterator<Span> it) {
             Span span = it.next();
             String name = span.getName();
             Map<String, String> attributes = span.getAttributes();

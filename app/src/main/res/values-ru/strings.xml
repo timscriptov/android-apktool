@@ -19,4 +19,8 @@
     <string name="build">Компилировать</string>
     <string name="decoding_finished">Декомпиляция завершена.</string>
     <string name="building_finished">Компиляция завершена.</string>
+    <string name="tools">Инструменты</string>
+    <string name="download_framework">Загрузить фреймфорк</string>
+    <string name="download_aapt">Загрузить aapt</string>
+    <string name="download_aapt2">Загрузить aapt2</string>
 </resources>

@@ -33,6 +33,43 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="#2196F3"
+                    android:text="@string/tools"/>
+
+            <Button
+                    android:id="@+id/download_framework"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/download_framework"
+                    android:enabled="false" />
+
+            <Button
+                    android:id="@+id/download_aapt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/download_aapt"
+                    android:enabled="false" />
+
+            <Button
+                    android:id="@+id/download_aapt2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/download_aapt2"
+                    android:enabled="false" />
+
+            <View
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="#2196F3"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"/>
+
+            <TextView
+                    android:layout_marginTop="8dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#2196F3"
                     android:text="@string/community"/>
 
             <LinearLayout
@@ -163,7 +200,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/enter_output_dir"/>
-
             <Button
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"

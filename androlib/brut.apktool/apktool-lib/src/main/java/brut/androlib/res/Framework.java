@@ -16,31 +16,25 @@
  */
 package brut.androlib.res;
 
-import org.apache.commons.io.IOUtils;
-
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.util.Objects;
-import com.mcal.androlib.utils.Logger;
-import java.util.zip.CRC32;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipOutputStream;
-
 import brut.androlib.Config;
 import brut.androlib.exceptions.AndrolibException;
 import brut.androlib.exceptions.CantFindFrameworkResException;
 import brut.androlib.res.data.arsc.ARSCData;
 import brut.androlib.res.data.arsc.FlagsOffset;
 import brut.androlib.res.decoder.ARSCDecoder;
+import com.mcal.androlib.utils.FileHelper;
+import com.mcal.androlib.utils.Logger;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.*;
+import java.util.zip.CRC32;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
 
 public class Framework {
-    private Logger LOGGER = null;
     private final Config config;
+    private Logger LOGGER = null;
 
     public Framework(Config config) {
         this.config = config;
@@ -63,14 +57,14 @@ public class Framework {
             }
 
             in = zip.getInputStream(entry);
-            byte[] data = IOUtils.toByteArray(in);
+            byte[] data = FileHelper.toByteArray(in);
 
             ARSCData arsc = ARSCDecoder.decode(new ByteArrayInputStream(data), true, true);
             publicizeResources(data, arsc.getFlagsOffsets());
 
             File outFile = new File(config.framework);
 
-            out = new ZipOutputStream(Files.newOutputStream(outFile.toPath()));
+            out = new ZipOutputStream(new FileOutputStream(outFile));
             out.setMethod(ZipOutputStream.STORED);
             CRC32 crc = new CRC32();
             crc.update(data);
@@ -86,7 +80,7 @@ public class Framework {
             entry = zip.getEntry("AndroidManifest.xml");
             if (entry != null) {
                 in = zip.getInputStream(entry);
-                byte[] manifest = IOUtils.toByteArray(in);
+                byte[] manifest = FileHelper.toByteArray(in);
                 CRC32 manifestCrc = new CRC32();
                 manifestCrc.update(manifest);
                 entry.setSize(manifest.length);
@@ -101,13 +95,10 @@ public class Framework {
             LOGGER.info("Framework installed to: " + outFile);
         } catch (IOException ex) {
             throw new AndrolibException(ex);
-        } finally {
-            IOUtils.closeQuietly(in);
-            IOUtils.closeQuietly(out);
         }
     }
 
-    public void publicizeResources(byte[] arsc, FlagsOffset[] flagsOffsets) {
+    public void publicizeResources(byte[] arsc, FlagsOffset @NotNull [] flagsOffsets) {
         for (FlagsOffset flags : flagsOffsets) {
             int offset = flags.offset + 3;
             int end = offset + 4 * flags.count;

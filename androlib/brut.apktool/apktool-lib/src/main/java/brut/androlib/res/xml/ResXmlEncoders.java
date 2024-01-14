@@ -16,17 +16,17 @@
  */
 package brut.androlib.res.xml;
 
-import org.apache.commons.lang3.StringUtils;
+import brut.util.Duo;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import brut.util.Duo;
-
 public final class ResXmlEncoders {
 
-    public static String escapeXmlChars(String str) {
-        return StringUtils.replace(StringUtils.replace(str, "&", "&amp;"), "<", "&lt;");
+    public static @NotNull String escapeXmlChars(@NotNull String str) {
+        return str.replace("&", "&amp;").replace("<", "&lt;");
     }
 
     public static String encodeAsResXmlAttr(String str) {
@@ -165,7 +165,8 @@ public final class ResXmlEncoders {
      * - a list of offsets of non-positional substitutions. non-pos is defined as any "%" which isn't "%%" nor "%\d+\$"
      * - a list of offsets of positional substitutions
      */
-    private static Duo<List<Integer>, List<Integer>> findSubstitutions(String str, int nonPosMax) {
+    @Contract("_, _ -> new")
+    private static @NotNull Duo<List<Integer>, List<Integer>> findSubstitutions(String str, int nonPosMax) {
         if (nonPosMax == -1) {
             nonPosMax = Integer.MAX_VALUE;
         }

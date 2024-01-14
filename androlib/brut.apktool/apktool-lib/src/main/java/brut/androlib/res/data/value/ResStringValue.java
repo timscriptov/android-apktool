@@ -16,14 +16,13 @@
  */
 package brut.androlib.res.data.value;
 
+import brut.androlib.exceptions.AndrolibException;
+import brut.androlib.res.data.ResResource;
+import brut.androlib.res.xml.ResXmlEncoders;
 import org.xmlpull.v1.XmlSerializer;
 
 import java.io.IOException;
 import java.util.regex.Pattern;
-
-import brut.androlib.exceptions.AndrolibException;
-import brut.androlib.res.data.ResResource;
-import brut.androlib.res.xml.ResXmlEncoders;
 
 public class ResStringValue extends ResScalarValue {
     private static final Pattern allDigits = Pattern.compile("\\d{9,}");

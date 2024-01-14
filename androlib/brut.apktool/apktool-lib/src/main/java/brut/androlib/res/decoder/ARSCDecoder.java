@@ -17,43 +17,25 @@
 package brut.androlib.res.decoder;
 
 import android.util.TypedValue;
-
-import com.google.common.io.LittleEndianDataInputStream;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Logger;
-
 import brut.androlib.exceptions.AndrolibException;
-import brut.androlib.res.data.ResConfigFlags;
-import brut.androlib.res.data.ResID;
-import brut.androlib.res.data.ResPackage;
-import brut.androlib.res.data.ResResSpec;
-import brut.androlib.res.data.ResResource;
-import brut.androlib.res.data.ResTable;
-import brut.androlib.res.data.ResType;
-import brut.androlib.res.data.ResTypeSpec;
+import brut.androlib.res.data.*;
 import brut.androlib.res.data.arsc.ARSCData;
 import brut.androlib.res.data.arsc.ARSCHeader;
 import brut.androlib.res.data.arsc.EntryData;
 import brut.androlib.res.data.arsc.FlagsOffset;
-import brut.androlib.res.data.value.ResBagValue;
-import brut.androlib.res.data.value.ResFileValue;
-import brut.androlib.res.data.value.ResIntBasedValue;
-import brut.androlib.res.data.value.ResReferenceValue;
-import brut.androlib.res.data.value.ResScalarValue;
-import brut.androlib.res.data.value.ResStringValue;
-import brut.androlib.res.data.value.ResValue;
-import brut.androlib.res.data.value.ResValueFactory;
+import brut.androlib.res.data.value.*;
 import brut.util.Duo;
 import brut.util.ExtCountingDataInput;
+import com.google.common.io.LittleEndianDataInputStream;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigInteger;
+import java.util.*;
+import java.util.logging.Logger;
 
 public class ARSCDecoder {
     private final static short ENTRY_FLAG_COMPLEX = 0x0001;
@@ -94,13 +76,15 @@ public class ARSCDecoder {
         mMissingResSpecMap = new LinkedHashMap<>();
     }
 
-    public static ARSCData decode(InputStream arscStream, boolean findFlagsOffsets, boolean keepBroken)
+    @Contract("_, _, _ -> new")
+    public static @NotNull ARSCData decode(InputStream arscStream, boolean findFlagsOffsets, boolean keepBroken)
             throws AndrolibException {
         return decode(arscStream, findFlagsOffsets, keepBroken, new ResTable());
     }
 
-    public static ARSCData decode(InputStream arscStream, boolean findFlagsOffsets, boolean keepBroken,
-                                  ResTable resTable)
+    @Contract("_, _, _, _ -> new")
+    public static @NotNull ARSCData decode(InputStream arscStream, boolean findFlagsOffsets, boolean keepBroken,
+                                           ResTable resTable)
             throws AndrolibException {
         try {
             ARSCDecoder decoder = new ARSCDecoder(arscStream, resTable, findFlagsOffsets, keepBroken);
@@ -113,7 +97,7 @@ public class ARSCDecoder {
         }
     }
 
-    private ResPackage[] readResourceTable() throws IOException, AndrolibException {
+    private ResPackage @NotNull [] readResourceTable() throws IOException, AndrolibException {
         Set<ResPackage> pkgs = new LinkedHashSet<>();
         ResTypeSpec typeSpec;
         int chunkNumber = 1;
@@ -405,7 +389,7 @@ public class ARSCDecoder {
         return mType;
     }
 
-    private EntryData readEntryData() throws IOException, AndrolibException {
+    private @Nullable EntryData readEntryData() throws IOException, AndrolibException {
         short size = mIn.readShort();
         short flags = mIn.readShort();
 
@@ -449,7 +433,7 @@ public class ARSCDecoder {
         return entryData;
     }
 
-    private void readEntry(EntryData entryData) throws AndrolibException {
+    private void readEntry(@NotNull EntryData entryData) throws AndrolibException {
         int specNamesId = entryData.mSpecNamesId;
         ResValue value = entryData.mValue;
 
@@ -519,7 +503,7 @@ public class ARSCDecoder {
                 : mPkg.getValueFactory().factory(type, data, null);
     }
 
-    private ResIntBasedValue readValue() throws IOException, AndrolibException {
+    private @Nullable ResIntBasedValue readValue() throws IOException, AndrolibException {
         int size = mIn.readShort();
         if (size < 8) {
             return null;
@@ -534,7 +518,8 @@ public class ARSCDecoder {
                 : mPkg.getValueFactory().factory(type, data, null);
     }
 
-    private ResConfigFlags readConfigFlags() throws IOException, AndrolibException {
+    @Contract(" -> new")
+    private @NotNull ResConfigFlags readConfigFlags() throws IOException, AndrolibException {
         int size = mIn.readInt();
         int read = 8;
 
@@ -666,7 +651,8 @@ public class ARSCDecoder {
                 colorMode, localeNumberingSystem, isInvalid, size);
     }
 
-    private char[] unpackLanguageOrRegion(byte in0, byte in1, char base) {
+    @Contract(value = "_, _, _ -> new", pure = true)
+    private char @NotNull [] unpackLanguageOrRegion(byte in0, byte in1, char base) {
         // check high bit, if so we have a packed 3 letter code
         if (((in0 >> 7) & 1) == 1) {
             int first = in1 & 0x1F;
@@ -680,7 +666,7 @@ public class ARSCDecoder {
         return new char[]{(char) in0, (char) in1};
     }
 
-    private String readVariantLengthString(int maxLength) throws IOException {
+    private @NotNull String readVariantLengthString(int maxLength) throws IOException {
         StringBuilder string = new StringBuilder(16);
 
         while (maxLength-- != 0) {

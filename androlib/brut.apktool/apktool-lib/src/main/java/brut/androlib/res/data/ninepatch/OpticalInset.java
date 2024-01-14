@@ -16,9 +16,10 @@
  */
 package brut.androlib.res.data.ninepatch;
 
-import java.io.IOException;
-
 import brut.util.ExtDataInput;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
 
 public class OpticalInset {
     public final int layoutBoundsLeft, layoutBoundsTop, layoutBoundsRight, layoutBoundsBottom;
@@ -30,7 +31,7 @@ public class OpticalInset {
         this.layoutBoundsBottom = layoutBoundsBottom;
     }
 
-    public static OpticalInset decode(ExtDataInput di) throws IOException {
+    public static @NotNull OpticalInset decode(@NotNull ExtDataInput di) throws IOException {
         int layoutBoundsLeft = Integer.reverseBytes(di.readInt());
         int layoutBoundsTop = Integer.reverseBytes(di.readInt());
         int layoutBoundsRight = Integer.reverseBytes(di.readInt());

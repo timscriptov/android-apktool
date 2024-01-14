@@ -16,16 +16,16 @@
  */
 package brut.androlib.res.data.value;
 
+import brut.androlib.res.data.ResResource;
+import brut.androlib.res.xml.ResValuesXmlSerializable;
+import org.jetbrains.annotations.NotNull;
 import org.xmlpull.v1.XmlSerializer;
 
 import java.io.IOException;
 
-import brut.androlib.res.data.ResResource;
-import brut.androlib.res.xml.ResValuesXmlSerializable;
-
 public class ResIdValue extends ResValue implements ResValuesXmlSerializable {
     @Override
-    public void serializeToResValuesXml(XmlSerializer serializer, ResResource res) throws IOException {
+    public void serializeToResValuesXml(@NotNull XmlSerializer serializer, @NotNull ResResource res) throws IOException {
         serializer.startTag(null, "item");
         serializer.attribute(null, "type", res.getResSpec().getType().getName());
         serializer.attribute(null, "name", res.getResSpec().getName());

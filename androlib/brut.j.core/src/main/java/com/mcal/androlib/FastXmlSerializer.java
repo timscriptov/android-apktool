@@ -132,14 +132,13 @@ public class FastXmlSerializer implements XmlSerializer {
     private void escapeAndAppendString(@NonNull final String string) throws IOException {
         final int N = string.length();
         final char NE = (char) ESCAPE_TABLE.length;
-        final String[] escapes = ESCAPE_TABLE;
         int lastPos = 0;
         int pos;
         for (pos = 0; pos < N; pos++) {
             char c = string.charAt(pos);
             if (c >= NE)
                 continue;
-            String escape = escapes[c];
+            String escape = ESCAPE_TABLE[c];
             if (escape == null)
                 continue;
             if (lastPos < pos)
@@ -154,7 +153,6 @@ public class FastXmlSerializer implements XmlSerializer {
     private void escapeAndAppendString(char[] buf, int start, int len)
             throws IOException {
         final char NE = (char) ESCAPE_TABLE.length;
-        final String[] escapes = ESCAPE_TABLE;
         int end = start + len;
         int lastPos = start;
         int pos;
@@ -162,7 +160,7 @@ public class FastXmlSerializer implements XmlSerializer {
             char c = buf[pos];
             if (c >= NE)
                 continue;
-            String escape = escapes[c];
+            String escape = ESCAPE_TABLE[c];
             if (escape == null)
                 continue;
             if (lastPos < pos)
@@ -182,7 +180,7 @@ public class FastXmlSerializer implements XmlSerializer {
         }
 
         append(' ');
-        if (namespace != null && !namespace.equals("")) {
+        if (namespace != null && !namespace.isEmpty()) {
             // Modified by Pujiang, NOT use the uri as namespace
             //if (namespace.startsWith("http")) {
             //String real = uri2Namespace.get(namespace);
@@ -234,7 +232,7 @@ public class FastXmlSerializer implements XmlSerializer {
             String value = values[i];
 
             String key = name;
-            if (namespace != null && !namespace.equals("")) {
+            if (namespace != null && !namespace.isEmpty()) {
                 //String real = uri2Namespace.get(namespace);
                 String real = nsMgr.getNsName(mDepth, namespace);
                 if (real != null) {

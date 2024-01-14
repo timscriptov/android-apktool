@@ -16,22 +16,20 @@
  */
 package brut.androlib.src;
 
-import com.android.tools.smali.dexlib2.Opcodes;
-import com.android.tools.smali.dexlib2.writer.builder.DexBuilder;
-import com.android.tools.smali.dexlib2.writer.io.FileDataStore;
-
-import org.antlr.runtime.RecognitionException;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.util.logging.Logger;
-
 import brut.androlib.exceptions.AndrolibException;
 import brut.androlib.mod.SmaliMod;
 import brut.directory.DirectoryException;
 import brut.directory.ExtFile;
+import com.android.tools.smali.dexlib2.Opcodes;
+import com.android.tools.smali.dexlib2.writer.builder.DexBuilder;
+import com.android.tools.smali.dexlib2.writer.io.FileDataStore;
+import org.antlr.runtime.RecognitionException;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.logging.Logger;
 
 public class SmaliBuilder {
 
@@ -71,7 +69,7 @@ public class SmaliBuilder {
     private void buildFile(String fileName, DexBuilder dexBuilder)
             throws AndrolibException, IOException {
         File inFile = new File(mSmaliDir, fileName);
-        InputStream inStream = Files.newInputStream(inFile.toPath());
+        InputStream inStream = new FileInputStream(inFile);
 
         if (fileName.endsWith(".smali")) {
             try {

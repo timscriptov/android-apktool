@@ -16,18 +16,6 @@
  */
 package brut.androlib.res.data;
 
-import com.google.common.base.Strings;
-
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Logger;
-
 import brut.androlib.ApkDecoder;
 import brut.androlib.Config;
 import brut.androlib.apk.ApkInfo;
@@ -41,6 +29,14 @@ import brut.androlib.res.xml.ResXmlPatcher;
 import brut.directory.Directory;
 import brut.directory.DirectoryException;
 import brut.directory.ExtFile;
+import com.google.common.base.Strings;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+import java.util.logging.Logger;
 
 public class ResTable {
     private final static Logger LOGGER = Logger.getLogger(ApkDecoder.class.getName());
@@ -94,7 +90,7 @@ public class ResTable {
         return getResSpec(new ResID(resID));
     }
 
-    public ResResSpec getResSpec(ResID resID) throws AndrolibException {
+    public ResResSpec getResSpec(@NotNull ResID resID) throws AndrolibException {
         return getPackage(resID.pkgId).getResSpec(resID);
     }
 
@@ -116,7 +112,7 @@ public class ResTable {
         return pkg;
     }
 
-    private ResPackage selectPkgWithMostResSpecs(ResPackage[] pkgs) {
+    private ResPackage selectPkgWithMostResSpecs(ResPackage @NotNull [] pkgs) {
         int id = 0;
         int value = 0;
         int index = 0;
@@ -151,7 +147,7 @@ public class ResTable {
         mMainPkgLoaded = true;
     }
 
-    private ResPackage loadFrameworkPkg(int id) throws AndrolibException {
+    private @NotNull ResPackage loadFrameworkPkg(int id) throws AndrolibException {
         Framework framework = new Framework(mConfig);
         File frameworkApk = framework.getFrameworkApk(id, mConfig.frameworkTag);
 
@@ -173,7 +169,7 @@ public class ResTable {
         return pkg;
     }
 
-    private ResPackage[] loadResPackagesFromApk(ExtFile apkFile, boolean keepBrokenResources) throws AndrolibException {
+    private ResPackage[] loadResPackagesFromApk(@NotNull ExtFile apkFile, boolean keepBrokenResources) throws AndrolibException {
         try {
             Directory dir = apkFile.getDirectory();
             try (BufferedInputStream bfi = new BufferedInputStream(dir.getFileInput("resources.arsc"))) {
@@ -305,7 +301,7 @@ public class ResTable {
         return false;
     }
 
-    public void initApkInfo(ApkInfo apkInfo, File outDir) throws AndrolibException {
+    public void initApkInfo(@NotNull ApkInfo apkInfo, File outDir) throws AndrolibException {
         apkInfo.isFrameworkApk = isFrameworkApk();
         apkInfo.usesFramework = getUsesFramework();
         if (!mApkInfo.getSdkInfo().isEmpty()) {
@@ -315,7 +311,7 @@ public class ResTable {
         loadVersionName(outDir);
     }
 
-    private UsesFramework getUsesFramework() {
+    private @NotNull UsesFramework getUsesFramework() {
         UsesFramework info = new UsesFramework();
         Integer[] ids = new Integer[mFramePackages.size()];
         int i = 0;

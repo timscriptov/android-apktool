@@ -17,10 +17,9 @@
 package brut.androlib.res.decoder;
 
 import android.util.TypedValue;
+import brut.androlib.res.data.ResTable;
 
 import java.util.regex.Pattern;
-
-import brut.androlib.res.data.ResTable;
 
 /**
  * AXmlResourceParser specifically for parsing encoded AndroidManifest.xml.

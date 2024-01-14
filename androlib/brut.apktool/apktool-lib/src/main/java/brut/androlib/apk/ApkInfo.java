@@ -16,23 +16,16 @@
  */
 package brut.androlib.apk;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import brut.androlib.ApktoolProperties;
 import brut.androlib.exceptions.AndrolibException;
 import brut.androlib.res.data.ResConfigFlags;
 import brut.directory.DirectoryException;
 import brut.directory.ExtFile;
 import brut.directory.FileDirectory;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.*;
+import java.util.*;
 
 public class ApkInfo implements YamlSerializable {
     public String version;
@@ -64,14 +57,14 @@ public class ApkInfo implements YamlSerializable {
         }
     }
 
-    public static ApkInfo load(InputStream is) throws AndrolibException {
+    public static @NotNull ApkInfo load(InputStream is) throws AndrolibException {
         YamlReader reader = new YamlReader(is);
         ApkInfo apkInfo = new ApkInfo();
         reader.readRoot(apkInfo);
         return apkInfo;
     }
 
-    public static ApkInfo load(File appDir) throws AndrolibException {
+    public static @NotNull ApkInfo load(File appDir) throws AndrolibException {
         try (InputStream in = new FileDirectory(appDir).getFileInput("apktool.yml")) {
             ApkInfo apkInfo = ApkInfo.load(in);
             apkInfo.setApkFile(new ExtFile(appDir));
@@ -193,7 +186,7 @@ public class ApkInfo implements YamlSerializable {
         return sdkNumber;
     }
 
-    private int mapSdkShorthandToVersion(String sdkVersion) {
+    private int mapSdkShorthandToVersion(@NotNull String sdkVersion) {
         switch (sdkVersion.toUpperCase()) {
             case "M":
                 return ResConfigFlags.SDK_MNC;
@@ -236,7 +229,7 @@ public class ApkInfo implements YamlSerializable {
     }
 
     @Override
-    public void readItem(YamlReader reader) throws AndrolibException {
+    public void readItem(@NotNull YamlReader reader) throws AndrolibException {
         YamlLine line = reader.getLine();
         switch (line.getKey()) {
             case "version": {
@@ -297,7 +290,7 @@ public class ApkInfo implements YamlSerializable {
     }
 
     @Override
-    public void write(YamlWriter writer) {
+    public void write(@NotNull YamlWriter writer) {
         writer.writeString("version", version);
         writer.writeString("apkFileName", apkFileName);
         writer.writeBool("isFrameworkApk", isFrameworkApk);
@@ -308,7 +301,7 @@ public class ApkInfo implements YamlSerializable {
         writer.writeBool("resourcesAreCompressed", resourcesAreCompressed);
         writer.writeBool("sharedLibrary", sharedLibrary);
         writer.writeBool("sparseResources", sparseResources);
-        if (unknownFiles.size() > 0) {
+        if (!unknownFiles.isEmpty()) {
             writer.writeStringMap("unknownFiles", unknownFiles);
         }
         writer.writeList("doNotCompress", doNotCompress);

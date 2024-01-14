@@ -16,15 +16,15 @@
  */
 package brut.androlib.res.data.value;
 
-import org.xmlpull.v1.XmlSerializer;
-
-import java.io.IOException;
-
 import brut.androlib.exceptions.AndrolibException;
 import brut.androlib.res.data.ResResource;
 import brut.androlib.res.xml.ResValuesXmlSerializable;
 import brut.androlib.res.xml.ResXmlEncodable;
 import brut.androlib.res.xml.ResXmlEncoders;
+import org.jetbrains.annotations.NotNull;
+import org.xmlpull.v1.XmlSerializer;
+
+import java.io.IOException;
 
 public abstract class ResScalarValue extends ResIntBasedValue implements
         ResXmlEncodable, ResValuesXmlSerializable {
@@ -67,7 +67,7 @@ public abstract class ResScalarValue extends ResIntBasedValue implements
 
     @Override
     public void serializeToResValuesXml(XmlSerializer serializer,
-                                        ResResource res) throws IOException, AndrolibException {
+                                        @NotNull ResResource res) throws IOException, AndrolibException {
         String type = res.getResSpec().getType().getName();
         boolean item = !"reference".equals(mType) && !type.equals(mType);
 

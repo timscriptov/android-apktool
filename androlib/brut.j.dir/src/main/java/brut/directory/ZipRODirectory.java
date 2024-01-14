@@ -16,6 +16,8 @@
  */
 package brut.directory;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -119,7 +121,7 @@ public class ZipRODirectory extends AbstractDirectory {
         return entry.getMethod();
     }
 
-    private ZipEntry getZipFileEntry(String fileName)
+    private @NotNull ZipEntry getZipFileEntry(String fileName)
             throws DirectoryException {
         ZipEntry entry = mZipFile.getEntry(fileName);
         if (entry == null) {

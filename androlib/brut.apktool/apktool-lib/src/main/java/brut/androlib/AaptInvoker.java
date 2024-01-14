@@ -16,19 +16,12 @@
  */
 package brut.androlib;
 
+import brut.androlib.apk.ApkInfo;
+import brut.androlib.exceptions.AndrolibException;
 import com.mcal.androlib.utils.Aapt;
 import com.mcal.androlib.utils.Aapt2;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.logging.Logger;
-
-import brut.androlib.apk.ApkInfo;
-import brut.androlib.exceptions.AndrolibException;
-import brut.common.BrutException;
-import brut.util.AaptManager;
 
 public class AaptInvoker {
     private final Config mConfig;

@@ -16,6 +16,8 @@
  */
 package brut.directory;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -24,21 +26,22 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 
 public class FileDirectory extends AbstractDirectory {
     private final File mDir;
 
-    public FileDirectory(ExtFile dir, String folder) throws DirectoryException {
+    public FileDirectory(@NotNull ExtFile dir, String folder) throws DirectoryException {
         this(new File(dir.toString().replaceAll("%20", " "), folder));
     }
 
     public FileDirectory(String dir) throws DirectoryException, UnsupportedEncodingException {
-        this(new File(URLDecoder.decode(dir, "UTF-8")));
+        this(new File(URLDecoder.decode(dir, StandardCharsets.UTF_8)));
     }
 
-    public FileDirectory(File dir) throws DirectoryException {
+    public FileDirectory(@NotNull File dir) throws DirectoryException {
         super();
         if (!dir.isDirectory()) {
             throw new DirectoryException("file must be a directory: " + dir);
@@ -104,7 +107,7 @@ public class FileDirectory extends AbstractDirectory {
         new File(generatePath(name)).delete();
     }
 
-    private String generatePath(String name) {
+    private @NotNull String generatePath(String name) {
         return getDir().getPath() + separator + name;
     }
 

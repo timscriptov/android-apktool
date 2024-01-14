@@ -16,6 +16,12 @@
  */
 package brut.androlib.res.data.value;
 
+import brut.androlib.exceptions.AndrolibException;
+import brut.androlib.res.data.ResResSpec;
+import brut.androlib.res.data.ResResource;
+import brut.androlib.res.xml.ResValuesXmlSerializable;
+import brut.util.Duo;
+import org.jetbrains.annotations.NotNull;
 import org.xmlpull.v1.XmlSerializer;
 
 import java.io.IOException;
@@ -23,17 +29,11 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import brut.androlib.exceptions.AndrolibException;
-import brut.androlib.res.data.ResResSpec;
-import brut.androlib.res.data.ResResource;
-import brut.androlib.res.xml.ResValuesXmlSerializable;
-import brut.util.Duo;
-
 public class ResStyleValue extends ResBagValue implements ResValuesXmlSerializable {
     private static final Logger LOGGER = Logger.getLogger(ResStyleValue.class.getName());
     private final Duo<ResReferenceValue, ResScalarValue>[] mItems;
 
-    ResStyleValue(ResReferenceValue parent, Duo<Integer, ResScalarValue>[] items, ResValueFactory factory) {
+    ResStyleValue(ResReferenceValue parent, Duo<Integer, ResScalarValue> @NotNull [] items, ResValueFactory factory) {
         super(parent);
 
         mItems = new Duo[items.length];
@@ -44,8 +44,8 @@ public class ResStyleValue extends ResBagValue implements ResValuesXmlSerializab
     }
 
     @Override
-    public void serializeToResValuesXml(XmlSerializer serializer,
-                                        ResResource res) throws IOException, AndrolibException {
+    public void serializeToResValuesXml(@NotNull XmlSerializer serializer,
+                                        @NotNull ResResource res) throws IOException, AndrolibException {
         serializer.startTag(null, "style");
         serializer.attribute(null, "name", res.getResSpec().getName());
         if (!mParent.isNull() && !mParent.referentIsNull()) {

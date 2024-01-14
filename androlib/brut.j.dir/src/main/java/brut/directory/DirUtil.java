@@ -17,6 +17,7 @@
 package brut.directory;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.FileSystemException;
 import java.nio.file.Files;
@@ -28,6 +29,7 @@ import brut.common.RootUnknownFileException;
 import brut.common.TraversalUnknownFileException;
 import brut.util.BrutIO;
 import brut.util.OS;
+import org.jetbrains.annotations.NotNull;
 
 public class DirUtil {
     private static final Logger LOGGER = Logger.getLogger("");
@@ -36,7 +38,7 @@ public class DirUtil {
         // Private constructor for utility class
     }
 
-    public static void copyToDir(Directory in, Directory out)
+    public static void copyToDir(@NotNull Directory in, Directory out)
             throws DirectoryException {
         for (String fileName : in.getFiles(true)) {
             copyToDir(in, out, fileName);
@@ -44,7 +46,7 @@ public class DirUtil {
     }
 
     public static void copyToDir(Directory in, Directory out,
-                                 String[] fileNames) throws DirectoryException {
+                                 String @NotNull [] fileNames) throws DirectoryException {
         for (String fileName : fileNames) {
             copyToDir(in, out, fileName);
         }
@@ -55,7 +57,7 @@ public class DirUtil {
         copyToDir(in, out, fileName, fileName);
     }
 
-    public static void copyToDir(Directory in, Directory out, String inFile, String outFile)
+    public static void copyToDir(@NotNull Directory in, Directory out, String inFile, String outFile)
             throws DirectoryException {
         try {
             if (in.containsDir(inFile)) {
@@ -68,21 +70,21 @@ public class DirUtil {
         }
     }
 
-    public static void copyToDir(Directory in, File out)
+    public static void copyToDir(@NotNull Directory in, File out)
             throws DirectoryException {
         for (String fileName : in.getFiles(true)) {
             copyToDir(in, out, fileName);
         }
     }
 
-    public static void copyToDir(Directory in, File out, String[] fileNames)
+    public static void copyToDir(Directory in, File out, String @NotNull [] fileNames)
             throws DirectoryException {
         for (String fileName : fileNames) {
             copyToDir(in, out, fileName);
         }
     }
 
-    public static void copyToDir(Directory in, File out, String fileName)
+    public static void copyToDir(@NotNull Directory in, File out, String fileName)
             throws DirectoryException {
         try {
             if (in.containsDir(fileName)) {
@@ -96,11 +98,9 @@ public class DirUtil {
                     File outFile = new File(out, cleanedFilename);
                     //noinspection ResultOfMethodCallIgnored
                     outFile.getParentFile().mkdirs();
-                    BrutIO.copyAndClose(in.getFileInput(fileName), Files.newOutputStream(outFile.toPath()));
+                    BrutIO.copyAndClose(in.getFileInput(fileName), new FileOutputStream(outFile));
                 }
             }
-        } catch (FileSystemException exception) {
-            LOGGER.warning(String.format("Skipping file %s (%s)", fileName, exception.getReason()));
         } catch (RootUnknownFileException | InvalidUnknownFileException |
                  TraversalUnknownFileException | IOException exception) {
             LOGGER.warning(String.format("Skipping file %s (%s)", fileName, exception.getMessage()));
