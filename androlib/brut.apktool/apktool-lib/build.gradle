@@ -42,7 +42,6 @@ dependencies {
     implementation(libs.tools.baksmali)
 
     implementation(libs.misc.guava)
-    implementation(libs.misc.commons.text)
     implementation(libs.misc.antlr)
     implementation(libs.misc.annotations)
     implementation(libs.misc.coroutines.core)

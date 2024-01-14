@@ -32,5 +32,4 @@ dependencies {
 
     implementation(libs.misc.annotations.android)
     implementation(libs.misc.annotations)
-    implementation(libs.misc.yaml)
 }

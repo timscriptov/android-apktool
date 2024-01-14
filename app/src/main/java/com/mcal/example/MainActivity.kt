@@ -50,6 +50,8 @@ class MainActivity : Activity(), Logger {
         aapt = Preferences.getAaptPath(this)
         aapt2 = Preferences.getAapt2Path(this)
         initPermission()
+        binding.apkPath.setText(applicationInfo.sourceDir)
+        binding.outDirPath.setText("/data/data/com.mcal.apktool/files/test")
         setCustomFramework()
         setCustomAapt()
         setCustomAapt2()

@@ -16,8 +16,9 @@
  */
 package brut.androlib.apk;
 
-import org.apache.commons.text.StringEscapeUtils;
-import org.apache.commons.text.translate.CharSequenceTranslator;
+
+import com.mcal.androlib.utils.CharSequenceTranslator;
+import com.mcal.androlib.utils.StringEscapeUtils;
 
 import java.io.IOException;
 import java.io.StringWriter;
