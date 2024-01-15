@@ -28,30 +28,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ca88d2d9-d344-4f04-914d-6bf6d7a51375" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/android_apktool_jar.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/res/decoder/XmlPullStreamDecoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/res/decoder/XmlPullStreamDecoder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/xpp3/src/main/java/com/mcal/xmlpull/v1/dom2_builder/DOM2XmlPullBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/xpp3/src/main/java/com/mcal/xmlpull/v1/dom2_builder/DOM2XmlPullBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/xpp3/src/main/java/com/mcal/xmlpull/v1/parser_pool/XmlPullParserPool.java" beforeDir="false" afterPath="$PROJECT_DIR$/xpp3/src/main/java/com/mcal/xmlpull/v1/parser_pool/XmlPullParserPool.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/xpp3/src/main/java/com/mcal/xmlpull/v1/sax2/Driver.java" beforeDir="false" afterPath="$PROJECT_DIR$/xpp3/src/main/java/com/mcal/xmlpull/v1/sax2/Driver.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/xpp3/src/main/java/com/mcal/xmlpull/v1/util/XmlPullUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/xpp3/src/main/java/com/mcal/xmlpull/v1/util/XmlPullUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/xpp3/src/main/java/com/mcal/xmlpull/v1/wrapper/XmlPullWrapperFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/xpp3/src/main/java/com/mcal/xmlpull/v1/wrapper/XmlPullWrapperFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/xpp3/src/main/java/com/mcal/xmlpull/v1/wrapper/classic/StaticXmlPullParserWrapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/xpp3/src/main/java/com/mcal/xmlpull/v1/wrapper/classic/StaticXmlPullParserWrapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/xpp3/src/main/java/com/mcal/xmlpull/v1/wrapper/classic/StaticXmlSerializerWrapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/xpp3/src/main/java/com/mcal/xmlpull/v1/wrapper/classic/StaticXmlSerializerWrapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/xpp3/src/main/java/com/mcal/xmlpull/v1/wrapper/classic/XmlPullParserDelegate.java" beforeDir="false" afterPath="$PROJECT_DIR$/xpp3/src/main/java/com/mcal/xmlpull/v1/wrapper/classic/XmlPullParserDelegate.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/xpp3/src/main/java/com/mcal/xmlpull/v1/wrapper/classic/XmlSerializerDelegate.java" beforeDir="false" afterPath="$PROJECT_DIR$/xpp3/src/main/java/com/mcal/xmlpull/v1/wrapper/classic/XmlSerializerDelegate.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/xpp3/src/main/java/com/mcal/xmlpull/v1/wrapper/perftest/Driver.java" beforeDir="false" afterPath="$PROJECT_DIR$/xpp3/src/main/java/com/mcal/xmlpull/v1/wrapper/perftest/Driver.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradle.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jitpack.yml" beforeDir="false" afterPath="$PROJECT_DIR$/jitpack.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/xpp3/src/main/java/com/mcal/xmlpull/v1/xmlrpc/XmlRpcParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/xpp3/src/main/java/com/mcal/xmlpull/v1/xmlrpc/XmlRpcParser.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/xpp3/src/main/java/com/mcal/xmlpull/v1/xmlrpc/XmlRpcParserME.java" beforeDir="false" afterPath="$PROJECT_DIR$/xpp3/src/main/java/com/mcal/xmlpull/v1/xmlrpc/XmlRpcParserME.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/xpp3/src/main/java/com/mcal/xmlpull/v1/xsd/XsdException.java" beforeDir="false" afterPath="$PROJECT_DIR$/xpp3/src/main/java/com/mcal/xmlpull/v1/xsd/XsdException.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/xpp3/src/main/java/com/mcal/xmlpull/v1/xsd/XsdPullFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/xpp3/src/main/java/com/mcal/xmlpull/v1/xsd/XsdPullFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/xpp3/src/main/java/com/mcal/xmlpull/v1/xsd/impl/XsdTypePullParserImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/xpp3/src/main/java/com/mcal/xmlpull/v1/xsd/impl/XsdTypePullParserImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/xpp3/src/main/java/com/mcal/xmlpull/v1/xsd/impl/XsdTypeSerializerImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/xpp3/src/main/java/com/mcal/xmlpull/v1/xsd/impl/XsdTypeSerializerImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/xpp3/src/main/java/com/mcal/xmlpull/v1/xsd/impl/base64/Base64.java" beforeDir="false" afterPath="$PROJECT_DIR$/xpp3/src/main/java/com/mcal/xmlpull/v1/xsd/impl/base64/Base64.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/xpp3/src/main/java/com/mcal/xmlpull/v1/xsd/impl/base64/Base64DecodingException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/xpp3/src/main/java/com/mcal/xmlpull/v1/xsd/impl/base64/Base64DecodingState.java" beforeDir="false" afterPath="$PROJECT_DIR$/xpp3/src/main/java/com/mcal/xmlpull/v1/xsd/impl/base64/Base64DecodingState.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/xpp3/src/main/java/com/mcal/xmlpull/v1/xsd/impl/base64/Base64EncodingException.java" beforeDir="false" afterPath="$PROJECT_DIR$/xpp3/src/main/java/com/mcal/xmlpull/v1/xsd/impl/base64/Base64EncodingException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/xpp3/src/main/java/com/mcal/xmlpull/v1/xsd/impl/base64/Base64EncodingState.java" beforeDir="false" afterPath="$PROJECT_DIR$/xpp3/src/main/java/com/mcal/xmlpull/v1/xsd/impl/base64/Base64EncodingState.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,7 +44,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[536e1a54]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[C:\Users\timsc\.android\avd\Pixel_7_Pro_API_21.avd]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -73,9 +56,28 @@
         <task path="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib">
           <activation />
         </task>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
         <projects_view>
           <tree_state>
-            <expand />
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="android-apktool" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="android-apktool" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="android-apktool" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="publishing" type="c8890929:TasksNode$1" />
+              </path>
+            </expand>
             <select />
           </tree_state>
         </projects_view>
@@ -116,6 +118,8 @@
     "ApkExportedModule": "android-apktool.app",
     "ExportApk.ApkPathForandroid-apktool.app": "C:\\AppProjects\\android-apktool\\app",
     "Gradle.Download Sources.executor": "Run",
+    "Gradle.android-apktool [publishToMavenLocal].executor": "Run",
+    "Gradle.android-apktool [publish].executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.cidr.known.project.marker": "true",
@@ -127,7 +131,7 @@
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/AppProjects/android-apktool",
-    "project.structure.last.edited": "Artifacts",
+    "project.structure.last.edited": "SDKs",
     "project.structure.proportion": "0.17",
     "project.structure.side.proportion": "0.2",
     "show.migrate.to.gradle.popup": "false"
@@ -138,7 +142,7 @@
     ]
   }
 }]]></component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Android App.app">
     <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App">
       <module name="android-apktool.app.main" />
       <option name="DEPLOY" value="true" />
@@ -177,6 +181,56 @@
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration name="android-apktool [publishToMavenLocal]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="publishToMavenLocal" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="android-apktool [publish]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="publish" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Gradle.android-apktool [publishToMavenLocal]" />
+        <item itemvalue="Gradle.android-apktool [publish]" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>

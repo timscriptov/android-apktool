@@ -35,7 +35,7 @@ public class XmlRpcParser extends XmlRpcParserME {
 
     protected Object parseType(@NotNull String name) throws IOException, XmlPullParserException {
         if (name.equals("double")) {
-            return new Double(parser.nextText());
+            return Double.valueOf(parser.nextText());
         } else {
             return super.parseType(name);
         }

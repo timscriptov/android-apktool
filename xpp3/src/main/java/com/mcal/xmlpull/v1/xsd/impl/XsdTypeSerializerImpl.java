@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
+import java.util.Arrays;
 
 //TODO: add QName
 
@@ -348,7 +349,7 @@ public class XsdTypeSerializerImpl extends StaticXmlSerializerWrapper implements
             return new String(carr);
         } catch (Exception ex) {
             throw new XsdException(
-                    "can't serialize BAS64 value '" + value + "'", ex);
+                    "can't serialize BAS64 value '" + Arrays.toString(value) + "'", ex);
         }
     }
 

@@ -35,9 +35,9 @@ public class XmlRpcParserME {
      * @return The return values collected in a Vector.
      */
 
-    public Vector parseResponse() throws XmlPullParserException, IOException {
+    public Vector<Object> parseResponse() throws XmlPullParserException, IOException {
 
-        Vector result = new Vector();
+        Vector<Object> result = new Vector<>();
 
         parser.nextTag();
         parser.require(XmlPullParser.START_TAG, "", "methodResponse");
@@ -116,15 +116,16 @@ public class XmlRpcParserME {
      * </p>
      */
 
-    Vector parseArray() throws IOException, XmlPullParserException {
-        Vector v = new Vector();
+    Vector<Object> parseArray() throws IOException, XmlPullParserException {
+        Vector<Object> v = new Vector<>();
 
         parser.require(XmlPullParser.START_TAG, "", "array");
         parser.nextTag();
         parser.require(XmlPullParser.START_TAG, "", "data");
 
-        while (parser.nextTag() == XmlPullParser.START_TAG)
+        while (parser.nextTag() == XmlPullParser.START_TAG) {
             v.addElement(parseValue());
+        }
 
         parser.require(XmlPullParser.END_TAG, "", "data");
         parser.nextTag();

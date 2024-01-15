@@ -50,7 +50,7 @@ public class XsdPullFactory {
 
     // ------------ IMPLEMENTATION
 
-    public static @NotNull XsdPullFactory newInstance(String classNames, Class context)
+    public static @NotNull XsdPullFactory newInstance(String classNames, Class<?> context)
             throws XmlPullParserException {
         XmlPullParserFactory factory = XmlPullParserFactory.newInstance(classNames, context);
         return new XsdPullFactory(factory);
