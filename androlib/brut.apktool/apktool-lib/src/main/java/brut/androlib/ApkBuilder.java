@@ -43,6 +43,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.*;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.zip.CRC32;
@@ -473,7 +474,7 @@ public class ApkBuilder {
             File inputFile;
 
             try {
-                inputFile = new File(unknownFileDir, BrutIO.sanitizeUnknownFile(unknownFileDir, unknownFileInfo.getKey()));
+                inputFile = new File(unknownFileDir, BrutIO.sanitizeFilepath(unknownFileDir, unknownFileInfo.getKey()));
             } catch (RootUnknownFileException | InvalidUnknownFileException |
                      TraversalUnknownFileException exception) {
                 LOGGER.warning(String.format("Skipping file %s (%s)", unknownFileInfo.getKey(), exception.getMessage()));
@@ -486,7 +487,7 @@ public class ApkBuilder {
 
             ZipEntry newEntry = new ZipEntry(unknownFileInfo.getKey());
             int method = Integer.parseInt(unknownFileInfo.getValue());
-            LOGGER.fine(String.format("Copying unknown file %s with method %d", unknownFileInfo.getKey(), method));
+            LOGGER.fine(String.format(Locale.getDefault(), "Copying unknown file %s with method %d", unknownFileInfo.getKey(), method));
             if (method == ZipEntry.STORED) {
                 newEntry.setMethod(ZipEntry.STORED);
                 newEntry.setSize(inputFile.length());

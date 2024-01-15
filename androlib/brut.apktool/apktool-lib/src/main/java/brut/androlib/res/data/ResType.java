@@ -55,7 +55,7 @@ public class ResType {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return mFlags.toString();
     }
 }

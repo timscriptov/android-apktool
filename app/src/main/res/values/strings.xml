@@ -23,4 +23,5 @@
     <string name="download_framework">Download framework</string>
     <string name="download_aapt">Download aapt</string>
     <string name="download_aapt2">Download aapt2</string>
+    <string name="decode_smali">Decode smali</string>
 </resources>

@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.EOFException;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 public class ARSCHeader {
@@ -89,11 +90,11 @@ public class ARSCHeader {
             BigInteger exceedingBI = new BigInteger(1, buf);
 
             if (exceedingBI.equals(BigInteger.ZERO)) {
-                LOGGER.fine(String.format("Chunk header size (%d), read (%d), but exceeding bytes are all zero.",
+                LOGGER.fine(String.format(Locale.getDefault(), "Chunk header size (%d), read (%d), but exceeding bytes are all zero.",
                         this.headerSize, actualHeaderSize
                 ));
             } else {
-                LOGGER.warning(String.format("Chunk header size (%d), read (%d). Exceeding bytes: 0x%X.",
+                LOGGER.warning(String.format(Locale.getDefault(), "Chunk header size (%d), read (%d). Exceeding bytes: 0x%X.",
                         this.headerSize, actualHeaderSize, exceedingBI
                 ));
             }

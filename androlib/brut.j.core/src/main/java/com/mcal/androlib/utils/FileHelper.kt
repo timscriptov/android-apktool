@@ -56,11 +56,7 @@ object FileHelper {
     @JvmStatic
     @Throws(IOException::class)
     fun copyFile(source: InputStream, target: OutputStream) {
-        val buf = ByteArray(8192)
-        var length: Int
-        while (source.read(buf).also { length = it } != -1) {
-            target.write(buf, 0, length)
-        }
+        source.copyTo(target)
     }
 
     @JvmStatic

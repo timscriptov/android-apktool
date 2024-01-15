@@ -16,6 +16,8 @@
  */
 package brut.androlib.exceptions;
 
+import java.util.Locale;
+
 public class CantFindFrameworkResException extends AndrolibException {
     private final int mPkgId;
 
@@ -29,6 +31,6 @@ public class CantFindFrameworkResException extends AndrolibException {
 
     @Override
     public String getMessage() {
-        return String.format("Can't find framework resources for package of id: %d", this.getPkgId());
+        return String.format(Locale.getDefault(), "Can't find framework resources for package of id: %d", this.getPkgId());
     }
 }

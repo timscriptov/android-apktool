@@ -50,8 +50,10 @@ class MainActivity : Activity(), Logger {
         aapt = Preferences.getAaptPath(this)
         aapt2 = Preferences.getAapt2Path(this)
         initPermission()
-        binding.apkPath.setText(applicationInfo.sourceDir)
-        binding.outDirPath.setText("/data/data/com.mcal.apktool/files/test")
+        // Test in Emulator
+        // binding.apkPath.setText(applicationInfo.sourceDir)
+        // val path = filesDir.path + File.separator + "test"
+        // binding.outDirPath.setText(path)
         setCustomFramework()
         setCustomAapt()
         setCustomAapt2()
@@ -156,6 +158,7 @@ class MainActivity : Activity(), Logger {
                                 apkFile,
                                 decodeDir,
                                 framework,
+                                binding.decodeSmali.isChecked,
                                 context
                             )
                             withContext(Dispatchers.Main) {

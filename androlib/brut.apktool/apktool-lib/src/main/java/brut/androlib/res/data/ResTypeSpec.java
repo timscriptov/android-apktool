@@ -78,7 +78,7 @@ public final class ResTypeSpec {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return mName;
     }
 }

@@ -20,7 +20,10 @@ import brut.androlib.exceptions.AndrolibException;
 import brut.androlib.exceptions.UndefinedResObjectException;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class ResResSpec {
     private static final Set<String> EMPTY_RESOURCE_NAMES = Set.of("0_resource_name_obfuscated", "(name removed)");

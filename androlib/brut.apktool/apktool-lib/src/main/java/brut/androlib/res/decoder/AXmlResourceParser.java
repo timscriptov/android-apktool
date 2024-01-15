@@ -36,6 +36,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -804,7 +805,7 @@ public class AXmlResourceParser implements XmlResourceParser {
                 // are packed with a larger header of unknown data.
                 if (headerSize > 0x10) {
                     int bytesToSkip = headerSize - 0x10;
-                    LOGGER.warning(String.format("AXML header larger than 0x10 bytes, skipping %d bytes.", bytesToSkip));
+                    LOGGER.warning(String.format(Locale.getDefault(), "AXML header larger than 0x10 bytes, skipping %d bytes.", bytesToSkip));
                     mIn.skipBytes(bytesToSkip);
                 }
                 continue;

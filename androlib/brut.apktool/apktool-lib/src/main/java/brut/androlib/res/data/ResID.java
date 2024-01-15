@@ -16,6 +16,8 @@
  */
 package brut.androlib.res.data;
 
+import org.jetbrains.annotations.NotNull;
+
 public class ResID {
     public final int pkgId;
     public final int type;
@@ -38,7 +40,7 @@ public class ResID {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return String.format("0x%08x", id);
     }
 

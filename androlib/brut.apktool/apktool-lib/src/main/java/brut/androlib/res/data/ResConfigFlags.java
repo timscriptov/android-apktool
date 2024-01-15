@@ -16,6 +16,7 @@
  */
 package brut.androlib.res.data;
 
+import java.util.Locale;
 import java.util.logging.Logger;
 
 public class ResConfigFlags {
@@ -295,15 +296,15 @@ public class ResConfigFlags {
     private String generateQualifiers() {
         StringBuilder ret = new StringBuilder();
         if (mcc != 0) {
-            ret.append("-mcc").append(String.format("%03d", mcc));
+            ret.append("-mcc").append(String.format(Locale.getDefault(), "%03d", mcc));
             if (mnc != MNC_ZERO) {
                 if (mnc != 0) {
                     ret.append("-mnc");
                     if (size <= 32) {
                         if (mnc > 0 && mnc < 10) {
-                            ret.append(String.format("%02d", mnc));
+                            ret.append(String.format(Locale.getDefault(), "%02d", mnc));
                         } else {
-                            ret.append(String.format("%03d", mnc));
+                            ret.append(String.format(Locale.getDefault(), "%03d", mnc));
                         }
                     } else {
                         ret.append(mnc);
@@ -538,9 +539,9 @@ public class ResConfigFlags {
         }
         if (screenWidth != 0 && screenHeight != 0) {
             if (screenWidth > screenHeight) {
-                ret.append(String.format("-%dx%d", screenWidth, screenHeight));
+                ret.append(String.format(Locale.getDefault(), "-%dx%d", screenWidth, screenHeight));
             } else {
-                ret.append(String.format("-%dx%d", screenHeight, screenWidth));
+                ret.append(String.format(Locale.getDefault(), "-%dx%d", screenHeight, screenWidth));
             }
         }
         if (sdkVersion > 0 && sdkVersion >= getNaturalSdkVersionRequirement()) {

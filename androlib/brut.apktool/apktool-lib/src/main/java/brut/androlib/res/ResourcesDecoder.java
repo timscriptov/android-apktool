@@ -163,18 +163,18 @@ public class ResourcesDecoder {
             ExtMXSerializer xmlSerializer = getResXmlSerializer();
             for (ResPackage pkg : mResTable.listMainPackages()) {
 
-                Directory output = new FileDirectory(outDir).createDir("res" + (pkg.getId() == 127 ? "" : "_" + pkg.getName()));
+                Directory outRes = new FileDirectory(outDir).createDir("res" + (pkg.getId() == 127 ? "" : "_" + pkg.getName()));
 
                 LOGGER.info("Decoding file-resources...");
                 for (ResResource res : pkg.listFiles()) {
-                    fileDecoder.decode(res, in, output, mResFileMapping);
+                    fileDecoder.decode(res, in, outRes, mResFileMapping);
                 }
 
                 LOGGER.info("Decoding values */* XMLs...");
                 for (ResValuesFile valuesFile : pkg.listValuesFiles()) {
-                    generateValuesFile(valuesFile, output, xmlSerializer);
+                    generateValuesFile(valuesFile, outRes, xmlSerializer);
                 }
-                generatePublicXml(pkg, output, xmlSerializer);
+                generatePublicXml(pkg, outRes, xmlSerializer);
             }
         } catch (DirectoryException ex) {
             throw new AndrolibException(ex);

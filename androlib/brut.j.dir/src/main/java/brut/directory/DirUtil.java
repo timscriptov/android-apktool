@@ -16,13 +16,6 @@
  */
 package brut.directory;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.FileSystemException;
-import java.nio.file.Files;
-import java.util.logging.Logger;
-
 import brut.common.BrutException;
 import brut.common.InvalidUnknownFileException;
 import brut.common.RootUnknownFileException;
@@ -30,6 +23,11 @@ import brut.common.TraversalUnknownFileException;
 import brut.util.BrutIO;
 import brut.util.OS;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.logging.Logger;
 
 public class DirUtil {
     private static final Logger LOGGER = Logger.getLogger("");
@@ -93,7 +91,7 @@ public class DirUtil {
             } else if (!in.containsDir(fileName) && !in.containsFile(fileName)) {
                 // Skip copies of directories/files not found.
             } else {
-                String cleanedFilename = BrutIO.sanitizeUnknownFile(out, fileName);
+                String cleanedFilename = BrutIO.sanitizeFilepath(out, fileName);
                 if (!cleanedFilename.isEmpty()) {
                     File outFile = new File(out, cleanedFilename);
                     //noinspection ResultOfMethodCallIgnored

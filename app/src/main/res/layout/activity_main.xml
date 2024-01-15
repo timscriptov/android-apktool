@@ -114,11 +114,11 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="48dp"
+                    android:gravity="center"
                     android:orientation="horizontal">
 
                 <TextView
-                        android:layout_marginTop="8dp"
                         android:textSize="18sp"
                         android:layout_weight="1"
                         android:layout_width="0dp"
@@ -129,7 +129,30 @@
                         android:checked="true"
                         android:id="@+id/use_aapt2"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="match_parent"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                <TextView
+                        android:textSize="18sp"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/decode_smali"/>
+
+                <Switch
+                        android:checked="true"
+                        android:id="@+id/decode_smali"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"/>
 
             </LinearLayout>
 

@@ -18,10 +18,11 @@ public class ApktoolHelper {
             @NotNull File apkFile,
             @NotNull File decodeDir,
             @NotNull String frameworkPath,
+            boolean decodeSmali,
             @NotNull Logger logger) {
         try {
             Config config = Config.getDefaultConfig();
-            config.setDecodeSources(Config.DECODE_SOURCES_SMALI);
+            config.setDecodeSources(decodeSmali ? Config.DECODE_SOURCES_SMALI : Config.DECODE_SOURCES_NONE);
             config.setDecodeResources(Config.DECODE_RESOURCES_FULL);
             config.setDecodeAssets(Config.DECODE_ASSETS_NONE);
             config.setDefaultFramework(frameworkPath);

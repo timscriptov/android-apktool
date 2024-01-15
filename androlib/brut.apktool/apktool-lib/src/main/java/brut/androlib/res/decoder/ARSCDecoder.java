@@ -107,6 +107,7 @@ public class ARSCDecoder {
             nextChunk();
 
             LOGGER.fine(String.format(
+                    Locale.getDefault(),
                     "Chunk #%d start=0x%08x type=0x%04x chunkSize=0x%08x",
                     chunkNumber++, mIn.position(), mHeader.type, mHeader.chunkSize
             ));
@@ -237,7 +238,7 @@ public class ARSCDecoder {
         for (int i = 0; i < libraryCount; i++) {
             packageId = mIn.readInt();
             packageName = mIn.readNullEndedString(128, true);
-            LOGGER.info(String.format("Decoding Shared Library (%s), pkgId: %d", packageName, packageId));
+            LOGGER.info(String.format(Locale.getDefault(), "Decoding Shared Library (%s), pkgId: %d", packageName, packageId));
         }
     }
 
@@ -366,7 +367,7 @@ public class ARSCDecoder {
             // As seen in some recent APKs - there are more entries reported than can fit in the chunk.
             if (mIn.position() == mHeader.endPosition) {
                 int remainingEntries = entryCount - i;
-                LOGGER.warning(String.format("End of chunk hit. Skipping remaining entries (%d) in type: %s",
+                LOGGER.warning(String.format(Locale.getDefault(), "End of chunk hit. Skipping remaining entries (%d) in type: %s",
                         remainingEntries, mTypeSpec.getName()
                 ));
                 break;
@@ -629,10 +630,10 @@ public class ARSCDecoder {
 
             if (exceedingBI.equals(BigInteger.ZERO)) {
                 LOGGER.fine(String
-                        .format("Config flags size > %d, but exceeding bytes are all zero, so it should be ok.",
+                        .format(Locale.getDefault(), "Config flags size > %d, but exceeding bytes are all zero, so it should be ok.",
                                 KNOWN_CONFIG_BYTES));
             } else {
-                LOGGER.warning(String.format("Config flags size > %d. Size = %d. Exceeding bytes: 0x%X.",
+                LOGGER.warning(String.format(Locale.getDefault(), "Config flags size > %d. Size = %d. Exceeding bytes: 0x%X.",
                         KNOWN_CONFIG_BYTES, size, exceedingBI));
                 isInvalid = true;
             }

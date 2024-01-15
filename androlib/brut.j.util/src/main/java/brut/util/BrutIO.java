@@ -37,7 +37,7 @@ public class BrutIO {
     public static long recursiveModifiedTime(File @NotNull [] files) {
         long modified = 0;
         for (File file : files) {
-            long submodified = recursiveModifiedTime(file);
+            final long submodified = recursiveModifiedTime(file);
             if (submodified > modified) {
                 modified = submodified;
             }
@@ -48,11 +48,13 @@ public class BrutIO {
     public static long recursiveModifiedTime(@NotNull File file) {
         long modified = file.lastModified();
         if (file.isDirectory()) {
-            File[] subfiles = file.listFiles();
-            for (File subfile : subfiles) {
-                long submodified = recursiveModifiedTime(subfile);
-                if (submodified > modified) {
-                    modified = submodified;
+            final File[] subfiles = file.listFiles();
+            if (subfiles != null) {
+                for (File subfile : subfiles) {
+                    final long submodified = recursiveModifiedTime(subfile);
+                    if (submodified > modified) {
+                        modified = submodified;
+                    }
                 }
             }
         }
@@ -60,16 +62,16 @@ public class BrutIO {
     }
 
     public static @NotNull CRC32 calculateCrc(@NotNull InputStream input) throws IOException {
-        CRC32 crc = new CRC32();
+        final CRC32 crc = new CRC32();
         int bytesRead;
-        byte[] buffer = new byte[8192];
+        final byte[] buffer = new byte[8192];
         while ((bytesRead = input.read(buffer)) != -1) {
             crc.update(buffer, 0, bytesRead);
         }
         return crc;
     }
 
-    public static @NotNull String sanitizeUnknownFile(final File directory, final @NotNull String entry) throws IOException, BrutException {
+    public static @NotNull String sanitizeFilepath(final File directory, final @NotNull String entry) throws IOException, BrutException {
         if (entry.isEmpty()) {
             throw new InvalidUnknownFileException("Invalid Unknown File");
         }
@@ -89,8 +91,12 @@ public class BrutIO {
         return canonicalEntryPath.substring(canonicalDirPath.length());
     }
 
-    public static String normalizePath(String path) {
-        char separator = File.separatorChar;
+    public static boolean detectPossibleDirectoryTraversal(@NotNull String entry) {
+        return entry.contains("../") || entry.contains("/..");
+    }
+
+    public static String adaptSeparatorToUnix(String path) {
+        final char separator = File.separatorChar;
 
         if (separator != '/') {
             return path.replace(separator, '/');
