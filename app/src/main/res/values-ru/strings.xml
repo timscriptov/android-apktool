@@ -24,4 +24,6 @@
     <string name="download_aapt">Загрузить aapt</string>
     <string name="download_aapt2">Загрузить aapt2</string>
     <string name="decode_smali">Декомпилировать smali</string>
+    <string name="permission_denied">Разрешение на чтение и запись не предоставлено</string>
+    <string name="permission_granted">Разрешение на чтение и запись предоставлено</string>
 </resources>

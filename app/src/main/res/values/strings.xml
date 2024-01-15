@@ -24,4 +24,6 @@
     <string name="download_aapt">Download aapt</string>
     <string name="download_aapt2">Download aapt2</string>
     <string name="decode_smali">Decode smali</string>
+    <string name="permission_denied">Permission for reading and writing not granted</string>
+    <string name="permission_granted">Permission for reading and writing granted</string>
 </resources>

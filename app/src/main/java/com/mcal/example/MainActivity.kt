@@ -16,6 +16,7 @@ import android.text.TextWatcher
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import com.mcal.androlib.utils.Logger
 import com.mcal.apktool.R
 import com.mcal.apktool.databinding.ActivityMainBinding
@@ -42,14 +43,18 @@ class MainActivity : Activity(), Logger {
     private lateinit var aapt: String
     private lateinit var aapt2: String
 
+    companion object {
+        const val READ_WRITE_PERMISSION_REQUEST_CODE = 123
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        checkPermissions()
         checkInstalledTools()
         framework = Preferences.getFrameworkPath(this)
         aapt = Preferences.getAaptPath(this)
         aapt2 = Preferences.getAapt2Path(this)
-        initPermission()
         // Test in Emulator
         // binding.apkPath.setText(applicationInfo.sourceDir)
         // val path = filesDir.path + File.separator + "test"
@@ -62,6 +67,41 @@ class MainActivity : Activity(), Logger {
         gitHubClick()
         telegramClick()
         restorePreferences()
+    }
+
+    private fun checkPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val readPermission = checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+            val writePermission = checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            if (readPermission != PackageManager.PERMISSION_GRANTED || writePermission != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(
+                    arrayOf(
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    ), READ_WRITE_PERMISSION_REQUEST_CODE
+                )
+            }
+        }
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q && !Environment.isExternalStorageManager()) {
+            val intent = Intent(
+                Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
+                Uri.parse("package:$packageName")
+            )
+            startActivity(intent)
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        when (requestCode) {
+            READ_WRITE_PERMISSION_REQUEST_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this, getString(R.string.permission_granted), Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, getString(R.string.permission_denied), Toast.LENGTH_SHORT).show()
+                }
+                return
+            }
+        }
     }
 
     private fun restorePreferences() {
@@ -331,31 +371,6 @@ class MainActivity : Activity(), Logger {
             withContext(Dispatchers.Main) {
                 onFailed(exception.message ?: "Unknown error")
             }
-        }
-    }
-
-    private fun initPermission() {
-        @SuppressLint("ObsoleteSdkInt")
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                ) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Settings.ACTION_MANAGE_OVERLAY_PERMISSION) != PackageManager.PERMISSION_GRANTED
-            ) {
-                requestPermissions(
-                    arrayOf(
-                        Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Settings.ACTION_MANAGE_OVERLAY_PERMISSION
-                    ), 1
-                )
-            }
-        }
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q && !Environment.isExternalStorageManager()) {
-            val intent = Intent(
-                Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
-                Uri.parse("package:$packageName")
-            )
-            startActivity(intent)
         }
     }
 
