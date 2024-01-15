@@ -4,6 +4,7 @@
 package com.mcal.xmlpull.v1.xmlrpc;
 
 
+import org.jetbrains.annotations.NotNull;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -32,12 +33,11 @@ public class XmlRpcParser extends XmlRpcParserME {
         super(parser);
     }
 
-    protected Object parseType(String name) throws IOException, XmlPullParserException {
-        if (name.equals("double"))
+    protected Object parseType(@NotNull String name) throws IOException, XmlPullParserException {
+        if (name.equals("double")) {
             return new Double(parser.nextText());
-        else
+        } else {
             return super.parseType(name);
+        }
     }
-
-
 }

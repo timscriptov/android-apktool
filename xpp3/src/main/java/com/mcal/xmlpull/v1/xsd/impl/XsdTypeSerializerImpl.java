@@ -3,12 +3,13 @@
 
 package com.mcal.xmlpull.v1.xsd.impl;
 
-import org.xmlpull.v1.XmlSerializer;
 import com.mcal.xmlpull.v1.wrapper.XmlPullWrapperFactory;
 import com.mcal.xmlpull.v1.wrapper.classic.StaticXmlSerializerWrapper;
 import com.mcal.xmlpull.v1.xsd.XsdException;
 import com.mcal.xmlpull.v1.xsd.XsdSerializer;
 import com.mcal.xmlpull.v1.xsd.impl.base64.Base64;
+import org.jetbrains.annotations.NotNull;
+import org.xmlpull.v1.XmlSerializer;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -23,7 +24,6 @@ import java.net.URI;
  * @author <a href="http://www.extreme.indiana.edu/~aslom/">Aleksander Slominski</a>
  */
 public class XsdTypeSerializerImpl extends StaticXmlSerializerWrapper implements XsdSerializer {
-
     public XsdTypeSerializerImpl(XmlSerializer xs, XmlPullWrapperFactory wf) {
         super(xs, wf);
     }
@@ -336,7 +336,7 @@ public class XsdTypeSerializerImpl extends StaticXmlSerializerWrapper implements
 
     // --------------- utility methods
 
-    String serializeXsdAnyUri(URI value) {
+    String serializeXsdAnyUri(@NotNull URI value) {
         return value.toASCIIString();
     }
 
@@ -361,7 +361,7 @@ public class XsdTypeSerializerImpl extends StaticXmlSerializerWrapper implements
         return Byte.toString(s);
     }
 
-    String serializeXsdDecimal(BigDecimal s) {
+    String serializeXsdDecimal(@NotNull BigDecimal s) {
         return s.toString();
     }
 
@@ -377,7 +377,7 @@ public class XsdTypeSerializerImpl extends StaticXmlSerializerWrapper implements
         return Integer.toString(s);
     }
 
-    String serializeXsdInteger(BigInteger s) {
+    String serializeXsdInteger(@NotNull BigInteger s) {
         return s.toString();
     }
 
@@ -399,6 +399,4 @@ public class XsdTypeSerializerImpl extends StaticXmlSerializerWrapper implements
         String prefix = xs.getPrefix(XSD_NS, true);
         xs.attribute(XSI_NS, "type", prefix + ":" + xsdTypeName);
     }
-
 }
-

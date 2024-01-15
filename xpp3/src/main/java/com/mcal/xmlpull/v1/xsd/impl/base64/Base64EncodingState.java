@@ -17,9 +17,9 @@ package com.mcal.xmlpull.v1.xsd.impl.base64;
 public class Base64EncodingState {
     int[] output = new int[3];
     int outputEnd;
+
     public Base64EncodingState() {
     }
-
 }
 
 /*
@@ -80,4 +80,3 @@ public class Base64EncodingState {
  * AND TO THE PERFORMANCE AND VALIDITY OF INFORMATION GENERATED USING
  * SOFTWARE.
  */
-

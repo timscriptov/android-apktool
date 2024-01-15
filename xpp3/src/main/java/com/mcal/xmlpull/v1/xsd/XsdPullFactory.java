@@ -3,13 +3,15 @@
 
 package com.mcal.xmlpull.v1.xsd;
 
+import com.mcal.xmlpull.v1.wrapper.XmlPullWrapperFactory;
+import com.mcal.xmlpull.v1.xsd.impl.XsdTypePullParserImpl;
+import com.mcal.xmlpull.v1.xsd.impl.XsdTypeSerializerImpl;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlSerializer;
-import com.mcal.xmlpull.v1.wrapper.XmlPullWrapperFactory;
-import com.mcal.xmlpull.v1.xsd.impl.XsdTypePullParserImpl;
-import com.mcal.xmlpull.v1.xsd.impl.XsdTypeSerializerImpl;
 
 /**
  * Factory to access implementation of XML Schema Data Types for XML Pull Parser.
@@ -33,12 +35,14 @@ public class XsdPullFactory {
         this.wf = XmlPullWrapperFactory.newInstance(f);
     }
 
-    public static XsdPullFactory newInstance() throws XmlPullParserException {
+    @Contract(" -> new")
+    public static @NotNull XsdPullFactory newInstance() throws XmlPullParserException {
         //TODO: make into real pluggable factory service (later ...)?
         return new XsdPullFactory(null);
     }
 
-    public static XsdPullFactory newInstance(XmlPullParserFactory factory)
+    @Contract("_ -> new")
+    public static @NotNull XsdPullFactory newInstance(XmlPullParserFactory factory)
             throws XmlPullParserException {
         return new XsdPullFactory(factory);
     }
@@ -46,7 +50,7 @@ public class XsdPullFactory {
 
     // ------------ IMPLEMENTATION
 
-    public static XsdPullFactory newInstance(String classNames, Class context)
+    public static @NotNull XsdPullFactory newInstance(String classNames, Class context)
             throws XmlPullParserException {
         XmlPullParserFactory factory = XmlPullParserFactory.newInstance(classNames, context);
         return new XsdPullFactory(factory);
@@ -99,6 +103,4 @@ public class XsdPullFactory {
     public XsdSerializer newXsdSerializer(XmlSerializer xs) throws XmlPullParserException {
         return new XsdTypeSerializerImpl(xs, wf);
     }
-
 }
-

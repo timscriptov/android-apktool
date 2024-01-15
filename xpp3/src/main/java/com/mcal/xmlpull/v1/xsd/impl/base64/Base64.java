@@ -9,6 +9,8 @@
 
 package com.mcal.xmlpull.v1.xsd.impl.base64;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * This is utility class to handle BAS64 encoding and decoding.
  * For deatils see <a href="http://www.ietf.org/rfc/rfc2045.txt">RFC 2045</a>.
@@ -59,7 +61,7 @@ public class Base64 {
 
     // this array is use to convert input ASCII char (0..127) into 6-bit value
     // -1 is used to signal improper ASCII character
-    static private byte[] base64lookup = new byte[128];
+    static private final byte[] base64lookup = new byte[128];
 
     // initilaize lookup table
     static {
@@ -78,7 +80,7 @@ public class Base64 {
      */
 
 
-    public static byte[] decode(
+    public static byte @NotNull [] decode(
             Base64DecodingState state,
             char[] data,
             int off,
@@ -89,22 +91,20 @@ public class Base64 {
             byte[] input = new byte[4];
             if (state != null) {
                 inputEnd = state.inputEnd;
-                for (int i = 0; i < state.input.length; i++) {
-                    input[i] = state.input[i];
-                }
+                System.arraycopy(state.input, 0, input, 0, state.input.length);
             }
 
             // skip initial white caharacters in input to better estimate output array size
             int end = off + len;
             for (int i = off; i < end; ++i) {
-                if (Character.isWhitespace(data[i]) == false) {
+                if (!Character.isWhitespace(data[i])) {
                     off = i;
                     break;
                 }
             }
             // skip trailing white caharacters
             for (int i = end - 1; i > off; --i) {
-                if (Character.isWhitespace(data[i]) == false) {
+                if (!Character.isWhitespace(data[i])) {
                     end = i + 1;
                     break;
                 }
@@ -113,7 +113,7 @@ public class Base64 {
             // determine maximum length of output data - may be needed to prune later
             len = end - off;
             //NOTE: adjusted with state from previous run
-            long dataBits = 6 * (len + inputEnd);
+            long dataBits = 6L * (len + inputEnd);
             long bytesToOutputLong = (dataBits / 8);
 
 
@@ -133,12 +133,11 @@ public class Base64 {
                 if (Character.isWhitespace(ch)) continue;
                 // now convert ASCII cahracter to value
                 if (ch != '=') {
-                    int val = (int) ch;
-                    if (val > 127) {
+                    if ((int) ch > 127) {
                         throw new Base64EncodingException(
                                 "invalid base64 encoding character > 127 '" + ch + "''");
                     }
-                    byte bv = base64lookup[val];
+                    byte bv = base64lookup[ch];
                     if (bv == -1) {
                         throw new Base64EncodingException(
                                 "invalid base64 encoding character '" + ch + "''");
@@ -194,15 +193,15 @@ public class Base64 {
         }
     }
 
-    public static byte[] decode(char[] data, int off, int len) throws RuntimeException {
+    public static byte @NotNull [] decode(char[] data, int off, int len) throws RuntimeException {
         return decode(null, data, off, len, true);
     }
 
-    public static byte[] decode(char[] data) throws RuntimeException {
+    public static byte @NotNull [] decode(char[] data) throws RuntimeException {
         return decode(data, 0, data.length);
     }
 
-    public static char[] encode(
+    public static char @NotNull [] encode(
             Base64EncodingState state,
             byte[] data,
             int off,
@@ -214,9 +213,7 @@ public class Base64 {
             int[] output = new int[4];
             if (state != null) {
                 outputEnd = state.outputEnd;
-                for (int i = 0; i < state.output.length; i++) {
-                    output[i] = state.output[i];
-                }
+                System.arraycopy(state.output, 0, output, 0, state.output.length);
             }
 
             // assert (outputEnd >= 0 && outputEnd <= 2)
@@ -275,11 +272,11 @@ public class Base64 {
         }
     }
 
-    public static char[] encode(byte[] data, int off, int len) throws RuntimeException {
+    public static char @NotNull [] encode(byte[] data, int off, int len) throws RuntimeException {
         return encode(null, data, off, len, true);
     }
 
-    public static char[] encode(byte[] data) throws RuntimeException {
+    public static char @NotNull [] encode(byte[] data) throws RuntimeException {
         return encode(data, 0, data.length);
     }
 
@@ -343,4 +340,3 @@ public class Base64 {
  * AND TO THE PERFORMANCE AND VALIDITY OF INFORMATION GENERATED USING
  * SOFTWARE.
  */
-

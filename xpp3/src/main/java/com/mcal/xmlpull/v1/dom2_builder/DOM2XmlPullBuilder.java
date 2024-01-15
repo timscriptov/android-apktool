@@ -3,26 +3,20 @@
 
 package com.mcal.xmlpull.v1.dom2_builder;
 
-import org.w3c.dom.Attr;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.DOMImplementation;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
+import org.jetbrains.annotations.NotNull;
+import org.w3c.dom.*;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
-
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
 
 //TOOD add parse methodthat will usenextToken() to reconstruct complete XML infoset
 
@@ -97,12 +91,9 @@ public class DOM2XmlPullBuilder {
         reader = new StringReader(XML);
 
         // reparse
-
-        Element el2 = builder.parse(reader);
-
         // check that what was written is OK
-
-        Element root = el2; //doc2.getDocumentElement();
+        Element root = builder.parse(reader);
+        ; //doc2.getDocumentElement();
         //System.out.println("root="+root);
         System.out.println("root ns=" + root.getNamespaceURI() + ", localName=" + root.getLocalName());
         assertEquals("uri1", root.getNamespaceURI());
@@ -170,14 +161,12 @@ public class DOM2XmlPullBuilder {
 
     public Element parse(XmlPullParser pp, Document docFactory)
             throws XmlPullParserException, IOException {
-        Element root = parseSubTree(pp, docFactory);
-        return root;
+        return parseSubTree(pp, docFactory);
     }
 
     public Element parseSubTree(XmlPullParser pp) throws XmlPullParserException, IOException {
         Document doc = newDoc();
-        Element root = parseSubTree(pp, doc);
-        return root;
+        return parseSubTree(pp, doc);
     }
 
     public Element parseSubTree(XmlPullParser pp, Document docFactory)
@@ -218,7 +207,7 @@ public class DOM2XmlPullBuilder {
                 String attrNs = pp.getAttributeNamespace(i);
                 String attrName = pp.getAttributeName(i);
                 String attrValue = pp.getAttributeValue(i);
-                if (attrNs == null || attrNs.length() == 0) {
+                if (attrNs == null || attrNs.isEmpty()) {
                     parent.setAttribute(attrName, attrValue);
                 } else {
                     String attrPrefix = pp.getAttributePrefix(i);
@@ -272,17 +261,12 @@ public class DOM2XmlPullBuilder {
             }
         }
 
-        private void declareOneNamespace(XmlPullParser pp, int i, Element parent)
+        private void declareOneNamespace(@NotNull XmlPullParser pp, int i, @NotNull Element parent)
                 throws DOMException, XmlPullParserException {
             String xmlnsPrefix = pp.getNamespacePrefix(i);
             String xmlnsUri = pp.getNamespaceUri(i);
             String xmlnsDecl = (xmlnsPrefix != null) ? "xmlns:" + xmlnsPrefix : "xmlns";
             parent.setAttributeNS("http://www.w3.org/2000/xmlns/", xmlnsDecl, xmlnsUri);
         }
-
-
     }
-
 }
-
-

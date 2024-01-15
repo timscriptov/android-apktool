@@ -56,7 +56,7 @@ public class XmlPullStreamDecoder implements ResStreamDecoder {
                 boolean hidePackageInfo = false;
 
                 @Override
-                public void event(XmlPullParser pp)
+                public void event(@NotNull XmlPullParser pp)
                         throws XmlPullParserException, IOException {
                     int type = pp.getEventType();
 

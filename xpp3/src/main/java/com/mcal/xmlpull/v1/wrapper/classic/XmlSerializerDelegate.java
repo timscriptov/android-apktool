@@ -126,6 +126,4 @@ public class XmlSerializerDelegate implements XmlSerializer {
     public XmlSerializer text(char[] buf, int start, int len) throws IOException, IllegalArgumentException, IllegalStateException {
         return xs.text(buf, start, len);
     }
-
 }
-

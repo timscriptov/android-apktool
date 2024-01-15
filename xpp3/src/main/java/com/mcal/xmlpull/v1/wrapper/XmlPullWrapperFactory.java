@@ -3,12 +3,14 @@
 
 package com.mcal.xmlpull.v1.wrapper;
 
+import com.mcal.xmlpull.v1.wrapper.classic.StaticXmlPullParserWrapper;
+import com.mcal.xmlpull.v1.wrapper.classic.StaticXmlSerializerWrapper;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlSerializer;
-import com.mcal.xmlpull.v1.wrapper.classic.StaticXmlPullParserWrapper;
-import com.mcal.xmlpull.v1.wrapper.classic.StaticXmlSerializerWrapper;
 
 /**
  * Handy functions that combines XmlPull API into higher level functionality.
@@ -31,12 +33,14 @@ public class XmlPullWrapperFactory {
         }
     }
 
-    public static XmlPullWrapperFactory newInstance() throws XmlPullParserException {
+    @Contract(" -> new")
+    public static @NotNull XmlPullWrapperFactory newInstance() throws XmlPullParserException {
         //TODO: make into real pluggable factory service (later ...)?
         return new XmlPullWrapperFactory(null);
     }
 
-    public static XmlPullWrapperFactory newInstance(XmlPullParserFactory factory)
+    @Contract("_ -> new")
+    public static @NotNull XmlPullWrapperFactory newInstance(XmlPullParserFactory factory)
             throws XmlPullParserException {
         return new XmlPullWrapperFactory(factory);
     }
@@ -44,7 +48,7 @@ public class XmlPullWrapperFactory {
 
     // ------------ IMPLEMENTATION
 
-    public static XmlPullWrapperFactory newInstance(String classNames, Class context)
+    public static @NotNull XmlPullWrapperFactory newInstance(String classNames, Class context)
             throws XmlPullParserException {
         XmlPullParserFactory factory = XmlPullParserFactory.newInstance(classNames, context);
         return new XmlPullWrapperFactory(factory);

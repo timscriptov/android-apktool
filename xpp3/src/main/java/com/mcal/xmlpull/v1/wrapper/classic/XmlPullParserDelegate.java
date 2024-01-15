@@ -175,6 +175,4 @@ public class XmlPullParserDelegate implements XmlPullParser {
     public String getAttributeNamespace(int index) {
         return pp.getAttributeNamespace(index);
     }
-
 }
-

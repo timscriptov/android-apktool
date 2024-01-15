@@ -19,6 +19,7 @@ public class Base64DecodingState {
     // codec state - when operated in streaming mode
     byte[] input = new byte[4];
     int inputEnd;
+
     public Base64DecodingState() {
     }
 
@@ -82,4 +83,3 @@ public class Base64DecodingState {
  * AND TO THE PERFORMANCE AND VALIDITY OF INFORMATION GENERATED USING
  * SOFTWARE.
  */
-

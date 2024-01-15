@@ -18,7 +18,7 @@ import java.util.List;
  * @author <a href="http://www.extreme.indiana.edu/~aslom/">Aleksander Slominski</a>
  */
 public class XmlPullParserPool {
-    protected List pool = new ArrayList();
+    protected final List<XmlPullParser> pool = new ArrayList<>();
     protected XmlPullParserFactory factory;
 
 
@@ -52,9 +52,9 @@ public class XmlPullParserPool {
     public XmlPullParser getPullParserFromPool()
             throws XmlPullParserException {
         XmlPullParser pp = null;
-        if (pool.size() > 0) {
+        if (!pool.isEmpty()) {
             synchronized (pool) {
-                if (pool.size() > 0) {
+                if (!pool.isEmpty()) {
                     pp = (XmlPullParser) pool.remove(pool.size() - 1);
                 }
             }
@@ -73,4 +73,3 @@ public class XmlPullParserPool {
         }
     }
 }
-

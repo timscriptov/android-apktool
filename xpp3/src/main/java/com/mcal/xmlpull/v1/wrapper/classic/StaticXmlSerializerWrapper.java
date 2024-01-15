@@ -3,12 +3,13 @@
 
 package com.mcal.xmlpull.v1.wrapper.classic;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlSerializer;
 import com.mcal.xmlpull.v1.wrapper.XmlPullParserWrapper;
 import com.mcal.xmlpull.v1.wrapper.XmlPullWrapperFactory;
 import com.mcal.xmlpull.v1.wrapper.XmlSerializerWrapper;
+import org.jetbrains.annotations.NotNull;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlSerializer;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -29,9 +30,9 @@ public class StaticXmlSerializerWrapper extends XmlSerializerDelegate
     protected XmlPullWrapperFactory wf;
     protected XmlPullParserWrapper fragmentParser;
     protected int namespaceEnd = 0;
-    protected String namespacePrefix[] = new String[8];
-    protected String namespaceUri[] = new String[namespacePrefix.length];
-    protected int namespaceDepth[] = new int[namespacePrefix.length];
+    protected String[] namespacePrefix = new String[8];
+    protected String[] namespaceUri = new String[namespacePrefix.length];
+    protected int[] namespaceDepth = new int[namespacePrefix.length];
 
     public StaticXmlSerializerWrapper(XmlSerializer xs, XmlPullWrapperFactory wf) {
         super(xs);
@@ -143,9 +144,9 @@ public class StaticXmlSerializerWrapper extends XmlSerializerDelegate
 
     }
 
-    public void fragment(String xmlFragment)
+    public void fragment(@NotNull String xmlFragment)
             throws IOException, IllegalArgumentException, IllegalStateException, XmlPullParserException {
-        StringBuffer buf = new StringBuffer(xmlFragment.length() + namespaceEnd * 30);
+        StringBuilder buf = new StringBuilder(xmlFragment.length() + namespaceEnd * 30);
         buf.append("<fragment");
         LOOP:
         for (int pos = namespaceEnd - 1; pos >= 0; --pos) {
@@ -156,7 +157,7 @@ public class StaticXmlSerializerWrapper extends XmlSerializerDelegate
                 }
             }
             buf.append(" xmlns");
-            if (prefix.length() > 0) {
+            if (!prefix.isEmpty()) {
                 buf.append(':').append(prefix);
             }
             buf.append("='");
@@ -187,7 +188,7 @@ public class StaticXmlSerializerWrapper extends XmlSerializerDelegate
         fragmentParser.require(XmlPullParser.END_TAG, null, "fragment");
     }
 
-    public void event(XmlPullParser pp) throws XmlPullParserException, IOException {
+    public void event(@NotNull XmlPullParser pp) throws XmlPullParserException, IOException {
         int eventType = pp.getEventType();
         switch (eventType) {
             case XmlPullParser.START_DOCUMENT:
@@ -244,7 +245,7 @@ public class StaticXmlSerializerWrapper extends XmlSerializerDelegate
         }
     }
 
-    private void writeStartTag(XmlPullParser pp) throws XmlPullParserException, IOException {
+    private void writeStartTag(@NotNull XmlPullParser pp) throws XmlPullParserException, IOException {
         if (!pp.getFeature(XmlPullParser.FEATURE_REPORT_NAMESPACE_ATTRIBUTES)) {
             int nsStart = pp.getNamespaceCount(pp.getDepth() - 1);
             int nsEnd = pp.getNamespaceCount(pp.getDepth());
@@ -266,7 +267,7 @@ public class StaticXmlSerializerWrapper extends XmlSerializerDelegate
     }
 
 
-    public String escapeAttributeValue(String value)
+    public String escapeAttributeValue(@NotNull String value)
     //protected void writeAttributeValue(String value, Writer out) throws IOException
     {
         int posLt = value.indexOf('<');
@@ -276,7 +277,7 @@ public class StaticXmlSerializerWrapper extends XmlSerializerDelegate
         if (posLt == -1 && posAmp == -1 && posQuot == -1 && posApos == -1) {
             return value;
         }
-        StringBuffer buf = new StringBuffer(value.length() + 10);
+        StringBuilder buf = new StringBuilder(value.length() + 10);
 
         // painful loop ...
         for (int pos = 0, len = value.length(); pos < len; ++pos) {
@@ -302,7 +303,7 @@ public class StaticXmlSerializerWrapper extends XmlSerializerDelegate
     }
 
     //protected void writeElementContent(String text, Writer out) throws IOException
-    public String escapeText(String text) {
+    public String escapeText(@NotNull String text) {
         //<, & esccaped]
         //out.write(text);
         int posLt = text.indexOf('<');
@@ -310,7 +311,7 @@ public class StaticXmlSerializerWrapper extends XmlSerializerDelegate
         if (posLt == -1 && posAmp == -1) { // this is shortcut
             return text;
         }
-        StringBuffer buf = new StringBuffer(text.length() + 10);
+        StringBuilder buf = new StringBuilder(text.length() + 10);
         // painful loop ...
         int pos = 0;
         while (true) {
@@ -404,6 +405,4 @@ public class StaticXmlSerializerWrapper extends XmlSerializerDelegate
         }
         xs.endTag(namespace, name);
     }
-
 }
-

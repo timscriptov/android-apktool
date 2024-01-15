@@ -4,6 +4,7 @@
 
 package com.mcal.xmlpull.v1.xmlrpc;
 
+import org.jetbrains.annotations.NotNull;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -60,17 +61,14 @@ public class XmlRpcParserME {
         return result;
     }
 
-    protected Object parseType(String name) throws IOException, XmlPullParserException {
+    protected Object parseType(@NotNull String name) throws IOException, XmlPullParserException {
         //	System.out.println("type:"+name);
-        if (name.equals("int") || name.equals("i4"))
-            return new Integer(Integer.parseInt(parser.nextText()));
-        else if (name.equals("array"))
-            return parseArray();
-        else if (name.equals("struct"))
-            return parseStruct();
-        else // String and unrecognized types...
-            return parser.nextText();
-//            throw new RuntimeException("unexpected element: " + name);
+        return switch (name) {
+            case "int", "i4" -> Integer.parseInt(parser.nextText());
+            case "array" -> parseArray();
+            case "struct" -> parseStruct();
+            default -> parser.nextText();
+        };
     }
 
     /**
@@ -95,7 +93,7 @@ public class XmlRpcParserME {
 
         if (parser.getEventType() == XmlPullParser.START_TAG) {
 
-            if (result != null && ((String) result).trim().length() > 0)
+            if (result != null && !((String) result).trim().isEmpty())
                 throw new RuntimeException("illegal mixed content!");
 
             String name = parser.getName();
@@ -135,8 +133,8 @@ public class XmlRpcParserME {
         return v;
     }
 
-    Hashtable parseStruct() throws IOException, XmlPullParserException {
-        Hashtable struct = new Hashtable();
+    Hashtable<String, Object> parseStruct() throws IOException, XmlPullParserException {
+        Hashtable<String, Object> struct = new Hashtable<>();
         parser.require(XmlPullParser.START_TAG, "", "struct");
         while (parser.nextTag() == XmlPullParser.START_TAG) {
             parser.require(XmlPullParser.START_TAG, "", "member");

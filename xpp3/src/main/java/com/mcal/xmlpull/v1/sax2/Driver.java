@@ -3,28 +3,14 @@
 
 package com.mcal.xmlpull.v1.sax2;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.DTDHandler;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.InputSource;
-import org.xml.sax.Locator;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXNotSupportedException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.XMLReader;
+import org.jetbrains.annotations.NotNull;
+import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -288,7 +274,7 @@ public class Driver implements Locator, XMLReader, Attributes {
         this.errorHandler = handler;
     }
 
-    public void parse(InputSource source) throws SAXException, IOException {
+    public void parse(@NotNull InputSource source) throws SAXException, IOException {
 
         systemId = source.getSystemId();
         contentHandler.setDocumentLocator(this);
@@ -369,7 +355,7 @@ public class Driver implements Locator, XMLReader, Attributes {
     }
 
 
-    public void parseSubTree(XmlPullParser pp) throws SAXException, IOException {
+    public void parseSubTree(@NotNull XmlPullParser pp) throws SAXException, IOException {
         this.pp = pp;
         final boolean namespaceAware = pp.getFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES);
         try {
@@ -378,9 +364,9 @@ public class Driver implements Locator, XMLReader, Attributes {
                         "start tag must be read before skiping subtree" + pp.getPositionDescription());
             }
             final int[] holderForStartAndLength = new int[2];
-            final StringBuffer rawName = new StringBuffer(16);
-            String prefix = null;
-            String name = null;
+            final StringBuilder rawName = new StringBuilder(16);
+            String prefix;
+            String name;
             int level = pp.getDepth() - 1;
             int type = XmlPullParser.START_TAG;
 
@@ -482,5 +468,4 @@ public class Driver implements Locator, XMLReader, Attributes {
     protected void startElement(String namespace, String localName, String qName) throws SAXException {
         contentHandler.startElement(namespace, localName, qName, this);
     }
-
 }

@@ -5,11 +5,11 @@ package com.mcal.xmlpull.v1.wrapper.perftest;
 
 //import junit.framework.Test;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserFactory;
 import com.mcal.xmlpull.v1.util.XmlPullUtil;
 import com.mcal.xmlpull.v1.wrapper.XmlPullParserWrapper;
 import com.mcal.xmlpull.v1.wrapper.XmlPullWrapperFactory;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.StringReader;
 
@@ -72,14 +72,10 @@ public class Driver {
         {
             double staticWrapSecs = (endStaticWrap - startStaticWrap) / 1000.0;
             double staticSpeedup = staticWrapSecs / directSecs;
-            double percent = ((long) Math.round((staticSpeedup - 1) * 100.0 * 100.0)) / 100.0;
+            double percent = Math.round((staticSpeedup - 1) * 100.0 * 100.0) / 100.0;
             System.err.println("speedup when using direct over static wrap " + staticSpeedup + " (" + percent + "%)");
         }
 
         System.err.println("finished");
-
     }
-
-
 }
-

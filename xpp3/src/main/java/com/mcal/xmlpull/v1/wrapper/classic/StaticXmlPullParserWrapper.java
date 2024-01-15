@@ -3,10 +3,11 @@
 
 package com.mcal.xmlpull.v1.wrapper.classic;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 import com.mcal.xmlpull.v1.util.XmlPullUtil;
 import com.mcal.xmlpull.v1.wrapper.XmlPullParserWrapper;
+import org.jetbrains.annotations.NotNull;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
@@ -139,10 +140,10 @@ public class StaticXmlPullParserWrapper extends XmlPullParserDelegate
         try {
             d = Double.parseDouble(value);
         } catch (NumberFormatException ex) {
-            if (value.equals("INF") || value.toLowerCase().equals("infinity")) {
+            if (value.equals("INF") || value.equalsIgnoreCase("infinity")) {
                 d = Double.POSITIVE_INFINITY;
             } else if (value.equals("-INF")
-                    || value.toLowerCase().equals("-infinity")) {
+                    || value.equalsIgnoreCase("-infinity")) {
                 d = Double.NEGATIVE_INFINITY;
             } else if (value.equals("NaN")) {
                 d = Double.NaN;
@@ -159,10 +160,10 @@ public class StaticXmlPullParserWrapper extends XmlPullParserDelegate
         try {
             f = Float.parseFloat(value);
         } catch (NumberFormatException ex) {
-            if (value.equals("INF") || value.toLowerCase().equals("infinity")) {
+            if (value.equals("INF") || value.equalsIgnoreCase("infinity")) {
                 f = Float.POSITIVE_INFINITY;
             } else if (value.equals("-INF")
-                    || value.toLowerCase().equals("-infinity")) {
+                    || value.equalsIgnoreCase("-infinity")) {
                 f = Float.NEGATIVE_INFINITY;
             } else if (value.equals("NaN")) {
                 f = Float.NaN;
@@ -206,7 +207,7 @@ public class StaticXmlPullParserWrapper extends XmlPullParserDelegate
     }
 
     // method copied from JiBX see http://sourceforge.net/projects/jibx/ for details
-    private int parseInt(String text) throws XmlPullParserException {
+    private int parseInt(@NotNull String text) throws XmlPullParserException {
 
         // make sure there's text to be processed
         int offset = 0;
@@ -290,6 +291,4 @@ public class StaticXmlPullParserWrapper extends XmlPullParserDelegate
         pp.require(XmlPullParser.START_TAG, namespace, name);
         return readString();
     }
-
 }
-

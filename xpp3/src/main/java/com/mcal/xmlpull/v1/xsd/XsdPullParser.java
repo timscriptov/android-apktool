@@ -2,8 +2,8 @@
 
 package com.mcal.xmlpull.v1.xsd;
 
-import org.xmlpull.v1.XmlPullParserException;
 import com.mcal.xmlpull.v1.wrapper.XmlPullParserWrapper;
+import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.math.BigDecimal;

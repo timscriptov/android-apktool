@@ -3,6 +3,7 @@
 
 package com.mcal.xmlpull.v1.util;
 
+import org.jetbrains.annotations.NotNull;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlSerializer;
@@ -25,7 +26,7 @@ public class XmlPullUtil {
     /**
      * Return value of attribute with given name and no namespace.
      */
-    public static String getAttributeValue(XmlPullParser pp, String name) {
+    public static String getAttributeValue(@NotNull XmlPullParser pp, String name) {
         return pp.getAttributeValue(XmlPullParser.NO_NAMESPACE, name);
     }
 
@@ -35,7 +36,7 @@ public class XmlPullUtil {
      * XML 1.0 Section 2.6 Processing Instructions
      * <code>[16] PI ::= '&lt;?' PITarget (S (Char* - (Char* '?>' Char*)))? '?>'</code>
      */
-    public static String getPITarget(XmlPullParser pp) throws IllegalStateException {
+    public static String getPITarget(@NotNull XmlPullParser pp) throws IllegalStateException {
         int eventType;
         try {
             eventType = pp.getEventType();
@@ -66,7 +67,7 @@ public class XmlPullUtil {
      *
      * <p><b>NOTE:</b> if there is no PI data it returns empty string.
      */
-    public static String getPIData(XmlPullParser pp) throws IllegalStateException {
+    public static @NotNull String getPIData(@NotNull XmlPullParser pp) throws IllegalStateException {
         int eventType;
         try {
             eventType = pp.getEventType();
@@ -90,7 +91,6 @@ public class XmlPullUtil {
             }
         }
         return "";
-
     }
 
     /**
@@ -106,7 +106,7 @@ public class XmlPullUtil {
      * <br>NOTE: parser must be on START_TAG and when funtion returns
      * parser will be positioned on corresponding END_TAG
      */
-    public static void skipSubTree(XmlPullParser pp)
+    public static void skipSubTree(@NotNull XmlPullParser pp)
             throws XmlPullParserException, IOException {
         pp.require(XmlPullParser.START_TAG, null, null);
         int level = 1;
@@ -123,7 +123,7 @@ public class XmlPullUtil {
     /**
      * call parser nextTag() and check that it is START_TAG, throw exception if not.
      */
-    public static void nextStartTag(XmlPullParser pp)
+    public static void nextStartTag(@NotNull XmlPullParser pp)
             throws XmlPullParserException, IOException {
         if (pp.nextTag() != XmlPullParser.START_TAG) {
             throw new XmlPullParserException(
@@ -134,7 +134,7 @@ public class XmlPullUtil {
     /**
      * combine nextTag(); pp.require(XmlPullParser.START_TAG, null, name);
      */
-    public static void nextStartTag(XmlPullParser pp, String name)
+    public static void nextStartTag(@NotNull XmlPullParser pp, String name)
             throws XmlPullParserException, IOException {
         pp.nextTag();
         pp.require(XmlPullParser.START_TAG, null, name);
@@ -143,7 +143,7 @@ public class XmlPullUtil {
     /**
      * combine nextTag(); pp.require(XmlPullParser.START_TAG, namespace, name);
      */
-    public static void nextStartTag(XmlPullParser pp, String namespace, String name)
+    public static void nextStartTag(@NotNull XmlPullParser pp, String namespace, String name)
             throws XmlPullParserException, IOException {
         pp.nextTag();
         pp.require(XmlPullParser.START_TAG, namespace, name);
@@ -153,7 +153,7 @@ public class XmlPullUtil {
     /**
      * combine nextTag(); pp.require(XmlPullParser.END_TAG, namespace, name);
      */
-    public static void nextEndTag(XmlPullParser pp, String namespace, String name)
+    public static void nextEndTag(@NotNull XmlPullParser pp, String namespace, String name)
             throws XmlPullParserException, IOException {
         pp.nextTag();
         pp.require(XmlPullParser.END_TAG, namespace, name);
@@ -179,7 +179,7 @@ public class XmlPullUtil {
      * current element does not have such attribute.
      */
 
-    public static String getRequiredAttributeValue(XmlPullParser pp, String namespace, String name)
+    public static @NotNull String getRequiredAttributeValue(@NotNull XmlPullParser pp, String namespace, String name)
             throws IOException, XmlPullParserException {
         String value = pp.getAttributeValue(namespace, name);
         if (value == null) {
@@ -192,7 +192,7 @@ public class XmlPullUtil {
     /**
      * Call parser nextTag() and check that it is END_TAG, throw exception if not.
      */
-    public static void nextEndTag(XmlPullParser pp) throws XmlPullParserException, IOException {
+    public static void nextEndTag(@NotNull XmlPullParser pp) throws XmlPullParserException, IOException {
         if (pp.nextTag() != XmlPullParser.END_TAG) {
             throw new XmlPullParserException(
                     "expected END_TAG and not" + pp.getPositionDescription());
@@ -205,13 +205,11 @@ public class XmlPullUtil {
      * null will match any namespace and any name. If the test passes a true is returned
      * otherwise a false is returned.
      */
-    public static boolean matches(XmlPullParser pp, int type, String namespace, String name)
+    public static boolean matches(@NotNull XmlPullParser pp, int type, String namespace, String name)
             throws XmlPullParserException {
-        boolean matches = type == pp.getEventType()
+        return type == pp.getEventType()
                 && (namespace == null || namespace.equals(pp.getNamespace()))
                 && (name == null || name.equals(pp.getName()));
-
-        return matches;
     }
 
 
@@ -238,6 +236,4 @@ public class XmlPullUtil {
         }
         serializer.endTag(namespace, elementName);
     }
-
 }
-

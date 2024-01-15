@@ -2,12 +2,12 @@
 
 package com.mcal.xmlpull.v1.xsd.impl;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 import com.mcal.xmlpull.v1.wrapper.classic.StaticXmlPullParserWrapper;
 import com.mcal.xmlpull.v1.xsd.XsdException;
 import com.mcal.xmlpull.v1.xsd.XsdPullParser;
 import com.mcal.xmlpull.v1.xsd.impl.base64.Base64;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -20,8 +20,6 @@ import java.net.URI;
  * @author <a href="http://www.extreme.indiana.edu/~aslom/">Aleksander Slominski</a>
  */
 public class XsdTypePullParserImpl extends StaticXmlPullParserWrapper implements XsdPullParser {
-
-
     public XsdTypePullParserImpl(XmlPullParser pp) {
         super(pp);
     }
@@ -320,10 +318,10 @@ public class XsdTypePullParserImpl extends StaticXmlPullParserWrapper implements
         try {
             d = Double.parseDouble(value);
         } catch (NumberFormatException ex) {
-            if (value.equals("INF") || value.toLowerCase().equals("infinity")) {
+            if (value.equals("INF") || value.equalsIgnoreCase("infinity")) {
                 d = Double.POSITIVE_INFINITY;
             } else if (value.equals("-INF")
-                    || value.toLowerCase().equals("-infinity")) {
+                    || value.equalsIgnoreCase("-infinity")) {
                 d = Double.NEGATIVE_INFINITY;
             } else if (value.equals("NaN")) {
                 d = Double.NaN;
@@ -340,10 +338,10 @@ public class XsdTypePullParserImpl extends StaticXmlPullParserWrapper implements
         try {
             f = Float.parseFloat(value);
         } catch (NumberFormatException ex) {
-            if (value.equals("INF") || value.toLowerCase().equals("infinity")) {
+            if (value.equals("INF") || value.equalsIgnoreCase("infinity")) {
                 f = Float.POSITIVE_INFINITY;
             } else if (value.equals("-INF")
-                    || value.toLowerCase().equals("-infinity")) {
+                    || value.equalsIgnoreCase("-infinity")) {
                 f = Float.NEGATIVE_INFINITY;
             } else if (value.equals("NaN")) {
                 f = Float.NaN;
@@ -378,7 +376,4 @@ public class XsdTypePullParserImpl extends StaticXmlPullParserWrapper implements
         }
         return value;
     }
-
-
 }
-

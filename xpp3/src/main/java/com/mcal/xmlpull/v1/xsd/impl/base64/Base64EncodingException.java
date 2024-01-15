@@ -78,4 +78,3 @@ public class Base64EncodingException extends RuntimeException {
  * AND TO THE PERFORMANCE AND VALIDITY OF INFORMATION GENERATED USING
  * SOFTWARE.
  */
-
