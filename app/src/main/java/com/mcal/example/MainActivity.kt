@@ -56,9 +56,9 @@ class MainActivity : Activity(), Logger {
         aapt = Preferences.getAaptPath(this)
         aapt2 = Preferences.getAapt2Path(this)
         // Test in Emulator
-        // binding.apkPath.setText(applicationInfo.sourceDir)
-        // val path = filesDir.path + File.separator + "test"
-        // binding.outDirPath.setText(path)
+//        binding.apkPath.setText(applicationInfo.sourceDir)
+//        val path = filesDir.path + File.separator + "test"
+//        binding.outDirPath.setText(path)
         setCustomFramework()
         setCustomAapt()
         setCustomAapt2()
@@ -272,6 +272,7 @@ class MainActivity : Activity(), Logger {
             val button = binding.downloadFramework
             button.isEnabled = true
             button.setOnClickListener {
+                button.isEnabled = false
                 val sdkVersionCode = 34 // 21 - 34
                 downloadFile(button, "framework/$sdkVersionCode/android.jar", framework)
             }
@@ -282,6 +283,7 @@ class MainActivity : Activity(), Logger {
             val button = binding.downloadAapt
             button.isEnabled = true
             button.setOnClickListener {
+                button.isEnabled = false
                 downloadFile(button, "bin/$abi/aapt", aapt)
             }
         }
@@ -290,6 +292,7 @@ class MainActivity : Activity(), Logger {
             val button = binding.downloadAapt2
             button.isEnabled = true
             button.setOnClickListener {
+                button.isEnabled = false
                 downloadFile(button, "bin/$abi/aapt2", aapt2)
             }
         }
@@ -317,10 +320,10 @@ class MainActivity : Activity(), Logger {
             },
             onSuccess = {
                 view.text = btnText
-                view.isEnabled = false
             },
             onFailed = {
                 error(it)
+                view.isEnabled = true
             }
         )
     }
