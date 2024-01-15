@@ -1,7 +1,11 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    id("maven-publish")
 }
+
+group = 'com.mcal'
+version = project.artifactVersionName
 
 android {
     compileSdk project.compileSDK.toInteger()
@@ -16,6 +20,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
     kotlinOptions {
         jvmTarget = project.jvmTarget
     }
@@ -24,4 +34,18 @@ android {
         targetCompatibility project.targetCompatibility.toInteger()
     }
     namespace 'com.mcal.androlib.common'
+}
+
+publishing {
+    publications {
+        release(MavenPublication) {
+            groupId = group
+            artifactId = 'apktool-common'
+            version = version
+
+            afterEvaluate {
+                from components.release
+            }
+        }
+    }
 }

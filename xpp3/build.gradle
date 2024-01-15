@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.mcal'
-version = project.artifactVersion
+version = project.artifactVersionName
 
 android {
     compileSdk project.compileSDK.toInteger()
@@ -38,16 +38,16 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation(libs.misc.annotations)
-    implementation(libs.misc.annotations.android)
+    implementation(libs.annotations)
+    implementation(libs.androidx.annotation)
 }
 
 publishing {
     publications {
         release(MavenPublication) {
-            groupId = 'com.mcal'
+            groupId = group
             artifactId = 'xpp3'
-            version = project.artifactVersion
+            version = version
 
             afterEvaluate {
                 from components.release

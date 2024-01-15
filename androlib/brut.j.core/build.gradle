@@ -1,7 +1,11 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    id("maven-publish")
 }
+
+group = 'com.mcal'
+version = project.artifactVersionName
 
 android {
     compileSdk project.compileSDK.toInteger()
@@ -14,6 +18,12 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+            withJavadocJar()
         }
     }
     kotlinOptions {
@@ -30,6 +40,20 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':xpp3')
 
-    implementation(libs.misc.annotations.android)
-    implementation(libs.misc.annotations)
+    implementation(libs.androidx.annotation)
+    implementation(libs.annotations)
+}
+
+publishing {
+    publications {
+        release(MavenPublication) {
+            groupId = group
+            artifactId = 'apktool-core'
+            version = version
+
+            afterEvaluate {
+                from components.release
+            }
+        }
+    }
 }

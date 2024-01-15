@@ -24,29 +24,16 @@
   <component name="ChangeListManager">
     <list default="true" id="ca88d2d9-d344-4f04-914d-6bf6d7a51375" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/ApkBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/ApkBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/exceptions/CantFindFrameworkResException.java" beforeDir="false" afterPath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/exceptions/CantFindFrameworkResException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/res/ResourcesDecoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/res/ResourcesDecoder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/res/data/ResConfigFlags.java" beforeDir="false" afterPath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/res/data/ResConfigFlags.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/res/data/ResID.java" beforeDir="false" afterPath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/res/data/ResID.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/res/data/ResResSpec.java" beforeDir="false" afterPath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/res/data/ResResSpec.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/res/data/ResType.java" beforeDir="false" afterPath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/res/data/ResType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/res/data/ResTypeSpec.java" beforeDir="false" afterPath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/res/data/ResTypeSpec.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/res/data/arsc/ARSCHeader.java" beforeDir="false" afterPath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/res/data/arsc/ARSCHeader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/res/decoder/ARSCDecoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/res/decoder/ARSCDecoder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/res/decoder/AXmlResourceParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/res/decoder/AXmlResourceParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/res/decoder/ResFileDecoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/src/main/java/brut/androlib/res/decoder/ResFileDecoder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/androlib/brut.j.core/src/main/java/com/mcal/androlib/utils/FileHelper.kt" beforeDir="false" afterPath="$PROJECT_DIR$/androlib/brut.j.core/src/main/java/com/mcal/androlib/utils/FileHelper.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/androlib/brut.j.dir/src/main/java/brut/directory/DirUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/androlib/brut.j.dir/src/main/java/brut/directory/DirUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/androlib/brut.j.dir/src/main/java/brut/directory/FileDirectory.java" beforeDir="false" afterPath="$PROJECT_DIR$/androlib/brut.j.dir/src/main/java/brut/directory/FileDirectory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/androlib/brut.j.dir/src/main/java/brut/directory/ZipUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/androlib/brut.j.dir/src/main/java/brut/directory/ZipUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/androlib/brut.j.util/src/main/java/brut/util/BrutIO.java" beforeDir="false" afterPath="$PROJECT_DIR$/androlib/brut.j.util/src/main/java/brut/util/BrutIO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/androlib/brut.j.util/src/main/java/brut/util/ExtCountingDataInput.java" beforeDir="false" afterPath="$PROJECT_DIR$/androlib/brut.j.util/src/main/java/brut/util/ExtCountingDataInput.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/mcal/example/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/mcal/example/MainActivity.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/mcal/example/utils/ApktoolHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/mcal/example/utils/ApktoolHelper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-ru/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-ru/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.MD" beforeDir="false" afterPath="$PROJECT_DIR$/README.MD" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/androlib/brut.apktool/apktool-lib/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/androlib/brut.j.common/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/androlib/brut.j.common/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/androlib/brut.j.core/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/androlib/brut.j.core/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/androlib/brut.j.dir/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/androlib/brut.j.dir/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/androlib/brut.j.util/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/androlib/brut.j.util/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradle.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradle/libs.versions.toml" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/libs.versions.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/xpp3/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/xpp3/build.gradle" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -105,30 +92,30 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Android App.app.executor&quot;: &quot;Run&quot;,
-    &quot;ApkExportedModule&quot;: &quot;android-apktool.app&quot;,
-    &quot;ExportApk.ApkPathForandroid-apktool.app&quot;: &quot;C:\\AppProjects\\android-apktool\\app&quot;,
-    &quot;Gradle.Download Sources.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/AppProjects/android-apktool&quot;,
-    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Android App.app.executor": "Run",
+    "ApkExportedModule": "android-apktool.app",
+    "ExportApk.ApkPathForandroid-apktool.app": "C:\\AppProjects\\android-apktool\\app",
+    "Gradle.Download Sources.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "dart.analysis.tool.window.visible": "false",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/AppProjects/android-apktool",
+    "show.migrate.to.gradle.popup": "false"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;ExportApk.BuildVariants&quot;: [
-      &quot;release&quot;
+  "keyToStringList": {
+    "ExportApk.BuildVariants": [
+      "release"
     ]
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App">
       <module name="android-apktool.app.main" />

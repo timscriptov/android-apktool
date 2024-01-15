@@ -1,29 +1,26 @@
 [versions]
 kotlinxCoroutinesAndroid = "1.7.3"
-smali_version = "3.0.3"
+smali = "3.0.3"
 
-ktorClientCore = "2.3.7"
-ktorClientOkhttp = "2.3.7"
+ktor = "2.3.7"
 
 [libraries]
 
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
 
-misc-commons-text = { module = "org.apache.commons:commons-text", version = "1.10.0" }
-misc-guava = { module = "com.google.guava:guava", version = "31.0.1-android" }
-misc-antlr = { module = "org.antlr:antlr-runtime", version = "3.5.3" }
-misc-annotations = { module = "org.jetbrains:annotations", version = "24.1.0" }
-misc-annotations-android = { module = "androidx.annotation:annotation", version = "1.7.1" }
-misc-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version = "1.7.3" }
-misc-yaml = { module = "org.yaml:snakeyaml", version = "2.2" }
+google-guava = { module = "com.google.guava:guava", version = "31.0.1-android" }
+antlr = { module = "org.antlr:antlr-runtime", version = "3.5.3" }
+annotations = { module = "org.jetbrains:annotations", version = "24.1.0" }
+androidx-annotation = { module = "androidx.annotation:annotation", version = "1.7.1" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version = "1.7.3" }
 
-ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktorClientOkhttp" }
-ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktorClientCore" }
-ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktorClientOkhttp" }
+ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 
-tools-dexlib2 = { module = "com.android.tools.smali:smali-dexlib2", version.ref = "smali_version" }
-tools-smali = { module = "com.android.tools.smali:smali", version.ref = "smali_version" }
-tools-baksmali = { module = "com.android.tools.smali:smali-baksmali", version.ref = "smali_version" }
+smali-dexlib2 = { module = "com.android.tools.smali:smali-dexlib2", version.ref = "smali" }
+smali = { module = "com.android.tools.smali:smali", version.ref = "smali" }
+smali-baksmali = { module = "com.android.tools.smali:smali-baksmali", version.ref = "smali" }
 
 [plugins]
 
